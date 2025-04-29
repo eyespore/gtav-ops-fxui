@@ -1,4 +1,4 @@
-package club.pineclone.gtavmarco.controller;
+package club.pineclone.gtavops.controller;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -105,7 +105,9 @@ public class IndexController {
     private void initWebView() {
         WebEngine webEngine = webView.getEngine();
         URL htmlResource = getClass().getResource("/web/dist/index.html");
-        assert htmlResource != null;
+        if (htmlResource == null) {
+            throw new RuntimeException("unable to locate html resources");
+        }
         webEngine.load(htmlResource.toExternalForm());
         webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
@@ -164,7 +166,7 @@ public class IndexController {
         private final InputStream fontResource;
 
         public FontFactory() {
-            this.fontResource = IndexController.class.getResourceAsStream("/static/meow.ttf");
+            this.fontResource = IndexController.class.getResourceAsStream("/font/meow.ttf");
         }
 
         public Font getLargeFont() {
@@ -172,3 +174,28 @@ public class IndexController {
         }
     }
 }
+
+
+/*Exception in Application init method
+java.lang.reflect.InvocationTargetException
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+        at javafx.graphics/com.sun.javafx.application.LauncherImpl.launchApplicationWithArgs(Unknown Source)
+        at javafx.graphics/com.sun.javafx.application.LauncherImpl.launchApplication(Unknown Source)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+        at java.base/sun.launcher.LauncherHelper$FXHelper.main(Unknown Source)
+Caused by: java.lang.RuntimeException: Exception in Application init method
+        at javafx.graphics/com.sun.javafx.application.LauncherImpl.launchApplication1(Unknown Source)
+        at javafx.graphics/com.sun.javafx.application.LauncherImpl.lambda$launchApplication$2(Unknown Source)
+        at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.UnsatisfiedLinkError: URI scheme is not "file"
+        at com.github.kwhat.jnativehook@2.2.2/com.github.kwhat.jnativehook.GlobalScreen.<clinit>(Unknown Source)
+        at club.pineclone.gtavmarco@1.0-SNAPSHOT/club.pineclone.gtavmarco.Main.init(Unknown Source)
+        ... 3 more
+Exception running application club.pineclone.gtavmarco.Main
+*/

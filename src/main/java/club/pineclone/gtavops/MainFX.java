@@ -1,0 +1,201 @@
+package club.pineclone.gtavops;
+
+import club.pineclone.gtavops.config.AppConfig;
+import club.pineclone.gtavops.register.SceneRegistryHandler;
+import club.pineclone.gtavops.scene.SceneTemplate;
+import com.github.kwhat.jnativehook.GlobalScreen;
+import io.vproxy.vfx.control.globalscreen.GlobalScreenUtils;
+import io.vproxy.vfx.manager.task.TaskManager;
+import io.vproxy.vfx.theme.Theme;
+import io.vproxy.vfx.ui.button.FusionButton;
+import io.vproxy.vfx.ui.button.FusionImageButton;
+import io.vproxy.vfx.ui.layout.HPadding;
+import io.vproxy.vfx.ui.layout.VPadding;
+import io.vproxy.vfx.ui.pane.FusionPane;
+import io.vproxy.vfx.ui.scene.*;
+import io.vproxy.vfx.ui.stage.VStage;
+import io.vproxy.vfx.util.FXUtils;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+public class MainFX extends Application {
+
+    private final List<SceneTemplate> mainScenes = new ArrayList<>();
+    private VSceneGroup sceneGroup;
+
+    @Override
+    public void start(Stage primaryStage) {
+        VStage vStage = new VStage(primaryStage) {
+            @Override
+            public void close() {
+                super.close();
+                TaskManager.get().terminate();
+                GlobalScreenUtils.unregister();
+            }
+        };
+        vStage.getInitialScene().enableAutoContentWidthHeight();
+        vStage.setTitle(AppConfig.APPLICATION_TITLE);
+
+        mainScenes.addAll(SceneRegistryHandler.getRegistry());  // 添加所有注册的场景
+
+        // var initialScene = mainScenes.stream().filter(e -> e instanceof ).findAny().get();
+        var initialScene = mainScenes.get(0);
+        sceneGroup = new VSceneGroup(initialScene);
+        for (var s : mainScenes) {
+            if (s == initialScene) continue;
+            sceneGroup.addScene(s);
+        }
+
+        var navigatePane = new FusionPane();
+
+        navigatePane.getNode().setPrefHeight(60);
+        FXUtils.observeHeight(vStage.getInitialScene().getContentPane(), sceneGroup.getNode(), -10 - 60 - 5 - 10);
+
+        FXUtils.observeWidth(vStage.getInitialScene().getContentPane(), sceneGroup.getNode(), -20);
+        FXUtils.observeWidth(vStage.getInitialScene().getContentPane(), navigatePane.getNode(), -20);
+
+        var prevButton = new FusionButton("<< Previous") {{
+            setPrefWidth(150);
+            setPrefHeight(navigatePane.getNode().getPrefHeight() - FusionPane.PADDING_V * 2);
+            setOnlyAnimateWhenNotClicked(true);
+
+            var current = sceneGroup.getCurrentMainScene();
+            //noinspection SuspiciousMethodCalls
+            var index = mainScenes.indexOf(current);
+            if (index == 0) {
+                setDisable(true);
+            }
+        }};
+        var nextButton = new FusionButton("Next >>") {{
+            setPrefWidth(150);
+            setPrefHeight(navigatePane.getNode().getPrefHeight() - FusionPane.PADDING_V * 2);
+            setOnlyAnimateWhenNotClicked(true);
+
+            var current = sceneGroup.getCurrentMainScene();
+            //noinspection SuspiciousMethodCalls
+            var index = mainScenes.indexOf(current);
+            if (index == mainScenes.size() - 1) {
+                setDisable(true);
+            }
+        }};
+        prevButton.setOnAction(e -> {
+            var current = sceneGroup.getCurrentMainScene();
+            //noinspection SuspiciousMethodCalls
+            var index = mainScenes.indexOf(current);
+            if (index == 0) return;
+            sceneGroup.show(mainScenes.get(index - 1), VSceneShowMethod.FROM_LEFT);
+            if (index - 1 == 0) {
+                prevButton.setDisable(true);
+            }
+            nextButton.setDisable(false);
+        });
+        nextButton.setOnAction(e -> {
+            var current = sceneGroup.getCurrentMainScene();
+            //noinspection SuspiciousMethodCalls
+            var index = mainScenes.indexOf(current);
+            if (index == mainScenes.size() - 1) return;
+            sceneGroup.show(mainScenes.get(index + 1), VSceneShowMethod.FROM_RIGHT);
+            if (index + 1 == mainScenes.size() - 1) {
+                nextButton.setDisable(true);
+            }
+            prevButton.setDisable(false);
+        });
+
+        navigatePane.getContentPane().getChildren().add(prevButton);
+        navigatePane.getContentPane().getChildren().add(nextButton);
+        navigatePane.getContentPane().widthProperty().addListener((ob, old, now) -> {
+            if (now == null) return;
+            var v = now.doubleValue();
+            nextButton.setLayoutX(v - nextButton.getPrefWidth());
+        });
+
+        var box = new HBox(
+                new HPadding(10),
+                new VBox(
+                        new VPadding(10),
+                        sceneGroup.getNode(),
+                        new VPadding(5),
+                        navigatePane.getNode()
+                )
+        );
+        vStage.getInitialScene().getContentPane().getChildren().add(box);
+
+        var menuScene = new VScene(VSceneRole.DRAWER_VERTICAL);
+        menuScene.getNode().setPrefWidth(450);
+        menuScene.enableAutoContentWidth();
+        menuScene.getNode().setBackground(new Background(new BackgroundFill(
+                Theme.current().subSceneBackgroundColor(),
+                CornerRadii.EMPTY,
+                Insets.EMPTY
+        )));
+        vStage.getRootSceneGroup().addScene(menuScene, VSceneHideMethod.TO_LEFT);
+        var menuVBox = new VBox() {{
+            setPadding(new Insets(0, 0, 0, 24));
+            getChildren().add(new VPadding(20));
+        }};
+        menuScene.getContentPane().getChildren().add(menuVBox);
+        for (int i = 0; i < mainScenes.size(); ++i) {
+            final var fi = i;
+            var s = mainScenes.get(i);
+            var title = s.getTitle();
+            var button = new FusionButton(title);
+            button.setDisableAnimation(true);
+            button.setOnAction(e -> {
+                //noinspection SuspiciousMethodCalls
+                var currentIndex = mainScenes.indexOf(sceneGroup.getCurrentMainScene());
+                if (currentIndex != fi) {
+                    sceneGroup.show(s, currentIndex < fi ? VSceneShowMethod.FROM_RIGHT : VSceneShowMethod.FROM_LEFT);
+                }
+                vStage.getRootSceneGroup().hide(menuScene, VSceneHideMethod.TO_LEFT);
+                prevButton.setDisable(fi == 0);
+                nextButton.setDisable(fi == mainScenes.size() - 1);
+            });
+            button.setPrefWidth(400);
+            button.setPrefHeight(40);
+            if (i != 0) {
+                menuVBox.getChildren().add(new VPadding(20));
+            }
+            menuVBox.getChildren().add(button);
+        }
+        menuVBox.getChildren().add(new VPadding(20));
+
+        var menuBtn = new FusionImageButton(new Image(getClass().getResource("/img/menu.png").toExternalForm())) {{
+            setPrefWidth(40);
+            setPrefHeight(VStage.TITLE_BAR_HEIGHT + 1);
+            getImageView().setFitHeight(15);
+            setLayoutX(-2);
+            setLayoutY(-1);
+        }};
+        menuBtn.setOnAction(e -> vStage.getRootSceneGroup().show(menuScene, VSceneShowMethod.FROM_LEFT));
+        vStage.getRoot().getContentPane().getChildren().add(menuBtn);
+
+        vStage.getStage().setWidth(1280);
+        vStage.getStage().setHeight(800);
+        vStage.getStage().getIcons().add(new Image(getClass().getResource("/img/favicon.png").toExternalForm()));
+        vStage.getStage().centerOnScreen();
+        vStage.getStage().show();
+    }
+
+    @Override
+    public void init() throws Exception {
+        Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+        logger.setLevel(Level.OFF);
+        logger.setUseParentHandlers(false);
+        GlobalScreen.registerNativeHook();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        GlobalScreen.unregisterNativeHook();
+    }
+
+}

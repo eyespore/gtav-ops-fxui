@@ -1,12 +1,13 @@
-package club.pineclone.gtavmarco.marco;
+package club.pineclone.gtavops.marco;
 
-import org.jnativehook.mouse.NativeMouseEvent;
-import org.jnativehook.mouse.NativeMouseInputAdapter;
+
+import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
+import com.github.kwhat.jnativehook.mouse.NativeMouseInputListener;
 
 import java.awt.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class ButtonListener extends NativeMouseInputAdapter {
+public abstract class ButtonListener implements NativeMouseInputListener {
 
     protected final int listenedButton;
     protected final AtomicBoolean running = new AtomicBoolean(false);

@@ -1,23 +1,17 @@
-package club.pineclone.gtavmarco.controller;
+package club.pineclone.gtavops.controller;
 
-import club.pineclone.gtavmarco.marco.ButtonListener;
-import club.pineclone.gtavmarco.marco.MouseScrollDownMarco;
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.mouse.NativeMouseEvent;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import club.pineclone.gtavops.marco.ButtonListener;
+import club.pineclone.gtavops.marco.MouseScrollDownMarco;
+import com.github.kwhat.jnativehook.GlobalScreen;
+import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
 
 public class BridgeController {
 
     private static final ButtonListener marco;
 
     static {
-        Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
-        logger.setLevel(Level.OFF);
-        logger.setUseParentHandlers(false);
+
         try {
-            GlobalScreen.registerNativeHook();
             marco = new MouseScrollDownMarco(NativeMouseEvent.BUTTON4);
 
         } catch (Exception e) {
