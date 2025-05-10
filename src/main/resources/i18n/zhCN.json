@@ -79,6 +79,22 @@
       "openVehicleDoor" : "开车门"
     }
   },
+  "betterLButton" : {
+    "title" : "更好左键",
+    "holdLButtonSetting" : {
+      "title" : "辅助按住左键设置",
+      "enable" : "启用辅助按住鼠标左键",
+      "activateMethod" : "激活方式",
+      "activateKey" : "激活键位"
+    },
+    "rapidlyClickLButtonSetting" : {
+      "title" : "辅助连点左键设置",
+      "enable" : "启用辅助连点鼠标左键",
+      "activateMethod" : "激活方式",
+      "activateKey" : "激活键位",
+      "triggerInterval" : "触发间隔(ms)"
+    }
+  },
   "fontPack" : {
     "title" : "字体包管理",
     "gamePath" : "游戏家目录",

@@ -8,11 +8,8 @@ import io.vproxy.base.util.Logger;
 import io.vproxy.commons.util.Singleton;
 import io.vproxy.vfx.manager.internal_i18n.InternalI18n;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class I18nHolder {
@@ -24,6 +21,12 @@ public class I18nHolder {
     }
 
     public static void load() throws IOException {
+        ExtendedI18n i18n = loadI18n();
+        Singleton.register(InternalI18n.class, i18n);
+        Singleton.register(ExtendedI18n.class, i18n);  /* 加载本地化 */
+    }
+
+    private static ExtendedI18n loadI18n() {
         ExtendedI18n i18n;
         try (InputStream is = I18nHolder.class.getResourceAsStream("/i18n/" + LOCALE + ".json")) {
             if (is == null) {
@@ -39,14 +42,14 @@ public class I18nHolder {
         } catch (IOException e) {
             i18n = new ExtendedI18n();
         }
-        Singleton.register(InternalI18n.class, i18n);
-        Singleton.register(ExtendedI18n.class, i18n);  /* 加载本地化 */
+
+        return i18n;
     }
 
     /* 这个方法用于导出本地化pojo到json，从而创建更多的本地化配置 */
     public static void main(String[] args) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        ExtendedI18n i18n = new ExtendedI18n();
+        ExtendedI18n i18n = loadI18n();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         Path path = Path.of("zhCN.json");  /* 创建本地化文件 */

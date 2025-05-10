@@ -35,6 +35,7 @@ public class ExtendedI18n implements InternalI18n {
     public ADSwing adSwing = new ADSwing();  /* AD摇 */
     public MeleeGlitch meleeGlitch = new MeleeGlitch();  /* 近战武器偷速 */
     public BetterMMenu betterMMenu = new BetterMMenu();  /* 更好的M菜单 */
+    public BetterLButton betterLButton = new BetterLButton();  /* 更好的鼠标左键 */
 
     public FontPack fontPack = new FontPack();  /* 字体包管理 */
     public Feature feature = new Feature();  /* 功能特性 */
@@ -229,6 +230,28 @@ public class ExtendedI18n implements InternalI18n {
             public String enterKeyInterval = "enter interval";  /* 回车之后的等待时间 */
             public String startEngineKey = "start engine key";  /* 快速点火 */
             public String openVehicleDoor = "open vehicle";  /* 是否打开车门 */
+        }
+    }
+
+    @Data
+    public static class BetterLButton {
+        public String title = "better LButton";
+        public HoldLButtonSetting holdLButtonSetting = new HoldLButtonSetting();
+        public RapidlyClickLButtonSetting rapidlyClickLButtonSetting = new RapidlyClickLButtonSetting();
+
+        public static class HoldLButtonSetting {
+            public String title = "hold left button settings";
+            public String enable = "enable auto hold left button";
+            public String activateMethod = "activate method";
+            public String activateKey =  "activate key";
+        }
+
+        public static class RapidlyClickLButtonSetting {
+            public String title = "rapidly left button settings";
+            public String enable = "enable auto rapidly click left button";
+            public String activateMethod = "activate method";
+            public String activateKey =  "activate key";
+            public String triggerInterval = "trigger interval(ms)";
         }
     }
 

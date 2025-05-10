@@ -1,5 +1,6 @@
 package club.pineclone.gtavops.config;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import io.vproxy.vfx.entity.input.Key;
 import io.vproxy.vfx.entity.input.KeyCode;
 import io.vproxy.vfx.entity.input.MouseWheelScroll;
@@ -16,6 +17,7 @@ public class Configuration {
     public ADSwing adSwing = new ADSwing();
     public MeleeGlitch meleeGlitch = new MeleeGlitch();  /* 近战偷速 */
     public BetterMMenu betterMMenu = new BetterMMenu();  /* 更好的M菜单 */
+    public BetterLButton betterLButton = new BetterLButton();  /* 更好的鼠标左键 */
 
     public String gameHome = "";  /* 游戏路径 */
 
@@ -104,5 +106,28 @@ public class Configuration {
         }
     }
 
+    @Data
+    public static class BetterLButton {
+        public RapidlyClickLButtonSetting rapidlyClickLButtonSetting = new RapidlyClickLButtonSetting();
+        public HoldLButtonSetting holdLButtonSetting = new HoldLButtonSetting();
+        public BaseSetting baseSetting = new BaseSetting();
+
+        public static class BaseSetting {
+            public boolean enable = false;
+        }
+
+        public static class HoldLButtonSetting {
+            public boolean enable = false;
+            public int activateMethod = 0;  /* 激活方式 0: 按住激活; 1: 切换激活 */
+            public Key activateKey = new Key(KeyCode.C);
+        }
+
+        public static class RapidlyClickLButtonSetting {
+            public boolean enable = false;
+            public int activateMethod = 0;  /* 激活方式 0: 按住激活; 1: 切换激活 */
+            public Key activateKey = new Key(KeyCode.V);
+            public double triggerInterval = 20.0;
+        }
+    }
 }
 
