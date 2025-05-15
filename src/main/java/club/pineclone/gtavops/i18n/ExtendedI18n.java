@@ -111,12 +111,27 @@ public class ExtendedI18n implements InternalI18n {
 
         public String fontpackIsEnabled = "This fontpack is still enabled, you have to disable it first!";
         public String illegalGameHome = "Illegal game home was selected! Make sure you choose the right game home directory";
-        public String fontpackExisted = "Detected existed fontpack resources at [{0}], would you like to import it into gtav-ops?";
+        public String fontpackExisted = "Detected existed fontpack resources with update.rpf: [{0}], update2.rpf: [{1}], would you like to import it into gtav-ops?";
         public String emptyGameHome = "/path/to/your/Grand Theft Auto V";
         public String confirmActivateFontpack = "Do you want to activate fontpack [{0}]?";
         public String confirmRemoveFontpack = "Are you sure you want to remove fontpack [{0}]?";
 
+        public String copyingUpdate1File = "copying update.rpf...";
+        public String copyingUpdate2File = "copying update2.rpf...";
+
         public String emptyGameHomeAlert = "You have not choose 'Game Home' yet, choose your game home first.";
+
+        public String update1File = "update.rpf";
+        public String update2File = "update2.rpf";
+
+        public String chooseUpdate1File = "choose update.rpf";
+        public String chooseUpdate2File = "choose update2.rpf";
+        public String chooseFontpackResource = "choose fontpack resource";
+
+        public String update1FileBtnText = "select update.rpf if exists";
+        public String update2FileBtnText = "select update2.rpf is exists";
+        public String illegalFontpackContribute = "illegal fontpack contribute, a fontpack should at least contain update.rpf or update2.rpf";
+        public String illegalOriginalFontpackContribute = "illegal original fontpack contribute, you might need to execute 'Verify the integrity of game files' to fulfill your original fontpack";
     }
 
     /* 切枪偷速 */

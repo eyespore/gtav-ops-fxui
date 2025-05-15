@@ -26,7 +26,7 @@ public class FontpackService {
     /**
      * 创建一个新的字体包（分配uuid后建立目录，将字体包元数据存储进入metadata）
      */
-    public FontpackMetadata createFontPack(String name, boolean enabled ,String desc, int type, long size) throws IOException {
+    public FontpackMetadata createFontPack(String name, boolean enabled ,String desc, int type, int structure ,long size, boolean isBased) throws IOException {
         String uuid = UUID.randomUUID().toString();  /* 为新的fontpack生成uuid */
         Path packDir = getFontPackDir(uuid);
 
@@ -35,7 +35,7 @@ public class FontpackService {
         }
 
         FontpackMetadata meta = FontpackMetadata.builder().id(uuid).name(name).enabled(enabled).size(size)
-                .desc(desc).type(type).createAt(System.currentTimeMillis()).build();
+                .desc(desc).type(type).structure(structure).createAt(System.currentTimeMillis()).isBased(isBased).build();
         dao.save(meta);
         return meta;
     }
@@ -47,7 +47,7 @@ public class FontpackService {
         Optional<FontpackMetadata> found = dao.findById(id);
         if (found.isEmpty()) return false;
 
-        // 删除目录
+        // 遍历删除目录
         Path dir = getFontPackDir(id);
         if (Files.exists(dir)) {
             try (var stream = Files.walk(dir)) {

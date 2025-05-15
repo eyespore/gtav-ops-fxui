@@ -21,9 +21,11 @@ public class FontpackMetadata {
     private String name;  /* 字体包名称 */
     private String desc;  /* 字体包描述 */
     private Integer type;  /* 字体包类型 0: 传承版 1: 增强版 */
+    private Integer structure; /* 结构: 0: 仅update.rpf 1: 仅update2.rpf 2: 包含两者 */
     private Long size;  /* 文件大小，单位: byte */
     private Long createAt;  /* 字体包创建时间 */
-    private Boolean enabled; /* 是否被启用 */
+    private Boolean enabled;  /* 是否被启用 */
+    private Boolean isBased;  /* 是否是基础字体包 */
 
     public String formatType() {
         ExtendedI18n i18n = I18nHolder.get();

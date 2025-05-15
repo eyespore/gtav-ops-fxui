@@ -146,27 +146,38 @@ public class ForkedDialog<T> {
     public static final int CANCEL = 2;
 
     /* 确认取消弹窗 1: 确认  0: 取消 */
-    public static ForkedDialog<Integer> confirmDialog() {
-        return confirmDialog(null, Modality.NONE);
+    public static ForkedDialog<Integer> simpleDialog() {
+        return simpleDialog(null, Modality.NONE);
     }
 
-    public static ForkedDialog<Integer> confirmDialog(String text) {
-        return confirmDialog(text, Modality.NONE);
+    public static ForkedDialog<Integer> simpleDialog(String text) {
+        return simpleDialog(text, Modality.NONE);
     }
 
-    public static ForkedDialog<Integer> confirmDialog(Modality modality) {
-        return confirmDialog(null, modality);
+    public static ForkedDialog<Integer> simpleDialog(Modality modality) {
+        return simpleDialog(null, modality);
     }
 
-    public static ForkedDialog<Integer> confirmDialog(String text, Modality modality) {
+    public static ForkedDialog<Integer> simpleDialog(String text, Modality modality) {
         ForkedDialog<Integer> dialog = createConfirmCancelDialog();
         dialog.setHeaderText(text);
         dialog.getVStage().getStage().initModality(modality);
         return dialog;
     }
 
+    public static ForkedDialog<Integer> simpleDialog(String text, Modality modality, int flag) {
+        ForkedDialog<Integer> dialog = createSimpleDialog(flag);
+        dialog.setHeaderText(text);
+        dialog.getVStage().getStage().initModality(modality);
+        return dialog;
+    }
+
     private static ForkedDialog<Integer> createConfirmCancelDialog() {
-        return createDialog(CONFIRM | CANCEL);
+        return createSimpleDialog(CONFIRM | CANCEL);
+    }
+
+    private static ForkedDialog<Integer> createSimpleDialog(int flag) {
+        return createDialog(flag);
     }
 
     private static ForkedDialog<Integer> createDialog(int flags) {

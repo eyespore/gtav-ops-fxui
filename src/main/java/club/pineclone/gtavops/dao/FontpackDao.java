@@ -96,6 +96,12 @@ public class FontpackDao {
         if (metadata.getEnabled() != null) {
             stream = stream.filter(meta -> meta.getEnabled().equals(metadata.getEnabled()));
         }
+        if (metadata.getStructure() != null) {
+            stream = stream.filter(meta -> meta.getStructure().equals(metadata.getStructure()));
+        }
+        if (metadata.getIsBased() != null) {
+            stream = stream.filter(meta -> meta.getIsBased().equals(metadata.getIsBased()));
+        }
         return stream.toList();
     }
 
