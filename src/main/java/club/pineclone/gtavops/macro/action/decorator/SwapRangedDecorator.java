@@ -4,7 +4,6 @@ import club.pineclone.gtavops.macro.Macro;
 import club.pineclone.gtavops.macro.SimpleMacro;
 import club.pineclone.gtavops.macro.action.Action;
 import club.pineclone.gtavops.macro.action.ActionEvent;
-import club.pineclone.gtavops.macro.action.impl.BlockAction;
 import club.pineclone.gtavops.macro.action.robot.RobotFactory;
 import club.pineclone.gtavops.macro.action.ScheduledAction;
 import club.pineclone.gtavops.macro.action.ScheduledActionDecorator;
@@ -25,15 +24,11 @@ public class SwapRangedDecorator extends ScheduledActionDecorator {
     private final Key defaultRangedWeaponKey;  /* 默认远程武器 */
     private final boolean swapDefaultRangedWeaponOnEmpty;  /* 当目标远程武器为空值时切换到默认 */
 
-    private AtomicReference<Key> targetRangedWeaponKey = new AtomicReference<>();
+    private final AtomicReference<Key> targetRangedWeaponKey = new AtomicReference<>();
     private final Map<Key, Key> sourceToTargetMap;  /* 监听源到目标的映射 */
 
     private Macro recorderMacro;  /* 记录器宏 */
-    private Macro blockerMacro;  /* 屏蔽器宏 */
-    private BlockAction blockAction;
-
-    private final AtomicBoolean blockerMacroRunning = new AtomicBoolean(false);
-    private final AtomicBoolean recorderMacroRunning = new AtomicBoolean(false);
+    private final AtomicBoolean recorderRunning = new AtomicBoolean(false);
 
     public static SwapRangedDecoratorBuilder builder() {
         return new SwapRangedDecoratorBuilder();
@@ -43,9 +38,8 @@ public class SwapRangedDecorator extends ScheduledActionDecorator {
                                Key defaultRangedWeaponKey,
                                boolean swapDefaultRangedWeaponOnEmpty,
                                Map<Key, Key> sourceToTargetMap,
-                               boolean enableBlockKey,
-                               Key blockKey,
-                               long blockDuration) {
+                               boolean enableClearKey,
+                               Key clearKey) {
         super(delegate);
         this.robot = RobotFactory.getRobot(delegate.getActionId());
 
@@ -53,7 +47,8 @@ public class SwapRangedDecorator extends ScheduledActionDecorator {
         this.swapDefaultRangedWeaponOnEmpty = swapDefaultRangedWeaponOnEmpty;
 
         this.sourceToTargetMap = sourceToTargetMap;  /* 映射表 */
-//        this.blockDuration = blockDuration;
+
+        if (enableClearKey) this.sourceToTargetMap.put(clearKey, null);
 
         if (!this.sourceToTargetMap.isEmpty()) {
             /* 映射表不为空，创建子宏 */
@@ -61,52 +56,37 @@ public class SwapRangedDecorator extends ScheduledActionDecorator {
             Action action = new RecordAction();
             recorderMacro = new SimpleMacro(trigger, action);
         }
-
-        if (enableBlockKey) {
-            /* 启用屏蔽 */
-            Trigger trigger = TriggerFactory.simple(new TriggerIdentity(TriggerMode.HOLD, blockKey));
-            //    private final long blockDuration;
-            blockAction = new BlockAction(blockerMacroRunning, blockDuration);
-            blockerMacro = new SimpleMacro(trigger, blockAction);
-        }
     }
 
     @Override
     public void install() {
         delegate.install();
         if (recorderMacro != null) recorderMacro.install();
-        if (blockerMacro != null) blockerMacro.install();
     }
 
     @Override
     public void uninstall() {
         if (recorderMacro != null) recorderMacro.uninstall();
-        if (blockerMacro != null) blockerMacro.uninstall();
         delegate.uninstall();
     }
 
     @Override
     public boolean beforeActivate(ActionEvent event) throws Exception {
         if (!delegate.beforeActivate(event)) return false;
-        if (recorderMacro != null) recorderMacroRunning.set(true);
-        if (blockerMacro != null) blockerMacroRunning.set(true);
+        if (recorderMacro != null) recorderRunning.set(true);
+
+        if (swapDefaultRangedWeaponOnEmpty) {
+            targetRangedWeaponKey.set(defaultRangedWeaponKey);
+        }
         return true;
     }
 
     /* 在宏(例如切枪偷速、近战偷速)执行结束之后，尝试切换远程武器 */
     @Override
     public void afterDeactivate(ActionEvent event) throws Exception {
-        if (recorderMacro != null) recorderMacroRunning.set(false);
-        if (blockerMacro != null) {
-            blockerMacroRunning.set(false);
-            if (blockAction.isBlocked()) return;
-        }
+        if (recorderMacro != null) recorderRunning.set(false);
 
-        Key keyToUse = targetRangedWeaponKey.getAndSet(null);
-        if (swapDefaultRangedWeaponOnEmpty && keyToUse == null) {
-            keyToUse = defaultRangedWeaponKey;
-        }
-
+        Key keyToUse = targetRangedWeaponKey.get();
         if (keyToUse != null) {
             Thread.sleep(20);
             robot.simulate(keyToUse);  /* 切换到枪 */
@@ -127,7 +107,7 @@ public class SwapRangedDecorator extends ScheduledActionDecorator {
         @Override
         public void activate(ActionEvent event) {
             /* 触发记录，覆写原始targetRangedWeaponKey */
-            if (!recorderMacroRunning.get()) return;
+            if (!recorderRunning.get()) return;
             targetRangedWeaponKey.set(sourceToTargetMap.get(event.getTriggerEvent().getInputSourceEvent().getKey()));
         }
 
@@ -140,11 +120,10 @@ public class SwapRangedDecorator extends ScheduledActionDecorator {
     public static class SwapRangedDecoratorBuilder {
         private Key defaultRangedWeaponKey;  /* 默认远程武器 */
         private boolean swapDefaultRangedWeaponOnEmpty;  /* 当目标远程武器为空值时切换到默认 */
-        private long blockDuration;
         private boolean enableBlockKey = false;
         private Map<Key, Key> sourceToTargetMap;  /* 监听源到目标的映射 */
         protected ScheduledAction delegate;
-        private Key blockKey;
+        private Key clearKey;
 
         private SwapRangedDecoratorBuilder() {}
 
@@ -158,12 +137,7 @@ public class SwapRangedDecorator extends ScheduledActionDecorator {
             return this;
         }
 
-        public SwapRangedDecoratorBuilder blockDuration(long blockDuration) {
-            this.blockDuration = blockDuration;
-            return this;
-        }
-
-        public SwapRangedDecoratorBuilder enableBlockKey(boolean flag) {
+        public SwapRangedDecoratorBuilder enableClearKey(boolean flag) {
             this.enableBlockKey = flag;
             return this;
         }
@@ -178,21 +152,19 @@ public class SwapRangedDecorator extends ScheduledActionDecorator {
             return this;
         }
 
-        public SwapRangedDecoratorBuilder blockKey(Key key) {
-            this.blockKey = key;
+        public SwapRangedDecoratorBuilder clearKey(Key key) {
+            this.clearKey = key;
             return this;
         }
 
         public SwapRangedDecorator build() {
-            if (!enableBlockKey) blockDuration = 0;
             return new SwapRangedDecorator(
                     delegate,
                     defaultRangedWeaponKey,
                     swapDefaultRangedWeaponOnEmpty,
                     sourceToTargetMap,
                     enableBlockKey,
-                    blockKey,
-                    blockDuration
+                    clearKey
             );
         }
     }

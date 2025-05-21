@@ -2,9 +2,11 @@ package club.pineclone.gtavops.macro.action.robot;
 
 import club.pineclone.gtavops.utils.KeyUtils;
 import io.vproxy.vfx.entity.input.Key;
+import lombok.Getter;
 
 import java.awt.*;
 
+@Getter
 public class VCRobotAdapter implements RobotAdapter {
 
     protected final Robot robot;

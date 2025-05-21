@@ -319,5 +319,4 @@ public class MainFX extends Application {
         ActionTaskManager.shutdown();  /* 停止任务调度 */
         ConfigHolder.save();  /* 保存配置 */
     }
-
 }

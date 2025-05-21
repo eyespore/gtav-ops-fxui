@@ -96,9 +96,9 @@ public class _01SwapGlitchFeatureTogglePane extends FeatureTogglePane {
                     .swapDefaultRangedWeaponOnEmpty(srSetting.swapDefaultRangedWeaponOnEmpty)
                     .defaultRangedWeaponKey(srSetting.defaultRangedWeaponKey)
                     .sourceToTargetMap(sourceToTargetMap)
-                    .enableBlockKey(srSetting.enableBlockKey)
-                    .blockKey(srSetting.blockKey)
-                    .blockDuration((long) Math.floor(srSetting.blockDuration))
+                    .enableClearKey(srSetting.enableClearKey)
+                    .clearKey(srSetting.clearKey)
+//                    .blockDuration((long) Math.floor(srSetting.blockDuration))
                     .build();
         }
 
@@ -137,7 +137,6 @@ public class _01SwapGlitchFeatureTogglePane extends FeatureTogglePane {
 
         private final ToggleSwitch enableSwapMeleeToggle = new ToggleSwitch();
 
-
         private final VOptionalButton activateMethodBtn = new VOptionalButton() {{
             addOptionalItem(i18n.hold);
             addOptionalItem(i18n.toggle);
@@ -173,12 +172,12 @@ public class _01SwapGlitchFeatureTogglePane extends FeatureTogglePane {
         private final VKeyChooseButton mapping4SourceKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);  /* 映射1主键 */
         private final VKeyChooseButton mapping4TargetKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);  /* 映射1目标键 */
 
-        private final ToggleSwitch swapRangedBlockKeyToggle = new ToggleSwitch();  /* 启用屏蔽切换远程武器 */
-        private final VKeyChooseButton swapRangedBlockKeyBtn = new VKeyChooseButton();  /* 屏蔽切换远程武器键 */
-        private final ForkedSlider swapRangedBlockDurationSlider = new ForkedSlider() {{  /* 屏蔽切换远程武器有效时间 */
-            setLength(400);
-            setRange(0, 1000);
-        }};
+        private final ToggleSwitch swapRangedClearKeyToggle = new ToggleSwitch();  /* 启用屏蔽切换远程武器 */
+        private final VKeyChooseButton swapRangedClearKeyBtn = new VKeyChooseButton();  /* 屏蔽切换远程武器键 */
+//        private final ForkedSlider swapRangedBlockDurationSlider = new ForkedSlider() {{  /* 屏蔽切换远程武器有效时间 */
+//            setLength(400);
+//            setRange(0, 1000);
+//        }};
 
         public SGSettingStage() {
             super();
@@ -203,9 +202,9 @@ public class _01SwapGlitchFeatureTogglePane extends FeatureTogglePane {
                     .buttonToggle(MessageFormat.format(sgI18n.swapRangedSetting.listenRangedWeaponMapping, 3), mapping3Toggle, mapping3SourceKeyBtn, mapping3TargetKeyBtn)
                     .buttonToggle(MessageFormat.format(sgI18n.swapRangedSetting.listenRangedWeaponMapping, 4), mapping4Toggle, mapping4SourceKeyBtn, mapping4TargetKeyBtn)
                     .gap()
-                    .toggle(sgI18n.swapRangedSetting.enableBlockKey, swapRangedBlockKeyToggle)
-                    .button(sgI18n.swapRangedSetting.blockKey, swapRangedBlockKeyBtn)
-                    .slider(sgI18n.swapRangedSetting.blockDuration, swapRangedBlockDurationSlider)
+                    .toggle(sgI18n.swapRangedSetting.enableClearKey, swapRangedClearKeyToggle)
+                    .button(sgI18n.swapRangedSetting.clearKey, swapRangedClearKeyBtn)
+//                    .slider(sgI18n.swapRangedSetting.blockDuration, swapRangedBlockDurationSlider)
                     .build()
             );
         }
@@ -248,9 +247,9 @@ public class _01SwapGlitchFeatureTogglePane extends FeatureTogglePane {
             mapping4SourceKeyBtn.keyProperty().set(sgConfig.swapRangedSetting.mapping4SourceKey);
             mapping4TargetKeyBtn.keyProperty().set(sgConfig.swapRangedSetting.mapping4TargetKey);
 
-            swapRangedBlockKeyToggle.selectedProperty().set(sgConfig.swapRangedSetting.enableBlockKey);
-            swapRangedBlockKeyBtn.keyProperty().set(sgConfig.swapRangedSetting.blockKey);
-            swapRangedBlockDurationSlider.setValue(sgConfig.swapRangedSetting.blockDuration);
+            swapRangedClearKeyToggle.selectedProperty().set(sgConfig.swapRangedSetting.enableClearKey);
+            swapRangedClearKeyBtn.keyProperty().set(sgConfig.swapRangedSetting.clearKey);
+//            swapRangedBlockDurationSlider.setValue(sgConfig.swapRangedSetting.blockDuration);
         }
 
         @Override
@@ -285,9 +284,9 @@ public class _01SwapGlitchFeatureTogglePane extends FeatureTogglePane {
             srSetting.mapping4SourceKey = mapping4SourceKeyBtn.keyProperty().get();
             srSetting.mapping4TargetKey = mapping4TargetKeyBtn.keyProperty().get();
 
-            srSetting.enableBlockKey = swapRangedBlockKeyToggle.selectedProperty().get();
-            srSetting.blockKey = swapRangedBlockKeyBtn.keyProperty().get();
-            srSetting.blockDuration = swapRangedBlockDurationSlider.valueProperty().get();
+            srSetting.enableClearKey = swapRangedClearKeyToggle.selectedProperty().get();
+            srSetting.clearKey = swapRangedClearKeyBtn.keyProperty().get();
+//            srSetting.blockDuration = swapRangedBlockDurationSlider.valueProperty().get();
         }
     }
 }

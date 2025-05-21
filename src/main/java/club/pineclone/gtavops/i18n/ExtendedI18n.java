@@ -1,6 +1,5 @@
 package club.pineclone.gtavops.i18n;
 
-import club.pineclone.gtavops.config.Configuration;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vproxy.vfx.manager.internal_i18n.InternalI18n;
 import lombok.Data;
@@ -174,9 +173,8 @@ public class ExtendedI18n implements InternalI18n {
             public String enable = "enable sub function";
             public String defaultRangedWeaponKey = "default ranged weapon key";
             public String listenRangedWeaponMapping = "listen ranged weapon mapping [{0}]";
-            public String enableBlockKey = "enable block key";  /* 启用屏蔽键 */
-            public String blockKey = "block key";  /* 屏蔽键 */
-            public String blockDuration = "block duration(ms)";  /* 屏蔽持续时间 */
+            public String enableClearKey = "enable clear key";  /* 启用清除键 */
+            public String clearKey = "clear key";  /* 清除键 */
         }
     }
 

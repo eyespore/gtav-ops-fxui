@@ -63,6 +63,8 @@ public class _07QuickSwapFeatureTogglePane extends FeatureTogglePane {
         /* 启用映射4 */
         if (bSetting.enableMapping4) sourceToTargetMap.put(srSetting.mapping4SourceKey, srSetting.mapping4TargetKey);
 
+        if (sourceToTargetMap.isEmpty()) return;
+
         Action action = new QuickSwapAction(
                 sourceToTargetMap,
                 bSetting.enableBlockKey,
@@ -76,9 +78,8 @@ public class _07QuickSwapFeatureTogglePane extends FeatureTogglePane {
 
     @Override
     protected void deactivate() {
-        macro.uninstall();
+        if (macro != null) macro.uninstall();
     }
-
     @Override
     public void init() {
         selectedProperty().set(qsConfig.baseSetting.enable);

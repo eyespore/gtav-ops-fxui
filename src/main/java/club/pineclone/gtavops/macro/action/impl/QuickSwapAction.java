@@ -45,6 +45,7 @@ public class QuickSwapAction extends Action {
             /* 启用屏蔽 */
             Trigger trigger = TriggerFactory.simple(new TriggerIdentity(TriggerMode.HOLD, blockKey));
             blockAction = new BlockAction(blockDuration);
+            blockAction.enable();  // 转为激活状态
             blockerMacro = new SimpleMacro(trigger, blockAction);
         }
     }

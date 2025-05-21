@@ -63,8 +63,8 @@ public class Configuration {
             public Key mapping4SourceKey = new Key(KeyCode.KEY_4);
             public Key mapping4TargetKey = new Key(KeyCode.KEY_9);
 
-            public boolean enableBlockKey = false;  /* 启用屏蔽键 */
-            public Key blockKey = new Key(KeyCode.TAB);  /* 屏蔽键 */
+            public boolean enableClearKey = false;  /* 启用屏蔽键 */
+            public Key clearKey = new Key(KeyCode.TAB);  /* 屏蔽键 */
             public double blockDuration = 500.0;  /* 屏蔽有效时间 */
         }
     }

@@ -32,9 +32,8 @@
       "enable" : "启用子功能",
       "defaultRangedWeaponKey" : "默认远程武器键位",
       "listenRangedWeaponMapping" : "监听远程武器映射[{0}]",
-      "enableBlockKey" : "启用屏蔽键",
-      "blockKey" : "屏蔽键位",
-      "blockDuration" : "屏蔽持续时间(ms)"
+      "enableClearKey" : "启用清除键",
+      "clearKey" : "清除键位"
     }
   },
   "quickSnake" : {
