@@ -1,5 +1,7 @@
 package club.pineclone.gtavops.utils;
 
+import io.vproxy.base.util.Logger;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -17,13 +19,14 @@ public class JNIUtils {
         String jHome = PathUtils.getJHome();  // Java家目录
         String libName = System.mapLibraryName("PlatformFocusMonitor");
 
-        // ./bin/native/window/x86/PlatformFocusMonitor.dll
         Path dllPath = Path.of(jHome, "bin", "native", os, arch, libName);
 
+        // ./bin/native/window/x86/PlatformFocusMonitor.dll
         if(Files.notExists(dllPath)){  // 在ide内环境时则采用默认位置
-            return Path.of("assets", "native", os, arch, libName);
+            dllPath = Path.of("assets", "native", os, arch, libName);
         }
 
+        Logger.lowLevelDebug(dllPath.toString());
         return dllPath;
     }
 

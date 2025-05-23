@@ -40,8 +40,10 @@ public class PlatformFocusMonitor {
                 lastTitle = title;
                 listeners.forEach(listener -> listener.accept(title));
             }
-        } catch (Exception e) {
-            Logger.warn(LogType.SYS_ERROR, e.getMessage());
+        } catch (UnsatisfiedLinkError e) {
+            Logger.error(LogType.SYS_ERROR, e.getMessage());
+        } catch (Throwable t) {
+            Logger.warn(LogType.SYS_ERROR, t.getMessage());
         }
     }
 
