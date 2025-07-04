@@ -97,6 +97,11 @@
       "activateMethod" : "激活方式",
       "activateKey" : "激活键位",
       "triggerInterval" : "触发间隔(ms)"
+    },
+    "remapLButtonSetting": {
+      "title": "鼠标左键重映射",
+      "enable": "启用鼠标左键重映射",
+      "activateKey": "激活键位"
     }
   },
   "quickSwap" : {

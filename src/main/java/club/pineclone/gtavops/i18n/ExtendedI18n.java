@@ -1,5 +1,6 @@
 package club.pineclone.gtavops.i18n;
 
+import club.pineclone.gtavops.config.Config;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vproxy.vfx.manager.internal_i18n.InternalI18n;
 import lombok.Data;
@@ -260,6 +261,7 @@ public class ExtendedI18n implements InternalI18n {
         public String title = "better LButton";
         public HoldLButtonSetting holdLButtonSetting = new HoldLButtonSetting();
         public RapidlyClickLButtonSetting rapidlyClickLButtonSetting = new RapidlyClickLButtonSetting();
+        public RemapLButtonSetting remapLButtonSetting = new RemapLButtonSetting();
 
         public static class HoldLButtonSetting {
             public String title = "hold left button settings";
@@ -274,6 +276,12 @@ public class ExtendedI18n implements InternalI18n {
             public String activateMethod = "activate method";
             public String activateKey =  "activate key";
             public String triggerInterval = "trigger interval(ms)";
+        }
+
+        public static class RemapLButtonSetting {
+            public String title = "remap left button settings";
+            public String enable = "enable remap left button";
+            public String activateKey = "activate key";
         }
     }
 

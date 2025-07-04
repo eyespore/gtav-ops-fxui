@@ -132,6 +132,7 @@ public class Config {
     public static class BetterLButton {
         public RapidlyClickLButtonSetting rapidlyClickLButtonSetting = new RapidlyClickLButtonSetting();
         public HoldLButtonSetting holdLButtonSetting = new HoldLButtonSetting();
+        public RemapLButtonSetting remapLButtonSetting = new RemapLButtonSetting();
         public BaseSetting baseSetting = new BaseSetting();
 
         public static class BaseSetting {
@@ -149,6 +150,11 @@ public class Config {
             public TriggerMode activateMethod = TriggerMode.TOGGLE;  /* 激活方式 0: 按住激活; 1: 切换激活 */
             public Key activateKey = new Key(KeyCode.V);
             public double triggerInterval = 20.0;
+        }
+
+        public static class RemapLButtonSetting {
+            public boolean enable = false;
+            public Key activateKey = new Key(KeyCode.C);
         }
     }
 

@@ -12,6 +12,7 @@ public abstract class Action implements ActionLifecycle, MacroLifecycleAware {
 
     /* 主要用于装饰器辨别当前父动作，以获取缓存的机器人实例 */
     @Getter protected final String actionId;
+    /* 挂起状态位，当宏挂起时动作应该被拒绝执行（例如不在指定程序当中） */
     @Setter private boolean suspended = false;
 
     public Action(final String actionId) {

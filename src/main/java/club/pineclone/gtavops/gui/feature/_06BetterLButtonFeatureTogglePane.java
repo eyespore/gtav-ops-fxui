@@ -12,6 +12,7 @@ import club.pineclone.gtavops.macro.MacroContextHolder;
 import club.pineclone.gtavops.macro.action.Action;
 import club.pineclone.gtavops.macro.action.impl.HoldLButtonAction;
 import club.pineclone.gtavops.macro.action.impl.RapidlyClickLButtonAction;
+import club.pineclone.gtavops.macro.action.impl.RemapLButtonAction;
 import club.pineclone.gtavops.macro.trigger.Trigger;
 import club.pineclone.gtavops.macro.trigger.TriggerFactory;
 import club.pineclone.gtavops.macro.trigger.TriggerIdentity;
@@ -53,6 +54,7 @@ public class _06BetterLButtonFeatureTogglePane
 
         private UUID holdLButtonMacroId;
         private UUID rapidlyClickLButtonMacroId;
+        private UUID remapLButtonMacroId;
 
         @Override
         protected void activate() {
@@ -77,12 +79,22 @@ public class _06BetterLButtonFeatureTogglePane
                 rapidlyClickLButtonMacroId = MACRO_FACTORY.createSimpleMacro(trigger, action);
                 MACRO_REGISTRY.install(rapidlyClickLButtonMacroId);
             }
+
+            if (blbConfig.remapLButtonSetting.enable) {
+                Key activateKey = blbConfig.remapLButtonSetting.activateKey;
+                Action action = new RemapLButtonAction();
+                Trigger trigger = TriggerFactory.simple(new TriggerIdentity(TriggerMode.HOLD, activateKey));
+
+                remapLButtonMacroId = MACRO_FACTORY.createSimpleMacro(trigger, action);
+                MACRO_REGISTRY.install(remapLButtonMacroId);
+            }
         }
 
         @Override
         protected void deactivate() {
             MACRO_REGISTRY.uninstall(holdLButtonMacroId);
             MACRO_REGISTRY.uninstall(rapidlyClickLButtonMacroId);
+            MACRO_REGISTRY.uninstall(remapLButtonMacroId);
         }
     }
 
@@ -113,6 +125,8 @@ public class _06BetterLButtonFeatureTogglePane
             setRange(10, 100);
         }};
 
+        private final ToggleSwitch enableRemapLButtonToggle = new ToggleSwitch();
+        public final VKeyChooseButton remapLButtonActivateKeyBtn = new VKeyChooseButton();
 
         public BLBSettingStage() {
             getContent().getChildren().addAll(contentBuilder()
@@ -125,6 +139,9 @@ public class _06BetterLButtonFeatureTogglePane
                     .button(blbI18n.rapidlyClickLButtonSetting.activateMethod, rapidlyClickLButtonActivateMethodBtn)
                     .button(blbI18n.rapidlyClickLButtonSetting.activateKey, rapidlyClickLButtonActivateKeyBtn)
                     .slider(blbI18n.rapidlyClickLButtonSetting.triggerInterval, rapidlyClickLButtonTriggerInterval)
+                    .divide(blbI18n.remapLButtonSetting.title)
+                    .toggle(blbI18n.remapLButtonSetting.enable, enableRemapLButtonToggle)
+                    .button(blbI18n.remapLButtonSetting.activateKey, remapLButtonActivateKeyBtn)
                     .build());
         }
 
@@ -143,6 +160,9 @@ public class _06BetterLButtonFeatureTogglePane
             rapidlyClickLButtonActivateMethodBtn.triggerModeProperty().set(blbConfig.rapidlyClickLButtonSetting.activateMethod);
             rapidlyClickLButtonActivateKeyBtn.keyProperty().set(blbConfig.rapidlyClickLButtonSetting.activateKey);
             rapidlyClickLButtonTriggerInterval.setValue(blbConfig.rapidlyClickLButtonSetting.triggerInterval);
+
+            enableRemapLButtonToggle.selectedProperty().set(blbConfig.remapLButtonSetting.enable);
+            remapLButtonActivateKeyBtn.keyProperty().set(blbConfig.remapLButtonSetting.activateKey);
         }
 
         @Override
@@ -156,6 +176,8 @@ public class _06BetterLButtonFeatureTogglePane
             blbConfig.rapidlyClickLButtonSetting.activateKey = rapidlyClickLButtonActivateKeyBtn.keyProperty().get();
             blbConfig.rapidlyClickLButtonSetting.triggerInterval = rapidlyClickLButtonTriggerInterval.valueProperty().get();
 
+            blbConfig.remapLButtonSetting.enable = enableRemapLButtonToggle.selectedProperty().get();
+            blbConfig.remapLButtonSetting.activateKey = remapLButtonActivateKeyBtn.keyProperty().get();
         }
     }
 }
