@@ -13,7 +13,6 @@ public interface ActivationPolicy {
 
     /**
      * 对{@link InputSource}传递的事件进行判定，给出是否可以执行下一步的判断
-     * @param press 当前InputSource传递的按下、抬起事件
      * @return 1代表可以执行下一步、0代表拒绝执行、-1表示忽略
      */
     default int decide(InputSourceEvent event) {
