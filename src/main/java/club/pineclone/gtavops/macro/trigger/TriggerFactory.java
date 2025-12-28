@@ -65,9 +65,9 @@ public class TriggerFactory {
             case SCROLL_WHEEL -> {
                 // 已在 TriggerIdentity 中保证只能与 TOGGLE 组合
                 return switch (mode) {
+                    case HOLD -> throw new IllegalStateException("Unexpected value: " + mode);
                     case TOGGLE -> new SimpleTrigger(new MouseScrollSource(key), ActivationPolicy.toggle());
                     case CLICK -> new SimpleTrigger(new MouseScrollSource(key), ActivationPolicy.click());
-                    default -> throw new IllegalStateException("Unexpected value: " + mode);
                 };
             }
             default -> throw new IllegalArgumentException("Unsupported TriggerType: " + type);
