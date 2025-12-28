@@ -7,12 +7,16 @@ import club.pineclone.gtavops.macro.action.robot.RobotFactory;
 import club.pineclone.gtavops.macro.action.robot.VCRobotAdapter;
 import io.vproxy.vfx.entity.input.Key;
 import io.vproxy.vfx.entity.input.KeyCode;
+import io.vproxy.vfx.entity.input.MouseWheelScroll;
+import javafx.scene.input.MouseButton;
 
 public class DelayClimbAction extends Action {
 
     private final VCRobotAdapter robot;
     private final Key usePhoneKey;
     private final Key hideInCoverKey;
+
+    private final Key mouseWheelScrollDown = new Key(new MouseWheelScroll(MouseWheelScroll.Direction.DOWN, 1));
 
     private final long timeUtilCameraExited;
     private final long timeUtilCameraLoaded1;
@@ -95,11 +99,13 @@ public class DelayClimbAction extends Action {
 
         /* 进入掩体并打开相机 */
         pressHideInCoverKey();
+        Thread.sleep(100);
         setupCamera();  /* 相机会自动消失 */
         awaitTimeUtilCameraLoaded1();  /* 此处为第一次打开相机，因此等待时间应当较长一些 */
 
-        /* 按住W键位并点击空格 */
+        /* 按住 W 键位并点击空格 */
         holdWAndPressSpace();
+        Thread.sleep(100);
         setupCamera();  /* 掏出手机并打开相机 */
         awaitTimeUtilCameraLoaded2();  /* 此后打开相机使用延迟2 */
 
@@ -134,9 +140,11 @@ public class DelayClimbAction extends Action {
     }
 
     private void selectCamera() throws Exception {
-        robot.simulate(new Key(KeyCode.LEFT));
+//        robot.simulate(new Key(KeyCode.LEFT));
+        robot.simulate(mouseWheelScrollDown);
         Thread.sleep(50);
-        robot.simulate(new Key(KeyCode.DOWN));
+//        robot.simulate(new Key(KeyCode.DOWN));
+        robot.simulate(mouseWheelScrollDown);
         Thread.sleep(50);
     }
 

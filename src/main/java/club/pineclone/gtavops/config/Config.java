@@ -199,6 +199,7 @@ public class Config {
             public double timeUtilCameraLoaded1 = 3000.0;  /* 等待相机加载完成的时间1 */
             public double timeUtilCameraLoaded2 = 1500.0;  /* 等待相机加载完成的时间2 */
 
+
         }
     }
 

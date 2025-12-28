@@ -93,7 +93,7 @@ public class _08DelayClimbFeatureTogglePane
         private static final int FLAG_WITH_KEY_AND_MOUSE = ForkedKeyChooser.FLAG_WITH_KEY  | ForkedKeyChooser.FLAG_WITH_MOUSE;
 
         private final VKeyChooseButton toggleDelayClimbKey = new VKeyChooseButton(FLAG_WITH_KEY_AND_MOUSE);
-        private final VKeyChooseButton usePhoneKey = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);
+        private final VKeyChooseButton usePhoneKey = new VKeyChooseButton(FLAG_WITH_KEY_AND_MOUSE);
         private final VKeyChooseButton hideInCoverKey = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);
 
         private final ForkedSlider timeUtilCameraExitedSlider = new ForkedSlider() {{
