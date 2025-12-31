@@ -18,11 +18,11 @@ public class VCRobotAdapter implements RobotAdapter {
     }
 
     @Override
-    public void simulate(Key key) throws Exception {
+    public void simulate(Key key) throws InterruptedException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void simulate(Key key, long delay) throws Exception {
+    public void simulate(Key key, long delay) throws InterruptedException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -29,25 +29,13 @@ public abstract class ScheduledAction extends Action implements ScheduleActionLi
     @Override
     public final void activate(ActionEvent event) {
         if (running.compareAndSet(false, true)) {
-            try {
-                scheduledFuture = ActionTaskManager.getSCHEDULER().scheduleAtFixedRate(() -> {
-                            try {
-
-                                boolean flag = beforeSchedule(event);
-                                if (flag) {
-                                    schedule(event);
-                                    afterSchedule(event);
-                                }
-
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();  // 处理异常
-                            } catch (Exception e) {
-                                Logger.error(LogType.ALERT, e.getMessage());
-                            }
-                        }, initialDelay, interval, TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            scheduledFuture = ActionTaskManager.getSCHEDULER().scheduleAtFixedRate(() -> {
+                boolean flag = beforeSchedule(event);
+                if (flag) {
+                    schedule(event);
+                    afterSchedule(event);
+                }
+            }, initialDelay, interval, TimeUnit.MILLISECONDS);
         }
     }
 

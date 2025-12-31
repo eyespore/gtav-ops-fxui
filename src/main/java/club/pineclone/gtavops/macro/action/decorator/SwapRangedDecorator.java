@@ -73,7 +73,7 @@ public class SwapRangedDecorator
     }
 
     @Override
-    public boolean beforeActivate(ActionEvent event) throws Exception {
+    public boolean beforeActivate(ActionEvent event) {
         if (!delegate.beforeActivate(event)) return false;
         recorderRunning.set(true);
 
@@ -86,15 +86,18 @@ public class SwapRangedDecorator
 
     /* 在宏(例如切枪偷速、近战偷速)执行结束之后，尝试切换远程武器 */
     @Override
-    public void afterDeactivate(ActionEvent event) throws Exception {
+    public void afterDeactivate(ActionEvent event) {
         recorderRunning.set(false);
 
         Key keyToUse = targetRangedWeaponKey.getAndSet(null);
         if (keyToUse != null) {
-            Thread.sleep(20);
-            robot.simulate(keyToUse);  /* 切换到枪 */
-            Thread.sleep(20);
-            robot.simulate(leftButtonKey);  /* 点左键选择 */
+            try {
+                Thread.sleep(20);
+                robot.simulate(keyToUse);  /* 切换到枪 */
+                Thread.sleep(20);
+                robot.simulate(leftButtonKey);  /* 点左键选择 */
+            } catch (InterruptedException ignored) {
+            }
         }
 
         delegate.afterDeactivate(event);
@@ -112,11 +115,6 @@ public class SwapRangedDecorator
             /* 触发记录，覆写原始targetRangedWeaponKey */
             if (!recorderRunning.get()) return;
             targetRangedWeaponKey.set(sourceToTargetMap.get(event.getTriggerEvent().getInputSourceEvent().getKey()));
-        }
-
-        @Override
-        public void deactivate(ActionEvent event) {
-
         }
     }
 

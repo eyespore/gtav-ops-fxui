@@ -137,7 +137,8 @@
       "timeUtilCameraExited" : "完全退出相机耗时 (ms)",
       "timeUtilCameraLoaded1" : "第一次启用相机加载耗时 (ms)",
       "timeUtilCameraLoaded2" : "后续启动相机加载耗时 (ms)",
-      "usePhoneKey" : "使用电话键位"
+      "usePhoneKey" : "使用电话键位",
+      "hideInCoverOnExit" : "结束时自动躲入掩体"
     }
   },
   "betterPMenu" : {

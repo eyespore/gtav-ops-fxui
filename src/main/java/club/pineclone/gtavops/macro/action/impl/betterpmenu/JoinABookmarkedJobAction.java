@@ -44,54 +44,57 @@ public class JoinABookmarkedJobAction extends Action {
     }
 
     @Override
-    public void activate(ActionEvent event) throws Exception {
-        pressP();
-        Thread.sleep(200);
-        pressRight();
-        awaitTimeUtilPMenuLoaded();  /* 等待列表加载 */
-        pressEnter();  /* 选择列表 */
-        Thread.sleep(200);
-        pressEnter();  /* 差事 */
-        mouseScrollDown();  /* 进行差事 */
-        Thread.sleep(200);
-        pressEnter();
-        Thread.sleep(200);
-        mouseScrollDown();  /* 已收藏的 */
-        Thread.sleep(200);
-        pressEnter();
+    public void activate(ActionEvent event) {
+        try {
+            pressP();
+            Thread.sleep(200);
+            pressRight();
+            awaitTimeUtilPMenuLoaded();  /* 等待列表加载 */
+            pressEnter();  /* 选择列表 */
+            Thread.sleep(200);
+            pressEnter();  /* 差事 */
+            mouseScrollDown();  /* 进行差事 */
+            Thread.sleep(200);
+            pressEnter();
+            Thread.sleep(200);
+            mouseScrollDown();  /* 已收藏的 */
+            Thread.sleep(200);
+            pressEnter();
 
-        Thread.sleep(timeUtilJobsLoaded);  /* 等待差事加载 */
+            Thread.sleep(timeUtilJobsLoaded);  /* 等待差事加载 */
 
-        for (int i = 0; i < 5; i++) mouseScrollDown();  /* 夺取 */
-        Thread.sleep(200);
-        pressEnter();
-        Thread.sleep(200);
-        pressEnter();
-        Thread.sleep(200);
-        pressEnter();  /* 确认进行该差事 */
+            for (int i = 0; i < 5; i++) mouseScrollDown();  /* 夺取 */
+            Thread.sleep(200);
+            pressEnter();
+            Thread.sleep(200);
+            pressEnter();
+            Thread.sleep(200);
+            pressEnter();  /* 确认进行该差事 */
+        } catch (InterruptedException ignored) {
+        }
     }
 
-    private void mouseScrollDown() throws Exception {
+    private void mouseScrollDown() throws InterruptedException {
         robot.mouseWheel(mouseScrollDownKey);
         Thread.sleep(mouseScrollInterval);
     }
 
-    private void mouseScrollUp() throws Exception {
+    private void mouseScrollUp() throws InterruptedException {
         robot.mouseWheel(mouseScrollUpKey);
         Thread.sleep(mouseScrollInterval);
     }
 
-    private void pressP() throws Exception {
+    private void pressP() throws InterruptedException {
         robot.simulate(menuKey);
         awaitArrow();
     }
 
-    private void pressRight() throws Exception {
+    private void pressRight() throws InterruptedException {
         robot.simulate(rightKey);
         awaitArrow();
     }
 
-    private void pressEnter() throws Exception {
+    private void pressEnter() throws InterruptedException {
         robot.simulate(enterKey);
         awaitEnter();
     }

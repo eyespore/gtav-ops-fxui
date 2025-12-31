@@ -31,13 +31,16 @@ public class ADSwingAction extends ScheduledAction {
     }
 
     @Override
-    public void schedule(ActionEvent event) throws Exception {
-        if (pressLeft) {  /* 按下左 */
-            pressLeft = false;
-            robot.simulate(moveLeftKey);
-        } else {  /* 按下右 */
-            pressLeft = true;
-            robot.simulate(moveRightKey);
+    public void schedule(ActionEvent event) {
+        try {
+            if (pressLeft) {  /* 按下左 */
+                pressLeft = false;
+                robot.simulate(moveLeftKey);
+            } else {  /* 按下右 */
+                pressLeft = true;
+                robot.simulate(moveRightKey);
+            }
+        } catch (InterruptedException ignored) {
         }
     }
 }

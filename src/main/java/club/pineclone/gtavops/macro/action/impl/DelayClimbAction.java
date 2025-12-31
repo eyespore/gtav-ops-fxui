@@ -2,13 +2,19 @@ package club.pineclone.gtavops.macro.action.impl;
 
 import club.pineclone.gtavops.macro.action.Action;
 import club.pineclone.gtavops.macro.action.ActionEvent;
+import club.pineclone.gtavops.macro.action.ActionTaskManager;
 import club.pineclone.gtavops.macro.action.ScheduledAction;
 import club.pineclone.gtavops.macro.action.robot.RobotFactory;
 import club.pineclone.gtavops.macro.action.robot.VCRobotAdapter;
+import io.vproxy.base.util.Logger;
 import io.vproxy.vfx.entity.input.Key;
 import io.vproxy.vfx.entity.input.KeyCode;
 import io.vproxy.vfx.entity.input.MouseWheelScroll;
-import javafx.scene.input.MouseButton;
+import io.vproxy.vpacket.dns.rdata.A;
+
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DelayClimbAction extends Action {
 
@@ -24,30 +30,54 @@ public class DelayClimbAction extends Action {
 
     protected static final String ACTION_ID = "delay-climb";
 
-    private boolean isLoopRunning = false;  /* 标记当前循环是否正在运行的状态位 */
+    private volatile boolean shouldStopPhase1 = false;  /* 是否应该停止Phase1 */
+    private final AtomicBoolean isPhase1Running = new AtomicBoolean(false);  /* 阶段一是否正在运行 */
+    private final AtomicBoolean isPhase2Running = new AtomicBoolean(false);  /* 阶段二是否正在运行 */
+
+    private volatile ScheduledFuture<?> future = null;
 
     private final Action cameraAction;
+
+    private final boolean hideInCoverOnExit;  /* 是否在结束时自动躲入掩体 */
 
     /**
      * 子动作，用于实现延迟攀阶段二
      */
     private class CameraAction extends ScheduledAction {
-
         public CameraAction(String macroId, long interval) {
             super(macroId, interval, 200);
         }
 
         @Override
-        public void schedule(ActionEvent event) throws Exception {
-            /* 进入CameraAction时相机应当处关闭状态，因此首先启用相机 */
-            if (!isLoopRunning) return;
-            enterCamera();
-            awaitTimeUtilCameraLoaded2();
-            /* 等待相机加载完毕后关闭相机 */
+        public void schedule(ActionEvent event) {
+            try {
+                /* 进入CameraAction时相机应当处关闭状态，因此首先启用相机 */
+                enterCamera();
+                awaitTimeUtilCameraLoaded2();
+                /* 等待相机加载完毕后关闭相机 */
 
-            if (!isLoopRunning) return;
-            exitCamera();  /* 退出相机 */
-            awaitTimeUtilCameraExited();
+                exitCamera();  /* 退出相机 */
+                awaitTimeUtilCameraExited();
+            } catch (InterruptedException ignored) {
+                /* 利用中断打断循环状态 */
+//                Logger.lowLevelDebug("interrupted exception occur, exit running phase2");
+            }
+        }
+
+        @Override
+        public void afterDeactivate(ActionEvent event) {
+            /* 检查是否启用了退出时自动寻找掩体 */
+            if (DelayClimbAction.this.hideInCoverOnExit) {
+
+                try {
+                    DelayClimbAction.this.pressHideInCoverKey();
+                } catch (InterruptedException ignored) {
+                }
+            }
+
+            /* 主循环退出，将阶段二运行状态置为false */
+//            Logger.lowLevelDebug("set is phase2running to false");
+            DelayClimbAction.this.isPhase2Running.set(false);
         }
     }
 
@@ -72,13 +102,16 @@ public class DelayClimbAction extends Action {
                             long triggerInterval,
                             long timeUtilCameraExited,
                             long timeUtilCameraLoaded1,
-                            long timeUtilCameraLoaded2) {
+                            long timeUtilCameraLoaded2,
+                            boolean hideInCoverOnExit) {
         super(ACTION_ID);
         this.usePhoneKey = usePhoneKey;
         this.hideInCoverKey = hideInCoverKey;
         this.timeUtilCameraExited = timeUtilCameraExited;
         this.timeUtilCameraLoaded1 = timeUtilCameraLoaded1;
         this.timeUtilCameraLoaded2 = timeUtilCameraLoaded2;
+
+        this.hideInCoverOnExit = hideInCoverOnExit;
 
         /* 子动作，通过传入相同的ACTION_ID来获取同一个robot对象 */
         this.cameraAction = new CameraAction(ACTION_ID, triggerInterval);
@@ -88,46 +121,85 @@ public class DelayClimbAction extends Action {
 
     /* 在进入循环之前的逻辑，该方法被用于执行宏的阶段1 */
     @Override
-    public void activate(ActionEvent event) throws Exception {
-        if (isLoopRunning) {
-            /* 当前循环正在运行，那么停止循环之后结束动作 */
-            this.cameraAction.deactivate(event);
-            isLoopRunning = false;
-            return;
+    public void activate(ActionEvent event) {
+        /* 检查阶段二是否正在运行 */
+        if (stopPhase2IfRunning(event)) return;
+
+        /* 当前循环未运行，检查阶段一是否正在运行 */
+        if (stopPhase1IfRunning()) return;
+
+        /* 当前循环未运行，且阶段一未执行，执行阶段一 */
+        startPhase1(event);
+    }
+
+    private boolean stopPhase1IfRunning() {
+        /* 当前循环未运行，检查阶段一是否正在运行 */
+        if (isPhase1Running.compareAndSet(true, false)) {
+            /* 阶段一正在运行，停止阶段一 */
+            shouldStopPhase1 = true;
+
+            /* 中断运行中的任务 */
+            if (future != null) {
+                future.cancel(true);
+                future = null;
+            }
+            return true;
         }
-        /* 当前循环未运行，执行启动逻辑 */
+        return false;
+    }
 
-        /* 进入掩体并打开相机 */
-        pressHideInCoverKey();
-//        Thread.sleep(100);
-        setupCamera();  /* 相机会自动消失 */
-        awaitTimeUtilCameraLoaded1();  /* 此处为第一次打开相机，因此等待时间应当较长一些 */
+    private boolean stopPhase2IfRunning(ActionEvent event) {
+        /* 检查阶段二是否正在运行 */
+        if (isPhase2Running.get()) {
+            /* 当前循环已经运行，停止循环 */
+            this.cameraAction.doDeactivate(event);  /* 此处应当调用 doDeactivate 而不是 deactivate，后者在生命周期不会调用afterDeactivate */
+            return true;
+        }
+        return false;
+    }
 
-        /* 按住 W 键位并点击空格 */
-        holdWAndPressSpace();
-//        Thread.sleep(100);
-        setupCamera();  /* 掏出手机并打开相机 */
-        awaitTimeUtilCameraLoaded2();  /* 此后打开相机使用延迟2 */
+    private void startPhase1(ActionEvent event) {
+        /* 阶段一未运行，提交运行任务 */
+        isPhase1Running.set(true);
+        future = ActionTaskManager.getSCHEDULER().schedule(() -> {
+            try {
+                /* 当前循环未运行，执行启动逻辑 */
+                /* 进入掩体并打开相机 */
+                pressHideInCoverKey();
+                setupCamera();  /* 相机会自动消失 */
+                awaitTimeUtilCameraLoaded1();  /* 此处为第一次打开相机，因此等待时间应当较长一些 */
 
-        exitCamera();  /* 点击右键关闭相机并进入循环 */
-        awaitTimeUtilCameraExited();
-        selectCamera();  /* 选择相机 */
+                /* 按住 W 键位并点击空格 */
+                holdWAndPressSpace();
+                setupCamera();  /* 掏出手机并打开相机 */
+                awaitTimeUtilCameraLoaded2();  /* 此后打开相机使用延迟2 */
 
-        cameraAction.activate(event);
-        isLoopRunning = true;
+                exitCamera();  /* 点击右键关闭相机并进入循环 */
+                awaitTimeUtilCameraExited();
+                selectCamera();  /* 选择相机 */
+
+                if (shouldStopPhase1) return;
+                cameraAction.activate(event);
+                isPhase2Running.set(true);
+
+            } catch (InterruptedException ignored) {
+                /* 利用中断打断阶段一执行 */
+            } finally {
+                shouldStopPhase1 = false;
+                isPhase1Running.set(false);
+            }
+        }, 0, TimeUnit.SECONDS);
     }
 
     @Override
-    public void deactivate(ActionEvent event) throws Exception {
-        /* 由于延迟攀Action采用子时间，而不是子宏，子时间并不会被纳入MacroRegistry中得到挂起信号，因此
+    public void deactivate(ActionEvent event) {
+        /* 由于延迟攀Action采用子动作，而不是子宏，子动作并不会被纳入MacroRegistry中得到挂起信号，因此
         *  需要由父动作管理，当挂起时deactivate会被调用，此时由父动作停止子动作 */
-        if (isLoopRunning) {
-            this.cameraAction.deactivate(event);
-            isLoopRunning = false;
-        }
+        if (stopPhase2IfRunning(event)) return;
+        stopPhase1IfRunning();
     }
 
-    private void holdWAndPressSpace() throws Exception {
+    private void holdWAndPressSpace() throws InterruptedException {
         try {
             robot.keyPress(new Key(KeyCode.W));
             Thread.sleep(30);
@@ -139,7 +211,7 @@ public class DelayClimbAction extends Action {
         }
     }
 
-    private void selectCamera() throws Exception {
+    private void selectCamera() throws InterruptedException {
 //        robot.simulate(new Key(KeyCode.LEFT));
         robot.simulate(mouseWheelScrollDown);
         Thread.sleep(50);
@@ -148,25 +220,25 @@ public class DelayClimbAction extends Action {
         Thread.sleep(50);
     }
 
-    private void pressHideInCoverKey() throws Exception {
+    private void pressHideInCoverKey() throws InterruptedException {
         robot.simulate(this.hideInCoverKey);
         Thread.sleep(30);
     }
 
     /* 连续点击两次使用手机键来打开相机 */
-    private void setupCamera() throws Exception {
+    private void setupCamera() throws InterruptedException {
         robot.simulate(this.usePhoneKey);
         Thread.sleep(30);
         robot.simulate(this.usePhoneKey);
         Thread.sleep(30);
     }
 
-    private void exitCamera() throws Exception {
+    private void exitCamera() throws InterruptedException {
         robot.simulate(new Key(KeyCode.ESCAPE));
         Thread.sleep(30);
     }
 
-    private void enterCamera() throws Exception {
+    private void enterCamera() throws InterruptedException {
         robot.simulate(new Key(KeyCode.ENTER));
         Thread.sleep(30);
     }

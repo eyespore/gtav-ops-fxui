@@ -24,8 +24,11 @@ public class QuickSnakeAction extends ScheduledAction {
     }
 
     @Override
-    public void schedule(ActionEvent event) throws Exception {
-        robot.simulate(this.snakeKey);
+    public void schedule(ActionEvent event) {
+        try {
+            robot.simulate(this.snakeKey);
+        } catch (InterruptedException ignored) {
+        }
     }
 
 }

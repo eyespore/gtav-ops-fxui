@@ -19,7 +19,10 @@ public class RapidlyClickLButtonAction extends ScheduledAction {
     }
 
     @Override
-    public void schedule(ActionEvent event) throws Exception {
-        robot.simulate(leftButton);
+    public void schedule(ActionEvent event) {
+        try {
+            robot.simulate(leftButton);
+        } catch (InterruptedException ignored) {
+        }
     }
 }

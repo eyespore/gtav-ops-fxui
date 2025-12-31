@@ -15,6 +15,7 @@ import club.pineclone.gtavops.macro.trigger.TriggerFactory;
 import club.pineclone.gtavops.macro.trigger.TriggerIdentity;
 import club.pineclone.gtavops.macro.trigger.TriggerMode;
 import io.vproxy.vfx.entity.input.Key;
+import io.vproxy.vfx.ui.toggle.ToggleSwitch;
 
 import java.util.UUID;
 
@@ -64,11 +65,13 @@ public class _08DelayClimbFeatureTogglePane
             long timeUtilCameraLoaded1 = (long) (Math.floor(dcconfig.baseSetting.timeUtilCameraLoaded1));
             long timeUtilCameraLoaded2 = (long) (Math.floor(dcconfig.baseSetting.timeUtilCameraLoaded2));
 
+            /* 是否在退出时切入掩体 */
+            boolean hideInCoverOnExit = dcconfig.baseSetting.hideInCoverOnExit;
 
             Trigger trigger = TriggerFactory.simple(TriggerIdentity.of(TriggerMode.CLICK, toggleDelayClimbKey));
             Action action = new DelayClimbAction(
                     usePhoneKey, hideInCoverKey, triggerInterval,
-                    timeUtilCameraExited, timeUtilCameraLoaded1, timeUtilCameraLoaded2);
+                    timeUtilCameraExited, timeUtilCameraLoaded1, timeUtilCameraLoaded2, hideInCoverOnExit);
 
             macroId = MACRO_FACTORY.createSimpleMacro(trigger, action);
             MACRO_REGISTRY.install(macroId);
@@ -95,6 +98,9 @@ public class _08DelayClimbFeatureTogglePane
         private final VKeyChooseButton toggleDelayClimbKey = new VKeyChooseButton(FLAG_WITH_KEY_AND_MOUSE);
         private final VKeyChooseButton usePhoneKey = new VKeyChooseButton(FLAG_WITH_KEY_AND_MOUSE);
         private final VKeyChooseButton hideInCoverKey = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);
+
+        private final ToggleSwitch hideInCoverOnExitToggle = new ToggleSwitch();  /* 是否在结束时尝试躲入掩体 */
+
 
         private final ForkedSlider timeUtilCameraExitedSlider = new ForkedSlider() {{
             setLength(400);
@@ -126,6 +132,7 @@ public class _08DelayClimbFeatureTogglePane
                     .slider(dcI18n.baseSetting.timeUtilCameraExited, timeUtilCameraExitedSlider)
                     .slider(dcI18n.baseSetting.timeUtilCameraLoaded1, timeUtilCameraLoaded1Slider)
                     .slider(dcI18n.baseSetting.timeUtilCameraLoaded2, timeUtilCameraLoaded2Slider)
+                    .toggle(dcI18n.baseSetting.hideInCoverOnExit, hideInCoverOnExitToggle)
                     .build());
         }
 
@@ -143,6 +150,7 @@ public class _08DelayClimbFeatureTogglePane
             timeUtilCameraExitedSlider.setValue(dcConfig.baseSetting.timeUtilCameraExited);
             timeUtilCameraLoaded1Slider.setValue(dcConfig.baseSetting.timeUtilCameraLoaded1);
             timeUtilCameraLoaded2Slider.setValue(dcConfig.baseSetting.timeUtilCameraLoaded2);
+            hideInCoverOnExitToggle.selectedProperty().set(dcConfig.baseSetting.hideInCoverOnExit);
         }
 
         @Override
@@ -154,6 +162,7 @@ public class _08DelayClimbFeatureTogglePane
             dcConfig.baseSetting.timeUtilCameraExited = timeUtilCameraExitedSlider.valueProperty().get();
             dcConfig.baseSetting.timeUtilCameraLoaded1 = timeUtilCameraLoaded1Slider.valueProperty().get();
             dcConfig.baseSetting.timeUtilCameraLoaded2 = timeUtilCameraLoaded2Slider.valueProperty().get();
+            dcConfig.baseSetting.hideInCoverOnExit = hideInCoverOnExitToggle.selectedProperty().get();
         }
     }
 }

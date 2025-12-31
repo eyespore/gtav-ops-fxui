@@ -13,6 +13,7 @@ public class AutoRPGAction extends ScheduledAction {
     private final VCRobotAdapter robot;
     private final Key heavyWeeaponKey;
     private final Key specialWeaponKey;
+    private final long mousePressInterval;
 
     private final Key primaryMouseButton = new Key(MouseButton.PRIMARY);
 
@@ -32,20 +33,25 @@ public class AutoRPGAction extends ScheduledAction {
         super(ACTION_ID, triggerInterval);
         this.heavyWeeaponKey = heavyWeeaponKey;
         this.specialWeaponKey = specialWeaponKey;
+        this.mousePressInterval = mousePressInterval;
         robot = RobotFactory.getRobot(ACTION_ID);
     }
 
     @Override
-    public void schedule(ActionEvent event) throws Exception {
+    public void schedule(ActionEvent event) {
         /* 连发 RPG 循环 */
-        robot.simulate(this.heavyWeeaponKey);
         try {
-            robot.mousePress(primaryMouseButton);
-            Thread.sleep(500);
-        } finally {
-            robot.mouseRelease(primaryMouseButton);
-        }
+            robot.simulate(this.heavyWeeaponKey);
 
-        robot.simulate(this.specialWeaponKey);
+            try {
+                robot.mousePress(primaryMouseButton);
+                Thread.sleep(mousePressInterval);
+            } finally {
+                robot.mouseRelease(primaryMouseButton);
+            }
+
+            robot.simulate(this.specialWeaponKey);
+        } catch (InterruptedException ignored) {
+        }
     }
 }

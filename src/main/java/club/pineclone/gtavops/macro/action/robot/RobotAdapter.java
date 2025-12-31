@@ -8,7 +8,7 @@ import io.vproxy.vfx.entity.input.Key;
  */
 public interface RobotAdapter {
 
-    void simulate(Key key) throws Exception;
+    void simulate(Key key) throws InterruptedException;
 
     void keyPress(int keyCode);
 

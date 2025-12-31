@@ -19,12 +19,12 @@ public class RemapLButtonAction extends Action {
     }
 
     @Override
-    public void activate(ActionEvent event) throws Exception {
+    public void activate(ActionEvent event) {
         robot.mousePress(leftButton);
     }
 
     @Override
-    public void deactivate(ActionEvent event) throws Exception {
+    public void deactivate(ActionEvent event) {
         robot.mouseRelease(leftButton);
     }
 }

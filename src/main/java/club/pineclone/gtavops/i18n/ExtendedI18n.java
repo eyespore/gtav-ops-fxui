@@ -336,6 +336,7 @@ public class ExtendedI18n implements InternalI18n {
             public String timeUtilCameraLoaded1 = "time util camera loaded 1 (ms)";  /* 相机退出等待时间2 */
             public String timeUtilCameraLoaded2 = "time util camera loaded 2 (ms)";  /* 相机退出等待时间2 */
             public String usePhoneKey = "use phone key";  /* 使用手机键 */
+            public String hideInCoverOnExit = "hide in cover on exit";  /* 在结束时躲入掩体 */
         }
     }
 

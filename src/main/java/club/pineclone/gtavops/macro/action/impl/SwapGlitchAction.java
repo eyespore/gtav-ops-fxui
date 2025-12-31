@@ -27,8 +27,11 @@ public class SwapGlitchAction extends ScheduledAction {
     }
 
     @Override
-    public void schedule(ActionEvent event) throws Exception {
+    public void schedule(ActionEvent event) {
         if (context.blockSwapGlitch.get()) return;
-        robot.simulate(this.hotkey);
+        try {
+            robot.simulate(this.hotkey);
+        } catch (InterruptedException ignored) {
+        }
     }
 }

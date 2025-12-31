@@ -202,7 +202,7 @@ public class Config {
         public static class BaseSetting {
             public boolean enable = false;  /* 是否启用 */
             public Key toggleDelayClimbKey = new Key(KeyCode.KEY_1);  /* 启用/停止延迟攀 */
-            public Key hideInCoverKey = new Key(KeyCode.KEY_5);
+            public Key hideInCoverKey = new Key(KeyCode.Q);
             public Key usePhoneKey = new Key(KeyCode.UP);  /* 使用手机键 */
             public double triggerInterval = 3000.0;  /* 开启相机-停止相机之间的等待时间 */
 
@@ -212,6 +212,8 @@ public class Config {
             *  这里提供两个配置项以提供更好的灵活度 */
             public double timeUtilCameraLoaded1 = 3000.0;  /* 等待相机加载完成的时间1 */
             public double timeUtilCameraLoaded2 = 1500.0;  /* 等待相机加载完成的时间2 */
+
+            public boolean hideInCoverOnExit = false;  /* 是否在阶段二结束时尝试躲入掩体 */
         }
     }
 
@@ -226,8 +228,8 @@ public class Config {
             public Key activateKey = new Key(KeyCode.KEY_4);  /* 触发按键 */
             public Key heavyWeaponKey = new Key(KeyCode.KEY_2);  /* 重型武器按键 */
             public Key specialWeaponKey = new Key(KeyCode.KEY_3);  /* 特殊武器按键 */
-            public double triggerInterval = 500.0;  /* 触发间隔 */
-            public double mousePressInterval = 600.0;  /* 鼠标按住间隔 */
+            public double triggerInterval = 600.0;  /* 触发间隔 */
+            public double mousePressInterval = 530.0;  /* 鼠标按住间隔 */
         }
     }
 

@@ -38,12 +38,12 @@ public class RobotFactory {
         }
 
         @Override
-        public void simulate(Key key) throws Exception {
+        public void simulate(Key key) throws InterruptedException {
             this.simulate(key, 20);
         }
 
         @Override
-        public void simulate(Key key, long delay) throws Exception {
+        public void simulate(Key key, long delay) throws InterruptedException {
             if (key.key != null) {
                 /* 执行按键 */
                 try {

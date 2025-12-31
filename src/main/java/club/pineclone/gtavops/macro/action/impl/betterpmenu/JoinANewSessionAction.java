@@ -46,62 +46,65 @@ public class JoinANewSessionAction extends Action {
     }
 
     @Override
-    public void activate(ActionEvent event) throws Exception {
-        pressP();
-        Thread.sleep(200);
-        pressRight();
-        awaitTimeUtilPMenuLoaded();  /* 等待列表加载 */
+    public void activate(ActionEvent event) {
+        try {
+            pressP();
+            Thread.sleep(200);
+            pressRight();
+            awaitTimeUtilPMenuLoaded();  /* 等待列表加载 */
 
-        pressEnter();
-        mouseScrollUp();
-        mouseScrollUp();
-        Thread.sleep(700);
-        mouseScrollUp();
-        Thread.sleep(700);
-        mouseScrollUp();
-        mouseScrollUp();
+            pressEnter();
+            mouseScrollUp();
+            mouseScrollUp();
+            Thread.sleep(700);
+            mouseScrollUp();
+            Thread.sleep(700);
+            mouseScrollUp();
+            mouseScrollUp();
 
-        Thread.sleep(200);
-        pressEnter();
+            Thread.sleep(200);
+            pressEnter();
 
-        int times;
-        switch (sessionType) {
-            case INVITE_ONLY_SESSION -> times = 1;
-            case CREW_SESSION -> times = 2;
-            case INVITE_ONLY_CREW_SESSION -> times = 3;
-            case INVITE_ONLY_FRIENDS_SESSION -> times = 4;
-            default -> times = 0;
-        }
+            int times;
+            switch (sessionType) {
+                case INVITE_ONLY_SESSION -> times = 1;
+                case CREW_SESSION -> times = 2;
+                case INVITE_ONLY_CREW_SESSION -> times = 3;
+                case INVITE_ONLY_FRIENDS_SESSION -> times = 4;
+                default -> times = 0;
+            }
 
-        for (int i = 0; i < times; i++) mouseScrollDown();
+            for (int i = 0; i < times; i++) mouseScrollDown();
 //
-        Thread.sleep(200);
-        pressEnter();
-        Thread.sleep(200);
-        pressEnter();
+            Thread.sleep(200);
+            pressEnter();
+            Thread.sleep(200);
+            pressEnter();
+        } catch (InterruptedException ignored) {
+        }
     }
 
-    private void mouseScrollDown() throws Exception {
+    private void mouseScrollDown() throws InterruptedException {
         robot.mouseWheel(mouseScrollDown);
         Thread.sleep(mouseScrollInterval);
     }
 
-    private void mouseScrollUp() throws Exception {
+    private void mouseScrollUp() throws InterruptedException {
         robot.mouseWheel(mouseScrollUp);
         Thread.sleep(mouseScrollInterval);
     }
 
-    private void pressP() throws Exception {
+    private void pressP() throws InterruptedException {
         robot.simulate(menuKey);
         awaitArrow();
     }
 
-    private void pressRight() throws Exception {
+    private void pressRight() throws InterruptedException {
         robot.simulate(rightKey);
         awaitArrow();
     }
 
-    private void pressEnter() throws Exception {
+    private void pressEnter() throws InterruptedException {
         robot.simulate(enterKey);
         awaitEnter();
     }

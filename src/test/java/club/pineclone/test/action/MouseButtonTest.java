@@ -12,8 +12,6 @@ import junit.framework.TestCase;
 
 public class MouseButtonTest extends TestCase {
 
-
-
     public void testClick() throws InterruptedException {
         ScheduledAction action = new ScheduledAction("test", 1000) {
             final RobotAdapter robot;
@@ -23,8 +21,11 @@ public class MouseButtonTest extends TestCase {
             }
 
             @Override
-            public void schedule(ActionEvent event) throws Exception {
-                robot.simulate(new Key(MouseButton.SECONDARY));
+            public void schedule(ActionEvent event) {
+                try {
+                    robot.simulate(new Key(MouseButton.SECONDARY));
+                } catch (InterruptedException ignored) {
+                }
             }
         };
 

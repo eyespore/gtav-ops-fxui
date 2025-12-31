@@ -10,17 +10,17 @@ public class ScheduledActionDecorator extends ScheduledAction {
     }
 
     @Override
-    public void schedule(ActionEvent event) throws Exception {
+    public void schedule(ActionEvent event) {
         delegate.schedule(event);
     }
 
     @Override
-    public boolean beforeSchedule(ActionEvent event) throws Exception {
+    public boolean beforeSchedule(ActionEvent event) {
         return delegate.beforeSchedule(event);
     }
 
     @Override
-    public void afterSchedule(ActionEvent event) throws Exception {
+    public void afterSchedule(ActionEvent event) {
         delegate.afterSchedule(event);
     }
 }

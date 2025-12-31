@@ -34,7 +34,11 @@ public class MeleeGlitchAction extends ScheduledAction {
     }
 
     @Override
-    public void schedule(ActionEvent event) throws Exception {
-        robot.simulate(meleeSnakeScrollKey);
+    public void schedule(ActionEvent event) {
+        try {
+            robot.simulate(meleeSnakeScrollKey);
+        } catch (InterruptedException ignored) {
+
+        }
     }
 }

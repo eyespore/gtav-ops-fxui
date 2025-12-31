@@ -22,11 +22,11 @@ public class QueuedRobotAdapter extends VCRobotAdapter {
     }
 
     @Override
-    public void simulate(Key key) throws Exception {
+    public void simulate(Key key) {
         queue.submit(() -> {
             try {
                 delegate.simulate(key);
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 Logger.error(LogType.SYS_ERROR, e.getMessage());
             }
         });

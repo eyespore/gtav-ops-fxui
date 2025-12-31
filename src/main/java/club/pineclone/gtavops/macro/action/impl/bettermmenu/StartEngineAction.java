@@ -42,55 +42,59 @@ public class StartEngineAction extends Action {
     }
 
     @Override
-    public void activate(ActionEvent event) throws Exception {
+    public void activate(ActionEvent event) {
 //        Logger.lowLevelDebug(event.toString());
-        boolean shouldOpenVehicleDoor = false;
+        try {
+            boolean shouldOpenVehicleDoor = false;
 
-        if (enableDoubleClickToOpenDoor) {
-            /* 启用双击开门 */
-            if (event.getTriggerEvent().getTriggerStatus().equals(TriggerStatus.DOUBLE_CLICK)) {
-                /* 双击事件，开启车门 */
-                shouldOpenVehicleDoor = true;
+            if (enableDoubleClickToOpenDoor) {
+                /* 启用双击开门 */
+                if (event.getTriggerEvent().getTriggerStatus().equals(TriggerStatus.DOUBLE_CLICK)) {
+                    /* 双击事件，开启车门 */
+                    shouldOpenVehicleDoor = true;
+                }
             }
-        }
 
 //        Logger.lowLevelDebug("should open door: " + shouldOpenVehicleDoor);
-        pressM();
-        Thread.sleep(timeUtilMMenuLoaded);  /* 解决 M 键菜单出现过晚的问题 */
+            pressM();
+            Thread.sleep(timeUtilMMenuLoaded);  /* 解决 M 键菜单出现过晚的问题 */
 
 //        mouseScrollDown();
 //        mouseScrollDown();
 
-        for (int i = 0; i < 9; i++) mouseScrollUp();
+            for (int i = 0; i < 9; i++) mouseScrollUp();
 
-        pressEnter();
-        mouseScrollUp();
-        pressEnter();
-        mouseScrollDown();
-        mouseScrollDown();
-        if (shouldOpenVehicleDoor) pressEnter();
-        for (int i = 0; i < 4; i++) mouseScrollDown();
-        pressEnter();
-        pressEnter();
-        pressM();
+            pressEnter();
+            mouseScrollUp();
+            pressEnter();
+            mouseScrollDown();
+            mouseScrollDown();
+            if (shouldOpenVehicleDoor) pressEnter();
+            for (int i = 0; i < 4; i++) mouseScrollDown();
+            pressEnter();
+            pressEnter();
+            pressM();
+        } catch (InterruptedException ignored) {
+
+        }
     }
 
-    private void pressM() throws Exception {
+    private void pressM() throws InterruptedException {
         robot.simulate(menuKey);
         Thread.sleep(enterKeyInterval);
     }
 
-    private void mouseScrollDown() throws Exception {
+    private void mouseScrollDown() throws InterruptedException {
         robot.mouseWheel(mouseScrollDown);
         Thread.sleep(mouseScrollInterval);
     }
 
-    private void mouseScrollUp() throws Exception {
+    private void mouseScrollUp() throws InterruptedException {
         robot.mouseWheel(mouseScrollUp);
         Thread.sleep(mouseScrollInterval);
     }
 
-    private void pressEnter() throws Exception {
+    private void pressEnter() throws InterruptedException {
         robot.simulate(enterKey);
         Thread.sleep(enterKeyInterval);
     }
