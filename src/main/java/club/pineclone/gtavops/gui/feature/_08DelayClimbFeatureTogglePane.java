@@ -21,7 +21,7 @@ import java.util.UUID;
 
 /* 延迟攀爬 */
 public class _08DelayClimbFeatureTogglePane
-        extends FeatureTogglePane
+        extends FeatureTogglePaneTemplate
         implements ResourceHolder {
 
     public _08DelayClimbFeatureTogglePane() {

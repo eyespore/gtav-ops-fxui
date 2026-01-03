@@ -4,7 +4,7 @@ import club.pineclone.gtavops.common.AbstractRegistry;
 import io.vproxy.vfx.control.globalscreen.GlobalScreenUtils;
 import lombok.Getter;
 
-public class FeatureTogglePaneRegistry extends AbstractRegistry<FeatureTogglePane> {
+public class FeatureTogglePaneRegistry extends AbstractRegistry<FeatureTogglePaneTemplate> {
 
     @Getter
     private static final FeatureTogglePaneRegistry instance = new FeatureTogglePaneRegistry();
@@ -19,16 +19,16 @@ public class FeatureTogglePaneRegistry extends AbstractRegistry<FeatureTogglePan
         register(new _07QuickSwapFeatureTogglePane());
         register(new _08DelayClimbFeatureTogglePane());
         register(new _09BetterPMenuFeatureTogglePane());
-        register(new _10AutoRPGFeatureTogglePane());
+        register(new _10AutoFireFeatureTogglePane());
     }
 
     public synchronized void initAll() {
         GlobalScreenUtils.enable(this);
-        values().forEach(FeatureTogglePane::doInit);
+        values().forEach(FeatureTogglePaneTemplate::doInit);
     }
 
     public synchronized void stopAll() {
-        values().forEach(FeatureTogglePane::doStop);
+        values().forEach(FeatureTogglePaneTemplate::doStop);
         GlobalScreenUtils.disable(this);
     }
 

@@ -25,7 +25,7 @@ import java.util.UUID;
 
 /* 额外功能，例如快速切换战局，快速进入某个夺取 */
 public class _09BetterPMenuFeatureTogglePane
-        extends FeatureTogglePane
+        extends FeatureTogglePaneTemplate
         implements ResourceHolder {
 
     public _09BetterPMenuFeatureTogglePane() {

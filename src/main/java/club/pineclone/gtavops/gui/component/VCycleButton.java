@@ -13,7 +13,7 @@ import java.util.List;
  * 循环按钮，通过传入一组OptionItem，单击鼠标左键或右键进行循环式选择，左键可以切换到下一个选项，右键
  * 则可以切换到上一个选项
  */
-public class VCycleButton<T extends Enum<?>> extends FusionButton {
+public class VCycleButton<T> extends FusionButton {
 
     private final ObjectProperty<T> optionProperty = new SimpleObjectProperty<>();
 

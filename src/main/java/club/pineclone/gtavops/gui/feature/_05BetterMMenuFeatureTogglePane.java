@@ -14,14 +14,13 @@ import club.pineclone.gtavops.macro.action.impl.bettermmenu.StartEngineAction;
 import club.pineclone.gtavops.macro.trigger.Trigger;
 import club.pineclone.gtavops.macro.trigger.TriggerFactory;
 import club.pineclone.gtavops.macro.trigger.TriggerIdentity;
-import io.vproxy.base.util.Logger;
 import io.vproxy.vfx.entity.input.Key;
 import io.vproxy.vfx.ui.toggle.ToggleSwitch;
 
 import java.util.UUID;
 
 public class _05BetterMMenuFeatureTogglePane
-        extends FeatureTogglePane
+        extends FeatureTogglePaneTemplate
         implements ResourceHolder {
 
     public _05BetterMMenuFeatureTogglePane() {

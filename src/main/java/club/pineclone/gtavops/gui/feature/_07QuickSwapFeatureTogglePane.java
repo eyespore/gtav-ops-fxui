@@ -24,7 +24,7 @@ import java.util.UUID;
 
 /* 快速切枪 */
 public class _07QuickSwapFeatureTogglePane
-        extends FeatureTogglePane
+        extends FeatureTogglePaneTemplate
         implements ResourceHolder {
 
     public _07QuickSwapFeatureTogglePane() {

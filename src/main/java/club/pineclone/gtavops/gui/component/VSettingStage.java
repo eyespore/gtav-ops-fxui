@@ -51,7 +51,7 @@ public abstract class VSettingStage {
     }
 
     public String getTitle() {
-        return "";
+        return "Unset";
     }
 
     public void show() {
@@ -72,12 +72,12 @@ public abstract class VSettingStage {
 
     protected void onVSettingStageExit() {}
 
-    public void doInit() {
+    public void initVSettingStage() {
         vStage.setTitle(getTitle());
         onVSettingStageInit();
     }
 
-    public void doExit() {
+    public void exitVSettingStage() {
         onVSettingStageExit();
     }
 
@@ -226,11 +226,6 @@ public abstract class VSettingStage {
         /* 分割线 */
         public ContentBuilder divide(String intro) {
             items.add(createDivider(intro));
-            return this;
-        }
-
-        /* 多选按钮 */
-        public ContentBuilder option(List<?> options) {
             return this;
         }
 

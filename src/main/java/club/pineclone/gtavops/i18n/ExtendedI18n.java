@@ -46,7 +46,7 @@ public class ExtendedI18n implements InternalI18n {
     public QuickSwap quickSwap = new QuickSwap();  /* 快速切枪 */
     public DelayClimb delayClimb = new DelayClimb();  /* 延迟攀 */
     public BetterPMenu betterPMenu = new BetterPMenu();  /* 更好的 P 菜单 */
-    public AutoRPG autoRPG = new AutoRPG();  /* 连发 RPG */
+    public AutoFire autoFire = new AutoFire();  /* 连发 RPG */
 
     public FontPack fontPack = new FontPack();  /* 字体包管理 */
     public Feature feature = new Feature();  /* 功能特性 */
@@ -381,10 +381,10 @@ public class ExtendedI18n implements InternalI18n {
         }
     }
 
-    /* 连发RPG */
+    /* 武器连发 */
     @Data
-    public static class AutoRPG {
-        public String title = "Auto RPG";
+    public static class AutoFire {
+        public String title = "Auto Fire";
         public BaseSetting baseSetting = new BaseSetting();
 
         public static class BaseSetting {

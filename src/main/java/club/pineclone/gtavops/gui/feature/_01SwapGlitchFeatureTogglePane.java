@@ -2,7 +2,7 @@ package club.pineclone.gtavops.gui.feature;
 
 import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.config.Config;
-import club.pineclone.gtavops.gui.component.TriggerModeButton;
+import club.pineclone.gtavops.gui.component.VTriggerModeChooseButton;
 import club.pineclone.gtavops.gui.forked.ForkedKeyChooser;
 import club.pineclone.gtavops.gui.component.VKeyChooseButton;
 import club.pineclone.gtavops.gui.component.VSettingStage;
@@ -24,7 +24,7 @@ import java.util.UUID;
 
 /* 切枪偷速 */
 public class _01SwapGlitchFeatureTogglePane
-        extends FeatureTogglePane
+        extends FeatureTogglePaneTemplate
         implements ResourceHolder {
 
     @Override
@@ -144,8 +144,8 @@ public class _01SwapGlitchFeatureTogglePane
         private final Config config = getConfig();
         private final Config.SwapGlitch sgConfig = config.swapGlitch;
 
-        private final TriggerModeButton activateMethodBtn = new TriggerModeButton(
-                TriggerModeButton.FLAG_WITH_HOLD | TriggerModeButton.FLAG_WITH_TOGGLE);
+        private final VTriggerModeChooseButton activateMethodBtn = new VTriggerModeChooseButton(
+                VTriggerModeChooseButton.FLAG_WITH_HOLD | VTriggerModeChooseButton.FLAG_WITH_TOGGLE);
 
         private final ForkedSlider triggerIntervalSlider = new ForkedSlider() {{
             setLength(400);

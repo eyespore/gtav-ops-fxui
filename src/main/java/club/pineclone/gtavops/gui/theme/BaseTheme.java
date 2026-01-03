@@ -1,6 +1,5 @@
 package club.pineclone.gtavops.gui.theme;
 
-import club.pineclone.gtavops.utils.ColorUtils;
 import io.vproxy.vfx.manager.font.FontProvider;
 import io.vproxy.vfx.manager.font.FontSettings;
 import io.vproxy.vfx.manager.font.FontUsage;
@@ -9,13 +8,27 @@ import io.vproxy.vfx.theme.impl.DarkTheme;
 import io.vproxy.vfx.theme.impl.DarkThemeFontProvider;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class BaseTheme extends DarkTheme {
 
-    private static final String FONT_NAME_FZMiaoWUS_GB = "FZMiaoWuS-GB";
+    @Getter
+    @AllArgsConstructor
+    public static class FontItem {
+        private String title;
+        private String path;
+    }
+
+    private static final FontItem FZMiaoWUS_GB = new FontItem("FZMiaoWuS-GB", "/font/FZMiaoWuS-GB.ttf");
+    private static final FontItem MinecraftAEPixel = new FontItem("Minecraft AE Pixel", "/font/MinecraftAEPixel.ttf");
+    private static final FontItem YangRenDongZhuShiTi_Light_2 = new FontItem("YRDZST-Light", "/font/YangRenDongZhuShiTi-Light-2.ttf");
+    private static final FontItem QingSongShouXieTi_2 = new FontItem("清松手寫體2", "/font/QingSongShouXieTi2-2.ttf");
+
+    private static final FontItem FONT_ON_USE = FZMiaoWUS_GB;
 
     public Color activeTextColor() {
         return Color.web("lightblue");
@@ -23,14 +36,16 @@ public class BaseTheme extends DarkTheme {
 
     @Override
     public FontProvider fontProvider() {
-        Font.loadFont(getClass().getResourceAsStream("/font/meow.ttf"), 1);
-        return new PinecloneThemeFontProvider();
+        Font.loadFont(getClass().getResourceAsStream(FONT_ON_USE.getPath()), 1);
+        return new BaseThemeFontProvider();
     }
 
-    public static class PinecloneThemeFontProvider extends DarkThemeFontProvider {
+    public static class BaseThemeFontProvider extends DarkThemeFontProvider {
         @Override
         protected void defaultFont(FontSettings settings) {
-            settings.setFamily(FONT_NAME_FZMiaoWUS_GB);
+            settings.setFamily(FONT_ON_USE.getTitle());
+//            settings.setFamily(FONT_NAME_MinecraftAEPixel);
+//            super.defaultFont(settings);
         }
 
         @Override

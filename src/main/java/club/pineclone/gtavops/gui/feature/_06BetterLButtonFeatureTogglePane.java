@@ -2,7 +2,7 @@ package club.pineclone.gtavops.gui.feature;
 
 import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.config.Config;
-import club.pineclone.gtavops.gui.component.TriggerModeButton;
+import club.pineclone.gtavops.gui.component.VTriggerModeChooseButton;
 import club.pineclone.gtavops.gui.component.VKeyChooseButton;
 import club.pineclone.gtavops.gui.component.VSettingStage;
 import club.pineclone.gtavops.gui.forked.ForkedKeyChooser;
@@ -23,7 +23,7 @@ import io.vproxy.vfx.ui.toggle.ToggleSwitch;
 import java.util.UUID;
 
 public class _06BetterLButtonFeatureTogglePane
-        extends FeatureTogglePane
+        extends FeatureTogglePaneTemplate
         implements ResourceHolder {
 
     public _06BetterLButtonFeatureTogglePane() {
@@ -116,13 +116,13 @@ public class _06BetterLButtonFeatureTogglePane
 
         private final ToggleSwitch enableHoldLButtonToggle = new ToggleSwitch();
         private final VKeyChooseButton holdLButtonActivateKeyBtn = new VKeyChooseButton(FLAG_WITH_ALL);
-        private final TriggerModeButton holdLButtonActivateMethodBtn = new TriggerModeButton(
-                TriggerModeButton.FLAG_WITH_HOLD | TriggerModeButton.FLAG_WITH_TOGGLE);
+        private final VTriggerModeChooseButton holdLButtonActivateMethodBtn = new VTriggerModeChooseButton(
+                VTriggerModeChooseButton.FLAG_WITH_HOLD | VTriggerModeChooseButton.FLAG_WITH_TOGGLE);
 
         private final ToggleSwitch enableRapidlyClickLButtonToggle = new ToggleSwitch();
         private final VKeyChooseButton rapidlyClickLButtonActivateKeyBtn = new VKeyChooseButton(FLAG_WITH_ALL);
-        private final TriggerModeButton rapidlyClickLButtonActivateMethodBtn = new TriggerModeButton(
-                TriggerModeButton.FLAG_WITH_HOLD | TriggerModeButton.FLAG_WITH_TOGGLE);
+        private final VTriggerModeChooseButton rapidlyClickLButtonActivateMethodBtn = new VTriggerModeChooseButton(
+                VTriggerModeChooseButton.FLAG_WITH_HOLD | VTriggerModeChooseButton.FLAG_WITH_TOGGLE);
         private final ForkedSlider rapidlyClickLButtonTriggerInterval = new ForkedSlider() {{
             setLength(200);
             setRange(10, 100);

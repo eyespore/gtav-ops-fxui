@@ -22,7 +22,7 @@ public class Config {
     public QuickSwap quickSwap = new QuickSwap();  /* 快速切枪 */
     public DelayClimb delayClimb = new DelayClimb();  /* 延迟攀 */
     public BetterPMenu betterPMenu = new BetterPMenu();  /* 更好的 P 菜单 */
-    public AutoRPG autoRPG = new AutoRPG();  /* 连发 RPG */
+    public AutoFire autoFire = new AutoFire();  /* 连发 RPG */
 
     public String gameHome = "";  /* 游戏路径 */
 
@@ -228,7 +228,7 @@ public class Config {
 
     /* 连发 RPG */
     @Data
-    public static class AutoRPG {
+    public static class AutoFire {
         public BaseSetting baseSetting = new BaseSetting();
 
         public static class BaseSetting {

@@ -20,7 +20,7 @@ import java.util.UUID;
 
 /* 回血增强 Tab按键 + 滚轮增强 roulette snake */
 public class _02RouletteSnakeFeatureTogglePane
-        extends FeatureTogglePane
+        extends FeatureTogglePaneTemplate
         implements ResourceHolder {
 
     public _02RouletteSnakeFeatureTogglePane() {

@@ -12,7 +12,6 @@ public class _04ConfigScene extends SceneTemplate {
     ExtendedI18n.Config cI18n;
 
     public _04ConfigScene() {
-        super(VSceneRole.MAIN);
         i18n = I18nHolder.get();
         cI18n = i18n.config;
         enableAutoContentWidthHeight();

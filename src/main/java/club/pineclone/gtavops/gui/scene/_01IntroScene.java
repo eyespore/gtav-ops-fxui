@@ -17,13 +17,8 @@ import javafx.scene.text.FontWeight;
 
 public class _01IntroScene extends SceneTemplate {
 
-    ExtendedI18n i18n;
-    ExtendedI18n.Intro iI18n;
-
     public _01IntroScene() {
-        super(VSceneRole.MAIN);
-        i18n = I18nHolder.get();
-        iI18n = i18n.intro;
+        ExtendedI18n.Intro iI18n = I18nHolder.get().intro;
 
         enableAutoContentWidthHeight();
         setBackgroundImage(ImageUtils.loadImage("/img/bg1.png"));

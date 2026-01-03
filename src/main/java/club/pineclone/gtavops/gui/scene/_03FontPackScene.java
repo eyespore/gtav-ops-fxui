@@ -50,8 +50,6 @@ import java.util.function.Function;
 public class _03FontPackScene extends SceneTemplate {
 
     private final Config config;
-
-    private final ExtendedI18n i18n;
     private final ExtendedI18n.FontPack fpI18n;
 
     private final FontpackService fontpackService;
@@ -64,9 +62,7 @@ public class _03FontPackScene extends SceneTemplate {
     private File update2File;
 
     public _03FontPackScene() {
-        super(VSceneRole.MAIN);
-        i18n = I18nHolder.get();
-        fpI18n = i18n.fontPack;
+        fpI18n = I18nHolder.get().fontPack;
 
         config = ConfigHolder.get();
         fontpackService = FontpackService.getInstance();

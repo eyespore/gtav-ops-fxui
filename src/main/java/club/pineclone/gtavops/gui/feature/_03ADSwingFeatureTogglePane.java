@@ -2,7 +2,7 @@ package club.pineclone.gtavops.gui.feature;
 
 import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.config.Config;
-import club.pineclone.gtavops.gui.component.TriggerModeButton;
+import club.pineclone.gtavops.gui.component.VTriggerModeChooseButton;
 import club.pineclone.gtavops.gui.component.VKeyChooseButton;
 import club.pineclone.gtavops.gui.component.VSettingStage;
 import club.pineclone.gtavops.gui.forked.ForkedKeyChooser;
@@ -22,7 +22,7 @@ import io.vproxy.vfx.ui.toggle.ToggleSwitch;
 import java.util.UUID;
 
 public class _03ADSwingFeatureTogglePane
-        extends FeatureTogglePane
+        extends FeatureTogglePaneTemplate
         implements ResourceHolder {
 
     public _03ADSwingFeatureTogglePane() {
@@ -99,8 +99,8 @@ public class _03ADSwingFeatureTogglePane
         ExtendedI18n i18n = getI18n();
         ExtendedI18n.ADSwing adwI18n = i18n.adSwing;
 
-        private final TriggerModeButton activateMethodBtn = new TriggerModeButton(
-                TriggerModeButton.FLAG_WITH_HOLD | TriggerModeButton.FLAG_WITH_TOGGLE);
+        private final VTriggerModeChooseButton activateMethodBtn = new VTriggerModeChooseButton(
+                VTriggerModeChooseButton.FLAG_WITH_HOLD | VTriggerModeChooseButton.FLAG_WITH_TOGGLE);
 
         private final VKeyChooseButton activateKeyBtn = new VKeyChooseButton(FLAG_WITH_ALL);
         private final VKeyChooseButton moveLeftKeyBtn = new VKeyChooseButton();

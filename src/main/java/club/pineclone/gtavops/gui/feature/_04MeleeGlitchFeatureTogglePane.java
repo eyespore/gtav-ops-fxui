@@ -2,7 +2,7 @@ package club.pineclone.gtavops.gui.feature;
 
 import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.config.Config;
-import club.pineclone.gtavops.gui.component.TriggerModeButton;
+import club.pineclone.gtavops.gui.component.VTriggerModeChooseButton;
 import club.pineclone.gtavops.gui.component.VKeyChooseButton;
 import club.pineclone.gtavops.gui.component.VSettingStage;
 import club.pineclone.gtavops.gui.forked.ForkedKeyChooser;
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 /* 近战偷速 */
 public class _04MeleeGlitchFeatureTogglePane
-        extends FeatureTogglePane
+        extends FeatureTogglePaneTemplate
         implements ResourceHolder {
 
     public _04MeleeGlitchFeatureTogglePane() {
@@ -101,8 +101,8 @@ public class _04MeleeGlitchFeatureTogglePane
         private static final int FLAG_WITH_KEY_AND_MOUSE = ForkedKeyChooser.FLAG_WITH_KEY  | ForkedKeyChooser.FLAG_WITH_MOUSE;
         private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | ForkedKeyChooser.FLAG_WITH_WHEEL_SCROLL;
 
-        private final TriggerModeButton activateMethodBtn = new TriggerModeButton(
-                TriggerModeButton.FLAG_WITH_HOLD | TriggerModeButton.FLAG_WITH_TOGGLE);
+        private final VTriggerModeChooseButton activateMethodBtn = new VTriggerModeChooseButton(
+                VTriggerModeChooseButton.FLAG_WITH_HOLD | VTriggerModeChooseButton.FLAG_WITH_TOGGLE);
         private final VKeyChooseButton activateKeyBtn = new VKeyChooseButton(FLAG_WITH_ALL);
         private final VKeyChooseButton meleeSnakeScrollKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_WHEEL_SCROLL);
         private final ForkedSlider triggerIntervalSlider = new ForkedSlider() {{
