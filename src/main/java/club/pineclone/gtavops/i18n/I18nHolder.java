@@ -30,16 +30,14 @@ public class I18nHolder {
     }
 
     private static ExtendedI18n loadI18n() {
-        try {
+        try (InputStream in = I18nHolder.class.getResourceAsStream("/i18n/" + LOCALE + ".json")) {
             /* 本地化文件存在 */
             ObjectMapper mapper = new ObjectMapper();
             mapper.enable(SerializationFeature.INDENT_OUTPUT);  /* 美观输出 */
             mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);  /* 忽略不存在的属性 */
+            return JsonConfigUtils.load(in, ExtendedI18n::new, mapper);
 
-            Path i18nConfigPath = Path.of(I18nHolder.class.getResource("/i18n/" + LOCALE + ".json").toURI());
-            return JsonConfigUtils.load(i18nConfigPath, ExtendedI18n::new, mapper);
-
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

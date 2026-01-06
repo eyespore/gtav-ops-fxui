@@ -22,7 +22,7 @@ public class JNIUtils {
         Path dllPath = Path.of(jHome, "bin", "native", os, arch, libName);
 
         // ./bin/native/window/x86/PlatformFocusMonitor.dll
-        if(Files.notExists(dllPath)){  // 在ide内环境时则采用默认位置
+        if(Files.notExists(dllPath)){  // 在 ide 内环境时则采用默认位置
             dllPath = Path.of("assets", "native", os, arch, libName);
         }
 

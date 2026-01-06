@@ -3,6 +3,7 @@ package club.pineclone.gtavops.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Supplier;
@@ -22,6 +23,12 @@ public class JsonConfigUtils {
             return defaultConfig;
         }
         return mapper.readerForUpdating(defaultConfig).readValue(path.toFile());  /* 配置文件存在，更新后返回 */
+    }
+
+    public static <T> T load(InputStream in, Supplier<T> defaultSupplier, ObjectMapper mapper) throws IOException {
+        T defaultConfig = defaultSupplier.get();
+        if (in == null) return defaultConfig;
+        return mapper.readerForUpdating(defaultConfig).readValue(in);
     }
 
     public static <T> void save(Path path, T config, ObjectMapper mapper) throws IOException {
