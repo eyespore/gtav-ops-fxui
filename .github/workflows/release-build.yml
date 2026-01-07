@@ -41,7 +41,7 @@ jobs:
           jpackage `
             --type app-image `
             -n gtav-ops `
-            -m "club.pineclone.gtavops/club.pineclone.gtavops.Main" `
+            -m "club.pineclone.gtavops/club.pineclone.gtavops.client.MainFX" `
             --runtime-image .\target\app `
             --icon .\assets\icon.ico `
             --dest .\result

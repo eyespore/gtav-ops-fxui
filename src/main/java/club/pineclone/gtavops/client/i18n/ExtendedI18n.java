@@ -388,4 +388,10 @@ public class ExtendedI18n implements InternalI18n {
     public String stacktraceAlertLabel() {
         return stacktraceAlertLabel;
     }
+
+    /* VFX初始化时会打印已注册的InternalI18n，保留空实现来避免无效日志输出 */
+    @Override
+    public String toString() {
+        return "";
+    }
 }
