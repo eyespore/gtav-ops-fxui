@@ -1,6 +1,6 @@
 package club.pineclone.test.utils;
 
-import club.pineclone.gtavops.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import junit.framework.TestCase;

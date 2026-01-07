@@ -414,10 +414,7 @@ public class MacroCreationStrategies {
      */
     public static abstract class MacroCreationStrategy implements Function<MacroConfig, Macro> {
         protected Macro createSimpleMacro(Trigger trigger, Action action) {
-            SimpleMacro macro = new SimpleMacro(trigger, action);
-            /* 创建宏时，如果全局处于挂起状态，那么需要将新生的宏挂起 */
-            if (MacroRegistry.isGlobalSuspended()) macro.suspend();
-            return macro;
+            return new SimpleMacro(trigger, action);
         }
     }
 }

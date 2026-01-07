@@ -13,7 +13,7 @@ public class SimpleMacro extends Macro {
     }
 
     @Override
-    public void onTriggerEvent(TriggerEvent event) {
+    public void handleTriggerEvent(TriggerEvent event) {
         TriggerStatus status = event.getTriggerStatus();
         if (status.isAssert()) {
             /* 激活 */
@@ -22,7 +22,6 @@ public class SimpleMacro extends Macro {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-
         } else if (status.isRevoke()) {
             /* 撤销 */
             try {

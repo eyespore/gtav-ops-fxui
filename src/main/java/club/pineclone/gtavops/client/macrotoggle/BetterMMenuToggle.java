@@ -3,13 +3,14 @@ package club.pineclone.gtavops.client.macrotoggle;
 import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.config.MacroConfig;
 import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.client.component.VKeyChooseButton;
-import club.pineclone.gtavops.client.forked.ForkedKeyChooser;
+import club.pineclone.gtavops.client.component.I18nKeyChooseButton;
+import club.pineclone.gtavops.client.forked.I18nKeyChooser;
 import club.pineclone.gtavops.client.forked.ForkedSlider;
-import club.pineclone.gtavops.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import club.pineclone.gtavops.macro.MacroCreationStrategies;
 import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.ui.toggle.ToggleSwitch;
+import javafx.beans.property.ObjectProperty;
 
 import java.util.UUID;
 
@@ -18,8 +19,8 @@ public class BetterMMenuToggle extends MacroToggle {
     private UUID startEngineMacroId;
     private UUID autoSnakeMacroId;
 
-    public BetterMMenuToggle(ExtendedI18n i18n) {
-        super(i18n);
+    public BetterMMenuToggle(ObjectProperty<ExtendedI18n> i18n) {
+        super(i18n, i -> i.betterMMenu.title, BMMSettingStage::new);
     }
 
     @Override
@@ -44,16 +45,6 @@ public class BetterMMenuToggle extends MacroToggle {
     }
 
     @Override
-    protected String getTitle() {
-        return i18n.betterMMenu.title;
-    }
-
-    @Override
-    protected MacroSettingStage getSetting() {
-        return new BMMSettingStage(i18n);
-    }
-
-    @Override
     public void onUIInit() {
         selectedProperty().set(MacroConfigLoader.get().betterMMenu.baseSetting.enable);
     }
@@ -67,15 +58,13 @@ public class BetterMMenuToggle extends MacroToggle {
             extends MacroSettingStage
             implements ResourceHolder {
 
-        private final ExtendedI18n.BetterMMenu bmmI18n = i18n.betterMMenu;
-
         private final MacroConfig config = getConfig();
         private final MacroConfig.BetterMMenu bmmConfig = config.betterMMenu;
 
-        private static final int FLAG_WITH_KEY_AND_MOUSE = ForkedKeyChooser.FLAG_WITH_KEY  | ForkedKeyChooser.FLAG_WITH_MOUSE;
-        private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | ForkedKeyChooser.FLAG_WITH_WHEEL_SCROLL;
+        private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
+        private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | I18nKeyChooser.FLAG_WITH_WHEEL_SCROLL;
 
-        private final VKeyChooseButton menuKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);
+        private final I18nKeyChooseButton menuKeyBtn = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);
         private final ForkedSlider arrowKeyIntervalSlider = new ForkedSlider() {{
             setLength(200);
             setRange(10, 100);
@@ -92,7 +81,7 @@ public class BetterMMenuToggle extends MacroToggle {
 
         /* start engine */
         private final ToggleSwitch enableStartEngineToggle = new ToggleSwitch();
-        private final VKeyChooseButton startEngineActivateKeyBtn = new VKeyChooseButton(FLAG_WITH_ALL);
+        private final I18nKeyChooseButton startEngineActivateKeyBtn = new I18nKeyChooseButton(i18n, FLAG_WITH_ALL);
         private final ToggleSwitch enableDoubleClickToOpenDoorToggle = new ToggleSwitch();
         private final ForkedSlider doubleClickIntervalSlider = new ForkedSlider() {{
             setLength(200);
@@ -101,34 +90,29 @@ public class BetterMMenuToggle extends MacroToggle {
 
         /* auto snake */
         private final ToggleSwitch enableAutoSnakeToggle = new ToggleSwitch();
-        private final VKeyChooseButton autoSnakeActivateKeyBtn = new VKeyChooseButton(FLAG_WITH_KEY_AND_MOUSE);
+        private final I18nKeyChooseButton autoSnakeActivateKeyBtn = new I18nKeyChooseButton(i18n, FLAG_WITH_KEY_AND_MOUSE);
         private final ToggleSwitch autoSnakeKeepMMenuToggle = new ToggleSwitch();
         private final ToggleSwitch autoSnakeRefillVestToggle = new ToggleSwitch();
 
-        public BMMSettingStage(ExtendedI18n i18n) {
-            super(i18n);
+        public BMMSettingStage(ObjectProperty<ExtendedI18n> i18n) {
+            super(i18n, i -> i.betterMMenu.title);
             getContent().getChildren().addAll(contentBuilder()
-                    .divide(bmmI18n.baseSetting.title)
-                    .button(bmmI18n.baseSetting.menuKey, menuKeyBtn)
-                    .slider(bmmI18n.baseSetting.mouseScrollInterval, arrowKeyIntervalSlider)
-                    .slider(bmmI18n.baseSetting.keyPressInterval, enterKeyIntervalSlider)
-                    .slider(bmmI18n.baseSetting.timeUtilMMenuLoaded, timeUtilMMenuLoadedSlider)
-                    .divide(bmmI18n.startEngine.title)
-                    .toggle(bmmI18n.startEngine.enableStartEngine, enableStartEngineToggle)
-                    .button(bmmI18n.startEngine.activateKey, startEngineActivateKeyBtn)
-                    .toggle(bmmI18n.startEngine.enableDoubleClickToOpenDoor, enableDoubleClickToOpenDoorToggle)
-                    .slider(bmmI18n.startEngine.doubleClickInterval, doubleClickIntervalSlider)
-                    .divide(bmmI18n.autoSnake.title)
-                            .toggle(bmmI18n.autoSnake.enableAutoSnake, enableAutoSnakeToggle)
-                            .button(bmmI18n.autoSnake.activateKey, autoSnakeActivateKeyBtn)
-                            .toggle(bmmI18n.autoSnake.refillVest, autoSnakeRefillVestToggle)
-                            .toggle(bmmI18n.autoSnake.keepMMenu, autoSnakeKeepMMenuToggle)
+                    .divide(i -> i.betterMMenu.baseSetting.title)
+                    .button(i -> i.betterMMenu.baseSetting.menuKey, menuKeyBtn)
+                    .slider(i -> i.betterMMenu.baseSetting.mouseScrollInterval, arrowKeyIntervalSlider)
+                    .slider(i -> i.betterMMenu.baseSetting.keyPressInterval, enterKeyIntervalSlider)
+                    .slider(i -> i.betterMMenu.baseSetting.timeUtilMMenuLoaded, timeUtilMMenuLoadedSlider)
+                    .divide(i -> i.betterMMenu.startEngine.title)
+                    .toggle(i -> i.betterMMenu.startEngine.enableStartEngine, enableStartEngineToggle)
+                    .button(i -> i.betterMMenu.startEngine.activateKey, startEngineActivateKeyBtn)
+                    .toggle(i -> i.betterMMenu.startEngine.enableDoubleClickToOpenDoor, enableDoubleClickToOpenDoorToggle)
+                    .slider(i -> i.betterMMenu.startEngine.doubleClickInterval, doubleClickIntervalSlider)
+                    .divide(i -> i.betterMMenu.autoSnake.title)
+                    .toggle(i -> i.betterMMenu.autoSnake.enableAutoSnake, enableAutoSnakeToggle)
+                    .button(i -> i.betterMMenu.autoSnake.activateKey, autoSnakeActivateKeyBtn)
+                    .toggle(i -> i.betterMMenu.autoSnake.refillVest, autoSnakeRefillVestToggle)
+                    .toggle(i -> i.betterMMenu.autoSnake.keepMMenu, autoSnakeKeepMMenuToggle)
                     .build());
-        }
-
-        @Override
-        public String getTitle() {
-            return bmmI18n.title;
         }
 
         @Override

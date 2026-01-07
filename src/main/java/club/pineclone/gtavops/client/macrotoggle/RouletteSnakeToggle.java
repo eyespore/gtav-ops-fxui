@@ -3,12 +3,13 @@ package club.pineclone.gtavops.client.macrotoggle;
 import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.config.MacroConfig;
 import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.client.component.VKeyChooseButton;
-import club.pineclone.gtavops.client.forked.ForkedKeyChooser;
+import club.pineclone.gtavops.client.component.I18nKeyChooseButton;
+import club.pineclone.gtavops.client.forked.I18nKeyChooser;
 import club.pineclone.gtavops.client.forked.ForkedSlider;
-import club.pineclone.gtavops.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import club.pineclone.gtavops.macro.MacroCreationStrategies;
 import club.pineclone.gtavops.macro.MacroRegistry;
+import javafx.beans.property.ObjectProperty;
 
 import java.util.UUID;
 
@@ -17,8 +18,8 @@ public class RouletteSnakeToggle extends MacroToggle {
 
     private UUID macroId;
 
-    public RouletteSnakeToggle(ExtendedI18n i18n) {
-        super(i18n);
+    public RouletteSnakeToggle(ObjectProperty<ExtendedI18n> i18n) {
+        super(i18n, i -> i.rouletteSnake.title, RSSettingStage::new);
     }
 
     @Override
@@ -30,16 +31,6 @@ public class RouletteSnakeToggle extends MacroToggle {
     @Override
     protected void onFeatureDisable() {
         MacroRegistry.getInstance().terminateMacro(macroId);
-    }
-
-    @Override
-    protected String getTitle() {
-        return i18n.rouletteSnake.title;
-    }
-
-    @Override
-    protected MacroSettingStage getSetting() {
-        return new RSSettingStage(i18n);
     }
 
     @Override
@@ -58,33 +49,27 @@ public class RouletteSnakeToggle extends MacroToggle {
 
         private final MacroConfig.RouletteSnake qsConfig = getConfig().rouletteSnake;
 
-        private static final int FLAG_WITH_KEY_AND_MOUSE = ForkedKeyChooser.FLAG_WITH_KEY  | ForkedKeyChooser.FLAG_WITH_MOUSE;
-        private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | ForkedKeyChooser.FLAG_WITH_WHEEL_SCROLL;
+        private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
+        private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | I18nKeyChooser.FLAG_WITH_WHEEL_SCROLL;
 
-        private final VKeyChooseButton snakeKeyBtn = new VKeyChooseButton();
-        private final VKeyChooseButton activateKeyBtn = new VKeyChooseButton(FLAG_WITH_KEY_AND_MOUSE);
-        private final VKeyChooseButton weaponWheelKeyBtn = new VKeyChooseButton(FLAG_WITH_ALL);
+        private final I18nKeyChooseButton snakeKeyBtn = new I18nKeyChooseButton(i18n);
+        private final I18nKeyChooseButton activateKeyBtn = new I18nKeyChooseButton(i18n, FLAG_WITH_KEY_AND_MOUSE);
+        private final I18nKeyChooseButton weaponWheelKeyBtn = new I18nKeyChooseButton(i18n, FLAG_WITH_ALL);
         private final ForkedSlider triggerIntervalSlider = new ForkedSlider() {{
             setLength(200);
             setRange(1, 100);
         }};
 
-        public RSSettingStage(ExtendedI18n i18n) {
-            super(i18n);
-            ExtendedI18n.RouletteSnake qsI18n = i18n.rouletteSnake;
+        public RSSettingStage(ObjectProperty<ExtendedI18n> i18n) {
+            super(i18n, i -> i.rouletteSnake.title);
             getContent().getChildren().addAll(contentBuilder()
-                            .divide(qsI18n.baseSetting.title)
-                            .button(qsI18n.baseSetting.weaponWheelKey, weaponWheelKeyBtn)
-                            .button(qsI18n.baseSetting.activateKey, activateKeyBtn)
-                            .button(qsI18n.baseSetting.snakeKey, snakeKeyBtn)
-                            .slider(qsI18n.baseSetting.triggerInterval, triggerIntervalSlider)
+                            .divide(i -> i.rouletteSnake.baseSetting.title)
+                            .button(i -> i.rouletteSnake.baseSetting.weaponWheelKey, weaponWheelKeyBtn)
+                            .button(i -> i.rouletteSnake.baseSetting.activateKey, activateKeyBtn)
+                            .button(i -> i.rouletteSnake.baseSetting.snakeKey, snakeKeyBtn)
+                            .slider(i -> i.rouletteSnake.baseSetting.triggerInterval, triggerIntervalSlider)
                             .build()
             );
-        }
-
-        @Override
-        public String getTitle() {
-            return i18n.rouletteSnake.title;
         }
 
         @Override

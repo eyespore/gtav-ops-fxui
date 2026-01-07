@@ -48,7 +48,6 @@ public class PlatformFocusMonitor {
             Logger.warn(LogType.SYS_ERROR, t.getMessage());
         }
     }
-
     public static void addListener(WindowTitleListener listener) {
         listeners.add(listener);
     }

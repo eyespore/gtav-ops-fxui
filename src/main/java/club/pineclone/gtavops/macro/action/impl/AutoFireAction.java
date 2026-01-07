@@ -65,7 +65,7 @@ public class AutoFireAction extends ScheduledAction {
             /* 切换到中立武器，确保优先级逻辑生效 */
             robot.simulate(neutralWeaponKey);  /* 经过测试此处不需要鼠标左键确认，只需要选择到武器即可 */
 
-            /* TODO: 补充完整逻辑 */
+            /* TODO: 补充自动开火完整逻辑 */
 
             /* 如果存在优先级则需要执行优先级切换 */
             for (int i = 0; i < target.getPriority(); i++) {

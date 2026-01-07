@@ -3,7 +3,7 @@ package club.pineclone.gtavops.macro.action.impl;
 import club.pineclone.gtavops.macro.Macro;
 import club.pineclone.gtavops.macro.action.Action;
 import club.pineclone.gtavops.macro.MacroEvent;
-import club.pineclone.gtavops.macro.action.ActionTaskManager;
+import club.pineclone.gtavops.macro.MacroTaskScheduler;
 import club.pineclone.gtavops.macro.action.ScheduledAction;
 import club.pineclone.gtavops.macro.action.robot.RobotFactory;
 import club.pineclone.gtavops.macro.action.robot.VCRobotAdapter;
@@ -161,7 +161,7 @@ public class DelayClimbAction extends Action {
     private void startPhase1(MacroEvent event) {
         /* 阶段一未运行，提交运行任务 */
         isPhase1Running.set(true);
-        future = ActionTaskManager.getSCHEDULER().schedule(() -> {
+        future = MacroTaskScheduler.getSCHEDULER().schedule(() -> {
             try {
                 /* 当前循环未运行，执行启动逻辑 */
                 /* 进入掩体并打开相机 */

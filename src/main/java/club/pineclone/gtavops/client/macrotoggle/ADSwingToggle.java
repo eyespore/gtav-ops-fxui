@@ -3,14 +3,15 @@ package club.pineclone.gtavops.client.macrotoggle;
 import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.config.MacroConfig;
 import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.client.component.VTriggerModeChooseButton;
-import club.pineclone.gtavops.client.component.VKeyChooseButton;
-import club.pineclone.gtavops.client.forked.ForkedKeyChooser;
+import club.pineclone.gtavops.client.component.I18nTriggerModeChooseButton;
+import club.pineclone.gtavops.client.component.I18nKeyChooseButton;
+import club.pineclone.gtavops.client.forked.I18nKeyChooser;
 import club.pineclone.gtavops.client.forked.ForkedSlider;
-import club.pineclone.gtavops.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import club.pineclone.gtavops.macro.MacroCreationStrategies;
 import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.ui.toggle.ToggleSwitch;
+import javafx.beans.property.ObjectProperty;
 
 import java.util.UUID;
 
@@ -18,8 +19,8 @@ public class ADSwingToggle extends MacroToggle {
 
     private UUID macroId;
 
-    public ADSwingToggle(ExtendedI18n i18n) {
-        super(i18n);
+    public ADSwingToggle(ObjectProperty<ExtendedI18n> i18n) {
+        super(i18n, i -> i.adSwing.title, ADWSettingStage::new);
     }
 
     @Override
@@ -34,16 +35,6 @@ public class ADSwingToggle extends MacroToggle {
     }
 
     @Override
-    protected String getTitle() {
-        return i18n.adSwing.title;
-    }
-
-    @Override
-    protected MacroSettingStage getSetting() {
-        return new ADWSettingStage(i18n);
-    }
-
-    @Override
     public void onUIInit() {
         selectedProperty().set(MacroConfigLoader.get().adSwing.baseSetting.enable);
     }
@@ -54,40 +45,38 @@ public class ADSwingToggle extends MacroToggle {
     }
 
     private static class ADWSettingStage
-            extends MacroSettingStage
-            implements ResourceHolder {
-        private static final int FLAG_WITH_KEY_AND_MOUSE = ForkedKeyChooser.FLAG_WITH_KEY  | ForkedKeyChooser.FLAG_WITH_MOUSE;
-        private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | ForkedKeyChooser.FLAG_WITH_WHEEL_SCROLL;
+            extends MacroSettingStage implements ResourceHolder {
+        private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
+        private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | I18nKeyChooser.FLAG_WITH_WHEEL_SCROLL;
 
         MacroConfig config = getConfig();
         MacroConfig.ADSwing adwConfig = config.adSwing;
-        ExtendedI18n.ADSwing adwI18n = i18n.adSwing;
 
-        private final VTriggerModeChooseButton activateMethodBtn = new VTriggerModeChooseButton(
-                VTriggerModeChooseButton.FLAG_WITH_HOLD | VTriggerModeChooseButton.FLAG_WITH_TOGGLE);
+        private final I18nTriggerModeChooseButton activateMethodBtn = new I18nTriggerModeChooseButton(i18n,
+                I18nTriggerModeChooseButton.FLAG_WITH_HOLD | I18nTriggerModeChooseButton.FLAG_WITH_TOGGLE);
 
-        private final VKeyChooseButton activateKeyBtn = new VKeyChooseButton(FLAG_WITH_ALL);
-        private final VKeyChooseButton moveLeftKeyBtn = new VKeyChooseButton();
-        private final VKeyChooseButton moveRightKeyBtn = new VKeyChooseButton();
+        private final I18nKeyChooseButton activateKeyBtn = new I18nKeyChooseButton(i18n, FLAG_WITH_ALL);
+        private final I18nKeyChooseButton moveLeftKeyBtn = new I18nKeyChooseButton(i18n);
+        private final I18nKeyChooseButton moveRightKeyBtn = new I18nKeyChooseButton(i18n);
         private final ForkedSlider triggerIntervalSlider = new ForkedSlider() {{
             setLength(200);
             setRange(10, 50);
         }};
 
         private final ToggleSwitch enableSafetyKeyToggle = new ToggleSwitch();
-        private final VKeyChooseButton safetyKeyBtn = new VKeyChooseButton(FLAG_WITH_ALL);
+        private final I18nKeyChooseButton safetyKeyBtn = new I18nKeyChooseButton(i18n, FLAG_WITH_ALL);
 
-        public ADWSettingStage(ExtendedI18n i18n) {
-            super(i18n);
+        public ADWSettingStage(ObjectProperty<ExtendedI18n> i18n) {
+            super(i18n, i -> i.adSwing.title);
             getContent().getChildren().addAll(contentBuilder()
-                     .divide(adwI18n.baseSetting.title)
-                    .button(adwI18n.baseSetting.activateMethod, activateMethodBtn)
-                    .button(adwI18n.baseSetting.activateKey, activateKeyBtn)
-                    .slider(adwI18n.baseSetting.triggerInterval, triggerIntervalSlider)
-                    .button(adwI18n.baseSetting.moveLeftKey, moveLeftKeyBtn)
-                    .button(adwI18n.baseSetting.moveRightKey, moveRightKeyBtn)
-                    .toggle(adwI18n.baseSetting.enableSafetyKey, enableSafetyKeyToggle)
-                    .button(adwI18n.baseSetting.safetyKey, safetyKeyBtn)
+                    .divide(i -> i.adSwing.baseSetting.title)
+                    .button(i -> i.adSwing.baseSetting.activateMethod, activateMethodBtn)
+                    .button(i -> i.adSwing.baseSetting.activateKey, activateKeyBtn)
+                    .slider(i -> i.adSwing.baseSetting.triggerInterval, triggerIntervalSlider)
+                    .button(i -> i.adSwing.baseSetting.moveLeftKey, moveLeftKeyBtn)
+                    .button(i -> i.adSwing.baseSetting.moveRightKey, moveRightKeyBtn)
+                    .toggle(i -> i.adSwing.baseSetting.enableSafetyKey, enableSafetyKeyToggle)
+                    .button(i -> i.adSwing.baseSetting.safetyKey, safetyKeyBtn)
                     .build());
         }
 
@@ -113,11 +102,6 @@ public class ADSwingToggle extends MacroToggle {
 
             adwConfig.baseSetting.enableSafetyKey = enableSafetyKeyToggle.selectedProperty().get();
             adwConfig.baseSetting.safetyKey = safetyKeyBtn.keyProperty().get();
-        }
-
-        @Override
-        public String getTitle() {
-            return i18n.adSwing.title;
         }
     }
 }

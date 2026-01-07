@@ -10,9 +10,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 public class MacroConfig {
+
+    public String name;  /* 配置名称 */
+    public String uuid;  /* 配置 uuid */
+
 //    public InGame inGame = new InGame();
     public SwapGlitch swapGlitch = new SwapGlitch();
     public RouletteSnake rouletteSnake = new RouletteSnake();  /* 轮盘零食 */

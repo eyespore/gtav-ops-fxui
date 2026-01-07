@@ -1,6 +1,7 @@
 package club.pineclone.gtavops.utils;
 
-import io.vproxy.base.util.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,6 +9,7 @@ import java.nio.file.Path;
 public class JNIUtils {
 
     public static native String getForegroundWindowTitle();
+    private static final Logger log = LoggerFactory.getLogger(JNIUtils.class);
 
     static {
         System.load(loadDll().toAbsolutePath().toString());
@@ -26,7 +28,7 @@ public class JNIUtils {
             dllPath = Path.of("assets", "native", os, arch, libName);
         }
 
-        Logger.lowLevelDebug(dllPath.toString());
+        log.debug("Load native: {}", dllPath);
         return dllPath;
     }
 

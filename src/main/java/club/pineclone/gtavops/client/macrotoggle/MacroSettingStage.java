@@ -1,8 +1,9 @@
 package club.pineclone.gtavops.client.macrotoggle;
 
 import club.pineclone.gtavops.client.forked.ForkedSlider;
+import club.pineclone.gtavops.client.forked.ForkedThemeLabel;
 import club.pineclone.gtavops.client.theme.ExtendedFontUsages;
-import club.pineclone.gtavops.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import io.vproxy.vfx.manager.font.FontManager;
 import io.vproxy.vfx.ui.button.FusionButton;
 import io.vproxy.vfx.ui.layout.HPadding;
@@ -12,6 +13,11 @@ import io.vproxy.vfx.ui.stage.VStageInitParams;
 import io.vproxy.vfx.ui.toggle.ToggleSwitch;
 import io.vproxy.vfx.ui.wrapper.ThemeLabel;
 import io.vproxy.vfx.util.FXUtils;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -24,16 +30,16 @@ import javafx.stage.Modality;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 public abstract class MacroSettingStage {
 
     private final VStage vStage;
     private final VBox content;
-    protected final ExtendedI18n i18n;  /* 本地化 */
+    protected final ObjectProperty<ExtendedI18n> i18n;  /* 本地化 */
 
-    public MacroSettingStage(ExtendedI18n i18n) {
+    public MacroSettingStage(ObjectProperty<ExtendedI18n> i18n, Function<ExtendedI18n, String> titleProvider) {
         this.i18n = i18n;
-
         vStage = new VStage(new VStageInitParams()
                 .setMaximizeAndResetButton(false)
                 .setIconifyButton(false)
@@ -44,21 +50,25 @@ public abstract class MacroSettingStage {
         vStage.getStage().setHeight(500);
         vStage.getStage().initModality(Modality.APPLICATION_MODAL);
         content = new VBox();
+
+        i18n.addListener((obs, oldVal, newVal) -> {
+            vStage.setTitle(titleProvider.apply(newVal));
+        });
+
+        /* 由于设置面板并非应用启动后第一时间加载，因此不会得到 i18n 更新的触发，此处需要手动更新一次I18n */
+        vStage.setTitle(titleProvider.apply(i18n.get()));
     }
 
     protected VBox getContent() {
         return content;
     }
 
-    public VStage getStage() {
+    private VStage getStage() {
         return vStage;
     }
 
-    public String getTitle() {
-        return "unset";
-    }
-
-    public void show() {
+    @Deprecated
+    private void show() {
         FXUtils.observeWidth(getStage().getInitialScene().getNode(), getContent(), -30);
         HBox hbox = new HBox(new HPadding(10), content);
         vStage.getInitialScene().getScrollPane().setContent(hbox);
@@ -77,7 +87,6 @@ public abstract class MacroSettingStage {
     protected void onVSettingStageExit() {}
 
     public void initVSettingStage() {
-        vStage.setTitle(getTitle());
         onVSettingStageInit();
     }
 
@@ -85,29 +94,35 @@ public abstract class MacroSettingStage {
         onVSettingStageExit();
     }
 
-    protected HBox createToggle(String intro, ToggleSwitch toggle) {
+    private StringBinding createStringBinding(Function<ExtendedI18n, String> provider) {
+        return Bindings.createStringBinding(() -> provider.apply(i18n.get()), i18n);
+    }
+
+    protected HBox createToggle(Function<ExtendedI18n, String> introProvider, ToggleSwitch toggle) {
         HBox hBox = getBaseConfigContent(new Insets(22, 7, 0, 20));
         hBox.setPrefHeight(60);
         Region spacer = getSpacer();
 
-        ThemeLabel label = new ThemeLabel(intro);
+        ForkedThemeLabel label = new ForkedThemeLabel();
+        label.textProperty().bind(createStringBinding(introProvider));
         label.setPadding(new Insets(4, 0, 0, 0));
         hBox.getChildren().addAll(label, spacer, toggle.getNode());
         return hBox;
     }
 
-    protected HBox createButton(String intro, FusionButton... buttons) {
+    protected HBox createButton(Function<ExtendedI18n, String> introProvider, FusionButton... buttons) {
         HBox hBox = getBaseConfigContent(new Insets(24, 7, 0, 20));
         Region spacer = getSpacer();
 
-        ThemeLabel label = new ThemeLabel(intro);
+        ForkedThemeLabel label = new ForkedThemeLabel();
+        label.textProperty().bind(createStringBinding(introProvider));
         label.setPadding(new Insets(7, 0, 0, 0));
         hBox.getChildren().addAll(label, spacer);
         Arrays.stream(buttons).forEach(hBox.getChildren()::addAll);
         return hBox;
     }
 
-    protected HBox createDivider(String intro) {
+    protected HBox createDivider(Function<ExtendedI18n, String> introProvider) {
         HBox hBox = getBaseConfigContent(new Insets(0, 0, 0, 0));
         hBox.setStyle("-fx-border-color: transparent transparent lightblue transparent; " +
                 "-fx-border-width: 0 0 1 0;");
@@ -117,7 +132,8 @@ public abstract class MacroSettingStage {
         vBox.setPrefHeight(70);
 
         Region spacer = getSpacer();
-        ThemeLabel label = new ThemeLabel(intro);
+        ForkedThemeLabel label = new ForkedThemeLabel();
+        label.textProperty().bind(createStringBinding(introProvider));
         FontManager.get().setFont(ExtendedFontUsages.dividerText, label);
         label.setStyle("-fx-text-fill: lightblue");
         vBox.getChildren().add(label);
@@ -126,25 +142,27 @@ public abstract class MacroSettingStage {
         return hBox;
     }
 
-    protected HBox createSlider(String intro, ForkedSlider slider) {
+    protected HBox createSlider(Function<ExtendedI18n, String> introProvider, ForkedSlider slider) {
         HBox hBox = getBaseConfigContent(new Insets(24, 7, 0, 20));
         hBox.setPrefHeight(70);
         Region spacer = getSpacer();
 
-        ThemeLabel label = new ThemeLabel(intro);
+        ForkedThemeLabel label = new ForkedThemeLabel();
+        label.textProperty().bind(createStringBinding(introProvider));
         label.setPadding(new Insets(4, 0, 0, 0));
         hBox.getChildren().addAll(label, spacer, slider);
         return hBox;
     }
 
-    protected HBox createButtonToggle(String intro, ToggleSwitch toggle, FusionButton... buttons) {
+    protected HBox createButtonToggle(Function<ExtendedI18n, String> introProvider, ToggleSwitch toggle, FusionButton... buttons) {
         HBox baseContent = getBaseConfigContent(new Insets(0, 0, 0, 0));
         baseContent.setPrefHeight(60);
 
         HBox labelContent = new HBox(10);
         labelContent.setPadding(new Insets(22, 7, 0, 20));
         Region spacer = getSpacer();
-        ThemeLabel label = new ThemeLabel(intro);
+        ForkedThemeLabel label = new ForkedThemeLabel();
+        label.textProperty().bind(createStringBinding(introProvider));
         label.setPadding(new Insets(7, 0, 0, 0));
         labelContent.getChildren().addAll(label);
 
@@ -192,26 +210,26 @@ public abstract class MacroSettingStage {
         private final List<Node> items = new ArrayList<>();
 
         /* 开关按钮 */
-        public ContentBuilder toggle(String intro, ToggleSwitch toggle) {
-            items.add(createToggle(intro, toggle));
+        public ContentBuilder toggle(Function<ExtendedI18n, String> introProvider, ToggleSwitch toggle) {
+            items.add(createToggle(introProvider, toggle));
             return this;
         }
 
         /* 一般按钮 */
-        public ContentBuilder button(String intro, FusionButton... buttons) {
-            items.add(createButton(intro, buttons));
+        public ContentBuilder button(Function<ExtendedI18n, String> introProvider, FusionButton... buttons) {
+            items.add(createButton(introProvider, buttons));
             return this;
         }
 
         /* 按钮以及开关 */
-        public ContentBuilder buttonToggle(String intro, ToggleSwitch toggle, FusionButton... buttons) {
-            items.add(createButtonToggle(intro, toggle, buttons));
+        public ContentBuilder buttonToggle(Function<ExtendedI18n, String> introProvider, ToggleSwitch toggle, FusionButton... buttons) {
+            items.add(createButtonToggle(introProvider, toggle, buttons));
             return this;
         }
 
         /* 拖动条 */
-        public ContentBuilder slider(String intro, ForkedSlider slider) {
-            items.add(createSlider(intro, slider));
+        public ContentBuilder slider(Function<ExtendedI18n, String> introProvider, ForkedSlider slider) {
+            items.add(createSlider(introProvider, slider));
             return this;
         }
 
@@ -228,8 +246,8 @@ public abstract class MacroSettingStage {
         }
 
         /* 分割线 */
-        public ContentBuilder divide(String intro) {
-            items.add(createDivider(intro));
+        public ContentBuilder divide(Function<ExtendedI18n, String> introProvider) {
+            items.add(createDivider(introProvider));
             return this;
         }
 

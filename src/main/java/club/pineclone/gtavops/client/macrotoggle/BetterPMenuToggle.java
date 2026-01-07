@@ -5,16 +5,16 @@ import club.pineclone.gtavops.common.SessionType;
 import club.pineclone.gtavops.config.MacroConfig;
 import club.pineclone.gtavops.config.MacroConfigLoader;
 import club.pineclone.gtavops.client.component.VOptionButton;
-import club.pineclone.gtavops.client.component.VKeyChooseButton;
-import club.pineclone.gtavops.client.forked.ForkedKeyChooser;
+import club.pineclone.gtavops.client.component.I18nKeyChooseButton;
+import club.pineclone.gtavops.client.forked.I18nKeyChooser;
 import club.pineclone.gtavops.client.forked.ForkedSlider;
-import club.pineclone.gtavops.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import club.pineclone.gtavops.macro.MacroCreationStrategies;
 import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.ui.toggle.ToggleSwitch;
+import javafx.beans.property.ObjectProperty;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /* 额外功能，例如快速切换战局，快速进入某个夺取 */
@@ -23,11 +23,9 @@ public class BetterPMenuToggle extends MacroToggle {
     private UUID joinANewSessionMacroId;  /* 快速加入新战局 */
     private UUID joinABookmarkedJobMacroId;  /* 加入已收藏差事 */
 
-    public BetterPMenuToggle(ExtendedI18n i18n) {
-        super(i18n);
+    public BetterPMenuToggle(ObjectProperty<ExtendedI18n> i18n) {
+        super(i18n, i -> i.betterPMenu.title, BPMSettingStage::new);
     }
-
-
 
     @Override
     protected void onFeatureEnable() {
@@ -51,16 +49,6 @@ public class BetterPMenuToggle extends MacroToggle {
     }
 
     @Override
-    protected String getTitle() {
-        return i18n.betterPMenu.title;
-    }
-
-    @Override
-    protected MacroSettingStage getSetting() {
-        return new BPMSettingStage(i18n);
-    }
-
-    @Override
     public void onUIInit() {
         selectedProperty().set(MacroConfigLoader.get().betterPMenu.baseSetting.enable);
     }
@@ -73,8 +61,6 @@ public class BetterPMenuToggle extends MacroToggle {
     private static class BPMSettingStage
             extends MacroSettingStage
             implements ResourceHolder {
-
-        private final ExtendedI18n.BetterPMenu bpmI18n = i18n.betterPMenu;
 
         private final MacroConfig config = getConfig();
         private final MacroConfig.BetterPMenu bpmConfig = config.betterPMenu;
@@ -95,53 +81,40 @@ public class BetterPMenuToggle extends MacroToggle {
 
         /* Join A New Session */
         private final ToggleSwitch enableJoinANewSessionToggle = new ToggleSwitch();
-        private final VKeyChooseButton joinANewSessionActivateKey = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);
-
-        private final Map<SessionType, String> sessionTypeI18nMap = Map.of(
-                SessionType.PUBLIC_SESSION, i18n.inGame.publicSession,
-                SessionType.INVITE_ONLY_SESSION, i18n.inGame.inviteOnlySession,
-                SessionType.CREW_SESSION, i18n.inGame.crewSession,
-                SessionType.INVITE_ONLY_CREW_SESSION, i18n.inGame.inviteOnlyCrewSession,
-                SessionType.INVITE_ONLY_FRIENDS_SESSION, i18n.inGame.inviteOnlyFriendsSession
-        );
+        private final I18nKeyChooseButton joinANewSessionActivateKey = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);
 
         private final VOptionButton<SessionType> joinANewSessionTypeOption = new VOptionButton<>(List.of(
-                new VOptionButton.OptionItem<>(sessionTypeI18nMap.get(SessionType.PUBLIC_SESSION), SessionType.PUBLIC_SESSION),
-                new VOptionButton.OptionItem<>(sessionTypeI18nMap.get(SessionType.INVITE_ONLY_SESSION), SessionType.INVITE_ONLY_SESSION),
-                new VOptionButton.OptionItem<>(sessionTypeI18nMap.get(SessionType.CREW_SESSION), SessionType.CREW_SESSION),
-                new VOptionButton.OptionItem<>(sessionTypeI18nMap.get(SessionType.INVITE_ONLY_CREW_SESSION), SessionType.INVITE_ONLY_CREW_SESSION),
-                new VOptionButton.OptionItem<>(sessionTypeI18nMap.get(SessionType.INVITE_ONLY_FRIENDS_SESSION), SessionType.INVITE_ONLY_FRIENDS_SESSION)
+                new VOptionButton.I18nOptionItem<>(SessionType.PUBLIC_SESSION, i18n, i -> i.inGame.publicSession),
+                new VOptionButton.I18nOptionItem<>(SessionType.INVITE_ONLY_SESSION, i18n, i -> i.inGame.inviteOnlySession),
+                new VOptionButton.I18nOptionItem<>(SessionType.CREW_SESSION, i18n, i -> i.inGame.crewSession),
+                new VOptionButton.I18nOptionItem<>(SessionType.INVITE_ONLY_CREW_SESSION, i18n, i -> i.inGame.inviteOnlyCrewSession),
+                new VOptionButton.I18nOptionItem<>(SessionType.INVITE_ONLY_FRIENDS_SESSION, i18n, i -> i.inGame.inviteOnlyFriendsSession)
         ));
 
         /* Join A Bookmarked Job */
         private final ToggleSwitch enableJoinABookmarkedJobToggle = new ToggleSwitch();
-        private final VKeyChooseButton joinABookmarkedJobActivateKey = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);
+        private final I18nKeyChooseButton joinABookmarkedJobActivateKey = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);
         private final ForkedSlider timeUtilJobsLoadedSlider = new ForkedSlider() {{
             setLength(300);
             setRange(500, 4000);
         }};
 
-        public BPMSettingStage(ExtendedI18n i18n) {
-            super(i18n);
+        public BPMSettingStage(ObjectProperty<ExtendedI18n> i18n) {
+            super(i18n, i -> i.betterPMenu.title);
             getContent().getChildren().addAll(contentBuilder()
-                    .divide(bpmI18n.baseSetting.title)
-                    .slider(bpmI18n.baseSetting.mouseScrollInterval, mouseScrollIntervalSlider)
-                    .slider(bpmI18n.baseSetting.enterKeyInterval, enterKeyIntervalSlider)
-                    .slider(bpmI18n.baseSetting.timeUtilPMenuLoaded, timeUtilPMenuLoadedSlider)
-                    .divide(bpmI18n.joinANewSession.title)
-                    .toggle(bpmI18n.joinANewSession.enable, enableJoinANewSessionToggle)
-                    .button(bpmI18n.joinANewSession.activateKey, joinANewSessionActivateKey)
-                    .button(bpmI18n.joinANewSession.sessionType, joinANewSessionTypeOption)
-                    .divide(bpmI18n.joinABookmarkedJob.title)
-                    .toggle(bpmI18n.joinABookmarkedJob.enable, enableJoinABookmarkedJobToggle)
-                    .button(bpmI18n.joinABookmarkedJob.activateKey, joinABookmarkedJobActivateKey)
-                    .slider(bpmI18n.joinABookmarkedJob.timeUtilJobsLoaded, timeUtilJobsLoadedSlider)
+                    .divide(i -> i.betterPMenu.baseSetting.title)
+                    .slider(i -> i.betterPMenu.baseSetting.mouseScrollInterval, mouseScrollIntervalSlider)
+                    .slider(i -> i.betterPMenu.baseSetting.enterKeyInterval, enterKeyIntervalSlider)
+                    .slider(i -> i.betterPMenu.baseSetting.timeUtilPMenuLoaded, timeUtilPMenuLoadedSlider)
+                    .divide(i -> i.betterPMenu.joinANewSession.title)
+                    .toggle(i -> i.betterPMenu.joinANewSession.enable, enableJoinANewSessionToggle)
+                    .button(i -> i.betterPMenu.joinANewSession.activateKey, joinANewSessionActivateKey)
+                    .button(i -> i.betterPMenu.joinANewSession.sessionType, joinANewSessionTypeOption)
+                    .divide(i -> i.betterPMenu.joinABookmarkedJob.title)
+                    .toggle(i -> i.betterPMenu.joinABookmarkedJob.enable, enableJoinABookmarkedJobToggle)
+                    .button(i -> i.betterPMenu.joinABookmarkedJob.activateKey, joinABookmarkedJobActivateKey)
+                    .slider(i -> i.betterPMenu.joinABookmarkedJob.timeUtilJobsLoaded, timeUtilJobsLoadedSlider)
                     .build());
-        }
-
-        @Override
-        public String getTitle() {
-            return bpmI18n.title;
         }
 
         @Override
@@ -152,9 +125,7 @@ public class BetterPMenuToggle extends MacroToggle {
 
             enableJoinANewSessionToggle.selectedProperty().set(bpmConfig.joinANewSession.enable);
             joinANewSessionActivateKey.keyProperty().set(bpmConfig.joinANewSession.activateKey);
-            joinANewSessionTypeOption.optionProperty().set(new VOptionButton.OptionItem<>(
-                    sessionTypeI18nMap.get(bpmConfig.joinANewSession.sessionType), bpmConfig.joinANewSession.sessionType
-            ));
+            joinANewSessionTypeOption.setOption(bpmConfig.joinANewSession.sessionType);
 
             enableJoinABookmarkedJobToggle.selectedProperty().set(bpmConfig.joinABookmarkedJob.enable);
             joinABookmarkedJobActivateKey.keyProperty().set(bpmConfig.joinABookmarkedJob.activateKey);
@@ -169,7 +140,7 @@ public class BetterPMenuToggle extends MacroToggle {
 
             bpmConfig.joinANewSession.enable = enableJoinANewSessionToggle.selectedProperty().get();
             bpmConfig.joinANewSession.activateKey = joinANewSessionActivateKey.keyProperty().get();
-            bpmConfig.joinANewSession.sessionType = joinANewSessionTypeOption.optionProperty().get().getOption();
+            bpmConfig.joinANewSession.sessionType = joinANewSessionTypeOption.getOption();
 
             bpmConfig.joinABookmarkedJob.enable = enableJoinABookmarkedJobToggle.selectedProperty().get();
             bpmConfig.joinABookmarkedJob.activateKey = joinABookmarkedJobActivateKey.keyProperty().get();

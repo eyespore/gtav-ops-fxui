@@ -1,7 +1,7 @@
 package club.pineclone.gtavops.pojo;
 
-import club.pineclone.gtavops.i18n.ExtendedI18n;
-import club.pineclone.gtavops.i18n.I18nHolder;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.I18nLoader;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,12 +28,10 @@ public class FontpackMetadata {
     private Boolean isBased;  /* 是否是基础字体包 */
 
     public String formatType() {
-        ExtendedI18n i18n = I18nHolder.get();
-        ExtendedI18n.FontPackScene fpI18n = i18n.fontPackScene;
         return switch (type) {
-            case 0 -> i18n.inGame.legacy;
-            case 1 -> i18n.inGame.enhanced;
-            default -> i18n.common.unknown;
+            case 0 -> "i18n.inGame.legacy";
+            case 1 -> "i18n.inGame.enhanced";
+            default -> "i18n.common.unknown";
         };
     }
 
@@ -44,8 +42,7 @@ public class FontpackMetadata {
     }
 
     public String formatEnabled() {
-        ExtendedI18n i18n = I18nHolder.get();
-        return enabled ? i18n.common.enabled : i18n.common.disabled;
+        return enabled ? "i18n.common.enabled" : "i18n.common.disabled";
     }
 
     public String formatSize() {

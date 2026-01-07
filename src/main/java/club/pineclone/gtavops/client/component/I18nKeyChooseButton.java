@@ -1,6 +1,7 @@
 package club.pineclone.gtavops.client.component;
 
-import club.pineclone.gtavops.client.forked.ForkedKeyChooser;
+import club.pineclone.gtavops.client.forked.I18nKeyChooser;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import club.pineclone.gtavops.utils.KeyUtils;
 import io.vproxy.vfx.entity.input.Key;
 import io.vproxy.vfx.ui.button.FusionButton;
@@ -11,26 +12,29 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.input.MouseButton;
 import javafx.stage.Modality;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
  * 支持按键选择的按钮，按下按钮之后弹出弹窗等待用户按下按钮，可用于设定快捷键，仅支持单按键，
  * 支持滚轮、双侧键、鼠标按键以及键盘按键
  */
-public class VKeyChooseButton extends FusionButton {
+public class I18nKeyChooseButton extends FusionButton {
 
     private boolean nullable = false;  /* 默认不支持空值 */
     private final ObjectProperty<Key> keyProperty = new SimpleObjectProperty<>();  /* 当前按键 */
-    private final ForkedKeyChooser keyChooser;
+    private final I18nKeyChooser keyChooser;
 
-    public VKeyChooseButton() {
-        this(ForkedKeyChooser.FLAG_WITH_KEY);
+    public I18nKeyChooseButton(ObjectProperty<ExtendedI18n> i18n) {
+        this(i18n, I18nKeyChooser.FLAG_WITH_KEY);
     }
 
-    public VKeyChooseButton(int flags) {
-        this.keyChooser = new ForkedKeyChooser(flags);
+    public I18nKeyChooseButton(ObjectProperty<ExtendedI18n> i18n, int flags) {
+        this.keyChooser = new I18nKeyChooser(i18n, flags);
         keyChooser.getStage().getStage().initModality(Modality.APPLICATION_MODAL);
 
         StringProperty textProperty = new SimpleStringProperty();
@@ -42,8 +46,25 @@ public class VKeyChooseButton extends FusionButton {
 
         textProperty.bind(Bindings.createStringBinding(() -> {
             Key key = keyProperty.get();
-            if (key == null) return "unset";  // TODO: 绑定本地化
-            return KeyUtils.toString(key);  // todo: 修复选择按键后的本地化显示问题
+            if (key == null) return i18n.get().vfxComponent.keyChooser.unset;
+            if (key.button != null) {  /* 鼠标键位 */
+                return switch (key.button) {
+                    case NONE -> null;
+                    case PRIMARY -> i18n.get().vfxComponent.keyChooser.primaryMouseButton;  /* 左键 */
+                    case SECONDARY -> i18n.get().vfxComponent.keyChooser.secondaryMouseButton;  /* 右键 */
+                    case MIDDLE -> i18n.get().vfxComponent.keyChooser.middleMouseButton;  /* 中键 */
+                    case FORWARD -> i18n.get().vfxComponent.keyChooser.forwardMouseButton;  /* 前侧键 */
+                    case BACK -> i18n.get().vfxComponent.keyChooser.backwardMouseButton;  /* 后侧键 */
+                };
+            }
+
+            if (key.scroll != null) {  /* 滚轮键位 */
+                return switch (key.scroll.direction) {
+                    case UP -> i18n.get().vfxComponent.keyChooser.mouseScrollUp;  /* 上滚轮 */
+                    case DOWN -> i18n.get().vfxComponent.keyChooser.mouseScrollDown;  /* 下滚轮 */
+                };
+            }
+            return KeyUtils.toString(key);
         }, keyProperty));
 
         getTextNode().textProperty().bind(textProperty);

@@ -2,6 +2,7 @@ package club.pineclone.gtavops.macro;
 
 import club.pineclone.gtavops.macro.action.Action;
 import club.pineclone.gtavops.macro.trigger.Trigger;
+import club.pineclone.gtavops.macro.trigger.TriggerEvent;
 import club.pineclone.gtavops.macro.trigger.TriggerListener;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -14,10 +15,22 @@ public abstract class Macro implements TriggerListener {
     protected final Action action;
 
     private MacroState state;
-
-    @Getter private MacroExecutionStatus executionStatus;  /* 执行状态 */
+    @Getter private volatile MacroExecutionStatus executionStatus;  /* 执行状态 */
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
+
+    /**
+     * 当全局挂起，宏被从Trigger监听器中移除，此时一旦用户通过UI关闭任何一个宏功能，那么onMacroTerminate被调用，
+     * Trigger发现监听器为空，直接被关闭，随后唤醒宏的时候，Trigger就已经全部失效了，因此除非宏被显式关闭，否则不要将其从监听器中移除
+     * 为了避免这种情况，应该仅仅在Macro的terminate方法被调用时，即宏的生命周期结束时，将宏从Trigger的监听器列表移除，避免监听器的错误判断
+     */
+    @Override
+    public final void onTriggerEvent(TriggerEvent event) {
+        if (executionStatus.equals(MacroExecutionStatus.SUSPENDED)) return;  /* 当前宏处于挂起状态，不执行任何业务逻辑 */
+        handleTriggerEvent(event);
+    }
+
+    protected abstract void handleTriggerEvent(TriggerEvent event);
 
     public enum MacroStatus {
         CREATED,  /* 宏在被创建之后，会处于CREATED状态，通过调用launch()使其切入RUNNING状态，CREATED状态支持挂起 */
@@ -102,11 +115,6 @@ public abstract class Macro implements TriggerListener {
         if (getStatus().equals(MacroStatus.TERMINATED)) return;  /* 宏生命周期结束，不支持挂起 */
         if (executionStatus.equals(MacroExecutionStatus.SUSPENDED)) return;  /* 宏当前已经处于挂起状态 */
         this.executionStatus = MacroExecutionStatus.SUSPENDED;
-
-        if (getStatus().equals(MacroStatus.RUNNING)) {
-            this.trigger.removeListener(this);
-        }
-
         this.action.onMacroSuspend(MacroEvent.of(null, this));
         this.trigger.onMacroSuspend(MacroEvent.of(null, this));
     }
@@ -117,18 +125,20 @@ public abstract class Macro implements TriggerListener {
     public void resume() {
         if (getStatus().equals(MacroStatus.TERMINATED)) return;  /* 宏生命周期已经结束，不支持恢复 */
         if (executionStatus == MacroExecutionStatus.ACTIVE) return;  /* 宏当前已经处于唤醒状态 */
-
         this.executionStatus = MacroExecutionStatus.ACTIVE;
-
-        if (getStatus().equals(MacroStatus.RUNNING)) {  /* 仅在 RUNNING 状态下的挂起/恢复执行 */
-            this.trigger.addListener(this);
-        }
-
         this.action.onMacroResume(MacroEvent.of(null, this));
         this.trigger.onMacroResume(MacroEvent.of(null, this));
     }
 
     public MacroStatus getStatus() {
         return state.getStatus();
+    }
+
+    @Override
+    public String toString() {
+        return "Macro{" +
+                "action=" + action +
+                ", trigger=" + trigger +
+                '}';
     }
 }

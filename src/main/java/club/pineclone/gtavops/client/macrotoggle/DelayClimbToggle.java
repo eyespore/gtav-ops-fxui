@@ -3,15 +3,14 @@ package club.pineclone.gtavops.client.macrotoggle;
 import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.config.MacroConfig;
 import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.client.component.VKeyChooseButton;
-import club.pineclone.gtavops.client.forked.ForkedKeyChooser;
+import club.pineclone.gtavops.client.component.I18nKeyChooseButton;
+import club.pineclone.gtavops.client.forked.I18nKeyChooser;
 import club.pineclone.gtavops.client.forked.ForkedSlider;
-import club.pineclone.gtavops.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import club.pineclone.gtavops.macro.MacroCreationStrategies;
 import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.ui.toggle.ToggleSwitch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javafx.beans.property.ObjectProperty;
 
 import java.util.UUID;
 
@@ -20,8 +19,8 @@ public class DelayClimbToggle extends MacroToggle {
 
     private UUID macroId;
 
-    public DelayClimbToggle(ExtendedI18n i18n) {
-        super(i18n);
+    public DelayClimbToggle(ObjectProperty<ExtendedI18n> i18n) {
+        super(i18n, i -> i.delayClimb.title, DCSettingStage::new);
     }
 
     @Override
@@ -33,16 +32,6 @@ public class DelayClimbToggle extends MacroToggle {
     @Override
     protected void onFeatureDisable() {
         MacroRegistry.getInstance().terminateMacro(macroId);
-    }
-
-    @Override
-    protected String getTitle() {
-        return i18n.delayClimb.title;
-    }
-
-    @Override
-    protected MacroSettingStage getSetting() {
-        return new DCSettingStage(i18n);
     }
 
     @Override
@@ -60,16 +49,14 @@ public class DelayClimbToggle extends MacroToggle {
             extends MacroSettingStage
             implements ResourceHolder {
 
-        private final ExtendedI18n.DelayClimb dcI18n = i18n.delayClimb;
-
         private final MacroConfig config = getConfig();
         private final MacroConfig.DelayClimb dcConfig = config.delayClimb;
 
-        private static final int FLAG_WITH_KEY_AND_MOUSE = ForkedKeyChooser.FLAG_WITH_KEY  | ForkedKeyChooser.FLAG_WITH_MOUSE;
+        private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
 
-        private final VKeyChooseButton toggleDelayClimbKey = new VKeyChooseButton(FLAG_WITH_KEY_AND_MOUSE);
-        private final VKeyChooseButton usePhoneKey = new VKeyChooseButton(FLAG_WITH_KEY_AND_MOUSE);
-        private final VKeyChooseButton hideInCoverKey = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);
+        private final I18nKeyChooseButton toggleDelayClimbKey = new I18nKeyChooseButton(i18n, FLAG_WITH_KEY_AND_MOUSE);
+        private final I18nKeyChooseButton usePhoneKey = new I18nKeyChooseButton(i18n, FLAG_WITH_KEY_AND_MOUSE);
+        private final I18nKeyChooseButton hideInCoverKey = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);
 
         private final ToggleSwitch hideInCoverOnExitToggle = new ToggleSwitch();  /* 是否在结束时尝试躲入掩体 */
 
@@ -93,24 +80,19 @@ public class DelayClimbToggle extends MacroToggle {
             setRange(1000, 4000);
         }};
 
-        public DCSettingStage(ExtendedI18n i18n) {
-            super(i18n);
+        public DCSettingStage(ObjectProperty<ExtendedI18n> i18n) {
+            super(i18n, i -> i.delayClimb.title);
             getContent().getChildren().addAll(contentBuilder()
-                    .divide(dcI18n.baseSetting.title)
-                    .button(dcI18n.baseSetting.usePhoneKey, usePhoneKey)
-                    .button(dcI18n.baseSetting.hideInCoverKey, hideInCoverKey)
-                    .button(dcI18n.baseSetting.toggleDelayClimbKey, toggleDelayClimbKey)
-                    .slider(dcI18n.baseSetting.triggerInterval, triggerIntervalSlider)
-                    .slider(dcI18n.baseSetting.timeUtilCameraExited, timeUtilCameraExitedSlider)
-                    .slider(dcI18n.baseSetting.timeUtilCameraLoaded1, timeUtilCameraLoaded1Slider)
-                    .slider(dcI18n.baseSetting.timeUtilCameraLoaded2, timeUtilCameraLoaded2Slider)
-                    .toggle(dcI18n.baseSetting.hideInCoverOnExit, hideInCoverOnExitToggle)
+                    .divide(i -> i.delayClimb.baseSetting.title)
+                    .button(i -> i.delayClimb.baseSetting.usePhoneKey, usePhoneKey)
+                    .button(i -> i.delayClimb.baseSetting.hideInCoverKey, hideInCoverKey)
+                    .button(i -> i.delayClimb.baseSetting.toggleDelayClimbKey, toggleDelayClimbKey)
+                    .slider(i -> i.delayClimb.baseSetting.triggerInterval, triggerIntervalSlider)
+                    .slider(i -> i.delayClimb.baseSetting.timeUtilCameraExited, timeUtilCameraExitedSlider)
+                    .slider(i -> i.delayClimb.baseSetting.timeUtilCameraLoaded1, timeUtilCameraLoaded1Slider)
+                    .slider(i -> i.delayClimb.baseSetting.timeUtilCameraLoaded2, timeUtilCameraLoaded2Slider)
+                    .toggle(i -> i.delayClimb.baseSetting.hideInCoverOnExit, hideInCoverOnExitToggle)
                     .build());
-        }
-
-        @Override
-        public String getTitle() {
-            return dcI18n.title;
         }
 
         @Override

@@ -1,7 +1,6 @@
 package club.pineclone.gtavops.client.forked;
 
-import club.pineclone.gtavops.i18n.ExtendedI18n;
-import club.pineclone.gtavops.i18n.I18nHolder;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
@@ -9,13 +8,13 @@ import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
 import com.github.kwhat.jnativehook.mouse.NativeMouseListener;
 import com.github.kwhat.jnativehook.mouse.NativeMouseWheelEvent;
 import com.github.kwhat.jnativehook.mouse.NativeMouseWheelListener;
-import io.vproxy.vfx.control.dialog.VDialog;
-import io.vproxy.vfx.control.dialog.VDialogButton;
 import io.vproxy.vfx.entity.input.Key;
 import io.vproxy.vfx.entity.input.KeyCode;
 import io.vproxy.vfx.entity.input.MouseWheelScroll;
 import io.vproxy.vfx.manager.internal_i18n.InternalI18n;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.input.MouseButton;
 
 import java.text.MessageFormat;
@@ -27,7 +26,7 @@ import static com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.*;
 import static com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.KEY_LOCATION_NUMPAD;
 
 
-public class ForkedKeyChooser extends VDialog<Key> {
+public class I18nKeyChooser extends ForkedDialog<Key> {
 
     private final int flags;
 
@@ -39,44 +38,53 @@ public class ForkedKeyChooser extends VDialog<Key> {
     public static final int FLAG_WITH_MOUSE = 0x0002;  // 1 << 1, 监听鼠标按键
     public static final int FLAG_WITH_WHEEL_SCROLL = 0x0004;  // 1 << 2, 监听鼠标滚轮
 
-    public ForkedKeyChooser() {
-        this(FLAG_WITH_KEY);  // 默认监听键盘
+    protected final ObjectProperty<ExtendedI18n> i18n;
+
+    public I18nKeyChooser(ObjectProperty<ExtendedI18n> i18n) {
+        this(i18n, FLAG_WITH_KEY);  // 默认监听键盘
     }
 
-    public ForkedKeyChooser(int flags) {
+    public I18nKeyChooser(ObjectProperty<ExtendedI18n> i18n, int flags) {
         this.flags = flags;
+        this.i18n = i18n;
 
-        List<VDialogButton<Key>> buttons = new ArrayList<>();
-        ExtendedI18n i18n = I18nHolder.get();
+        List<ForkedDialogButton<Key>> buttons = new ArrayList<>();
         if ((flags & FLAG_WITH_MOUSE) == FLAG_WITH_MOUSE) {
-            buttons.add(new VDialogButton<>(InternalI18n.get().keyChooserLeftMouseButton(), new Key(MouseButton.PRIMARY)));
-            buttons.add(new VDialogButton<>(InternalI18n.get().keyChooserMiddleMouseButton(), new Key(MouseButton.MIDDLE)));
-            buttons.add(new VDialogButton<>(InternalI18n.get().keyChooserRightMouseButton(), new Key(MouseButton.SECONDARY)));
-            buttons.add(new VDialogButton<>(i18n.keyChooserForwardMouseButton, new Key(MouseButton.FORWARD)));
-            buttons.add(new VDialogButton<>(i18n.keyChooserBackMouseButton, new Key(MouseButton.BACK)));
+            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.PRIMARY), i18n, i -> i.vfxComponent.keyChooser.primaryMouseButton));
+            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.MIDDLE), i18n, i -> i.vfxComponent.keyChooser.middleMouseButton));
+            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.SECONDARY), i18n, i -> i.vfxComponent.keyChooser.secondaryMouseButton));
+            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.FORWARD), i18n, i -> i.vfxComponent.keyChooser.forwardMouseButton));
+            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.BACK), i18n, i -> i.vfxComponent.keyChooser.backwardMouseButton));
         }
-        buttons.add(new VDialogButton<>(InternalI18n.get().cancelButton(), () -> null));
-        setButtons(buttons);
+        buttons.add(new ForkedDialogButton.I18nDialogButton<>(null, i18n, i -> i.vfxComponent.keyChooser.cancel));
+
+        setButtons(buttons);  /* 调用 setButtons 之后，VDialogButton中的FusionButton button字段初始化完毕 */
+
         boolean withMouse = (flags & (FLAG_WITH_WHEEL_SCROLL | FLAG_WITH_MOUSE)) != 0;
         getMessageNode().setText(withMouse ? InternalI18n.get().keyChooserDesc() : InternalI18n.get().keyChooserDescWithoutMouse());
 
-        if (buttons.size() > 4) {
-            getStage().getStage().setWidth(1200);
-        }
+//        if (buttons.size() > 4) {
+//            getStage().getStage().setWidth(1200);
+//        }
+
+        getStage().getStage().setWidth(600);
 
         List<String> listenedComponents = new ArrayList<>();
 
         if ((flags & FLAG_WITH_KEY) != 0) {
-            listenedComponents.add(i18n.common.keyboard);
-        }
-        if ((flags & FLAG_WITH_MOUSE) != 0) {
-            listenedComponents.add(i18n.common.mouseButton);
-        }
-        if ((flags & FLAG_WITH_WHEEL_SCROLL) != 0) {
-            listenedComponents.add(i18n.common.mouseWheel);
+            listenedComponents.add(i18n.get().common.keyboard);
         }
 
-        getMessageNode().setText(MessageFormat.format(i18n.keyChooserDescription, String.join(",", listenedComponents)));
+        if ((flags & FLAG_WITH_MOUSE) != 0) {
+            listenedComponents.add(i18n.get().common.mouseButton);
+        }
+        if ((flags & FLAG_WITH_WHEEL_SCROLL) != 0) {
+            listenedComponents.add(i18n.get().common.mouseWheel);
+        }
+
+        getMessageNode().textProperty().bind(Bindings.createStringBinding(() ->
+                MessageFormat.format(i18n.get().vfxComponent.keyChooser.description,
+                        String.join(",", listenedComponents)), i18n));
     }
 
     private void registerListeners(int flags) {
@@ -105,14 +113,9 @@ public class ForkedKeyChooser extends VDialog<Key> {
     }
 
     public Optional<Key> choose() {
-        /* TODO: 由于MacroRegistry当中已经手动注册jnativehook全局钩子，此处应该避免重复调用 */
-        /* TODO: 实际上是因为MacroRegistry与VFX的jnativehook生命周期管理存在冲突，因此需要主动避免，未来也许存在更好的解决办法 */
-
-//        GlobalScreenUtils.enable(this);
         registerListeners(flags);
         var ret = showAndWait();
         unregisterListeners(flags);
-//        GlobalScreenUtils.disable(this);
         return ret;
     }
 
@@ -140,8 +143,8 @@ public class ForkedKeyChooser extends VDialog<Key> {
 
             Key finalKey = key;
             Platform.runLater(() -> {
-                ForkedKeyChooser.this.returnValue = finalKey;
-                ForkedKeyChooser.this.getStage().close();
+                I18nKeyChooser.this.returnValue = finalKey;
+                I18nKeyChooser.this.getStage().close();
             });
         }
     }
@@ -175,8 +178,8 @@ public class ForkedKeyChooser extends VDialog<Key> {
             }
 
             Platform.runLater(() -> {
-                ForkedKeyChooser.this.returnValue = key;
-                ForkedKeyChooser.this.getStage().close();
+                I18nKeyChooser.this.returnValue = key;
+                I18nKeyChooser.this.getStage().close();
             });
         }
     }
@@ -197,8 +200,8 @@ public class ForkedKeyChooser extends VDialog<Key> {
             }
 
             Platform.runLater(() -> {
-                ForkedKeyChooser.this.returnValue = key;
-                ForkedKeyChooser.this.getStage().close();
+                I18nKeyChooser.this.returnValue = key;
+                I18nKeyChooser.this.getStage().close();
             });
         }
     }

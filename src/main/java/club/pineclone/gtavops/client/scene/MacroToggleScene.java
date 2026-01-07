@@ -1,10 +1,14 @@
 package club.pineclone.gtavops.client.scene;
 
+import club.pineclone.gtavops.client.forked.ForkedThemeLabel;
+import club.pineclone.gtavops.client.i18n.I18nLoader;
 import club.pineclone.gtavops.client.macrotoggle.MacroToggle;
 import club.pineclone.gtavops.client.macrotoggle.*;
-import club.pineclone.gtavops.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import io.vproxy.vfx.ui.wrapper.ThemeLabel;
 import io.vproxy.vfx.util.FXUtils;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
@@ -15,13 +19,11 @@ public class MacroToggleScene extends SceneTemplate {
 
     private final List<MacroToggle> macroToggles;
 
-    public MacroToggleScene(ExtendedI18n i18n) {
+    public MacroToggleScene(ObjectProperty<ExtendedI18n> i18n) {
         super(i18n);
-        ExtendedI18n.FeatureScene fI18n = i18n.featureScene;
-
         enableAutoContentWidthHeight();
-
-        ThemeLabel headerLabel = new ThemeLabel(fI18n.header);
+        ForkedThemeLabel headerLabel = new ForkedThemeLabel();
+        headerLabel.textProperty().bind(Bindings.createStringBinding(() -> i18n.get().macroToggleScene.header, i18n));
         FXUtils.observeWidthCenter(getContentPane(), headerLabel);
         headerLabel.setLayoutY(40);
 
@@ -75,19 +77,12 @@ public class MacroToggleScene extends SceneTemplate {
     }
 
     @Override
-    public String getTitle() {
-        return i18n.featureScene.title;
-    }
-
-    @Override
     public void onUIInit() {
-//        FeatureTogglePaneRegistry.getInstance().initAll();  /* 初始化所有的特性项 */
         macroToggles.forEach(MacroToggle::onUIInit);
     }
 
     @Override
     public void onUIDispose() {
-//        FeatureTogglePaneRegistry.getInstance().stopAll();  /* 停止所有的特性项 */
         macroToggles.forEach(MacroToggle::onUIDispose);
     }
 }

@@ -3,14 +3,15 @@ package club.pineclone.gtavops.client.macrotoggle;
 import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.config.MacroConfig;
 import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.client.component.VTriggerModeChooseButton;
-import club.pineclone.gtavops.client.component.VKeyChooseButton;
-import club.pineclone.gtavops.client.forked.ForkedKeyChooser;
+import club.pineclone.gtavops.client.component.I18nTriggerModeChooseButton;
+import club.pineclone.gtavops.client.component.I18nKeyChooseButton;
+import club.pineclone.gtavops.client.forked.I18nKeyChooser;
 import club.pineclone.gtavops.client.forked.ForkedSlider;
-import club.pineclone.gtavops.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import club.pineclone.gtavops.macro.MacroCreationStrategies;
 import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.ui.toggle.ToggleSwitch;
+import javafx.beans.property.ObjectProperty;
 
 import java.util.UUID;
 
@@ -20,8 +21,8 @@ public class BetterLButtonToggle extends MacroToggle {
     private UUID rapidlyClickLButtonMacroId;
     private UUID remapLButtonMacroId;
 
-    public BetterLButtonToggle(ExtendedI18n i18n) {
-        super(i18n);
+    public BetterLButtonToggle(ObjectProperty<ExtendedI18n> i18n) {
+        super(i18n, i -> i.betterLButton.title, BLBSettingStage::new);
     }
 
     @Override
@@ -52,16 +53,6 @@ public class BetterLButtonToggle extends MacroToggle {
     }
 
     @Override
-    protected String getTitle() {
-        return i18n.betterLButton.title;
-    }
-
-    @Override
-    protected MacroSettingStage getSetting() {
-        return new BLBSettingStage(i18n);
-    }
-
-    @Override
     public void onUIInit() {
         selectedProperty().set(MacroConfigLoader.get().betterLButton.baseSetting.enable);
     }
@@ -71,56 +62,47 @@ public class BetterLButtonToggle extends MacroToggle {
         MacroConfigLoader.get().betterLButton.baseSetting.enable = selectedProperty().get();
     }
 
-    private static class BLBSettingStage
-            extends MacroSettingStage
-            implements ResourceHolder {
-
-        private final ExtendedI18n.BetterLButton blbI18n = i18n.betterLButton;
+    private static class BLBSettingStage extends MacroSettingStage implements ResourceHolder {
 
         private final MacroConfig config = getConfig();
         private final MacroConfig.BetterLButton blbConfig = config.betterLButton;
 
-        private static final int FLAG_WITH_KEY_AND_MOUSE = ForkedKeyChooser.FLAG_WITH_KEY  | ForkedKeyChooser.FLAG_WITH_MOUSE;
-        private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | ForkedKeyChooser.FLAG_WITH_WHEEL_SCROLL;
+        private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
+        private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | I18nKeyChooser.FLAG_WITH_WHEEL_SCROLL;
 
         private final ToggleSwitch enableHoldLButtonToggle = new ToggleSwitch();
-        private final VKeyChooseButton holdLButtonActivateKeyBtn = new VKeyChooseButton(FLAG_WITH_ALL);
-        private final VTriggerModeChooseButton holdLButtonActivateMethodBtn = new VTriggerModeChooseButton(
-                VTriggerModeChooseButton.FLAG_WITH_HOLD | VTriggerModeChooseButton.FLAG_WITH_TOGGLE);
+        private final I18nKeyChooseButton holdLButtonActivateKeyBtn = new I18nKeyChooseButton(i18n, FLAG_WITH_ALL);
+        private final I18nTriggerModeChooseButton holdLButtonActivateMethodBtn = new I18nTriggerModeChooseButton(i18n,
+                I18nTriggerModeChooseButton.FLAG_WITH_HOLD | I18nTriggerModeChooseButton.FLAG_WITH_TOGGLE);
 
         private final ToggleSwitch enableRapidlyClickLButtonToggle = new ToggleSwitch();
-        private final VKeyChooseButton rapidlyClickLButtonActivateKeyBtn = new VKeyChooseButton(FLAG_WITH_ALL);
-        private final VTriggerModeChooseButton rapidlyClickLButtonActivateMethodBtn = new VTriggerModeChooseButton(
-                VTriggerModeChooseButton.FLAG_WITH_HOLD | VTriggerModeChooseButton.FLAG_WITH_TOGGLE);
+        private final I18nKeyChooseButton rapidlyClickLButtonActivateKeyBtn = new I18nKeyChooseButton(i18n, FLAG_WITH_ALL);
+        private final I18nTriggerModeChooseButton rapidlyClickLButtonActivateMethodBtn = new I18nTriggerModeChooseButton(i18n,
+                I18nTriggerModeChooseButton.FLAG_WITH_HOLD | I18nTriggerModeChooseButton.FLAG_WITH_TOGGLE);
         private final ForkedSlider rapidlyClickLButtonTriggerInterval = new ForkedSlider() {{
             setLength(200);
             setRange(10, 100);
         }};
 
         private final ToggleSwitch enableRemapLButtonToggle = new ToggleSwitch();
-        public final VKeyChooseButton remapLButtonActivateKeyBtn = new VKeyChooseButton();
+        public final I18nKeyChooseButton remapLButtonActivateKeyBtn = new I18nKeyChooseButton(i18n);
 
-        public BLBSettingStage(ExtendedI18n i18n) {
-            super(i18n);
+        public BLBSettingStage(ObjectProperty<ExtendedI18n> i18n) {
+            super(i18n, i -> i.betterLButton.title);
             getContent().getChildren().addAll(contentBuilder()
-                    .divide(blbI18n.holdLButtonSetting.title)
-                    .toggle(blbI18n.holdLButtonSetting.enable, enableHoldLButtonToggle)
-                    .button(blbI18n.holdLButtonSetting.activateMethod, holdLButtonActivateMethodBtn)
-                    .button(blbI18n.holdLButtonSetting.activateKey, holdLButtonActivateKeyBtn)
-                    .divide(blbI18n.rapidlyClickLButtonSetting.title)
-                    .toggle(blbI18n.rapidlyClickLButtonSetting.enable, enableRapidlyClickLButtonToggle)
-                    .button(blbI18n.rapidlyClickLButtonSetting.activateMethod, rapidlyClickLButtonActivateMethodBtn)
-                    .button(blbI18n.rapidlyClickLButtonSetting.activateKey, rapidlyClickLButtonActivateKeyBtn)
-                    .slider(blbI18n.rapidlyClickLButtonSetting.triggerInterval, rapidlyClickLButtonTriggerInterval)
-                    .divide(blbI18n.remapLButtonSetting.title)
-                    .toggle(blbI18n.remapLButtonSetting.enable, enableRemapLButtonToggle)
-                    .button(blbI18n.remapLButtonSetting.activateKey, remapLButtonActivateKeyBtn)
+                    .divide(i -> i.betterLButton.holdLButtonSetting.title)
+                    .toggle(i -> i.betterLButton.holdLButtonSetting.enable, enableHoldLButtonToggle)
+                    .button(i -> i.betterLButton.holdLButtonSetting.activateMethod, holdLButtonActivateMethodBtn)
+                    .button(i -> i.betterLButton.holdLButtonSetting.activateKey, holdLButtonActivateKeyBtn)
+                    .divide(i -> i.betterLButton.rapidlyClickLButtonSetting.title)
+                    .toggle(i -> i.betterLButton.rapidlyClickLButtonSetting.enable, enableRapidlyClickLButtonToggle)
+                    .button(i -> i.betterLButton.rapidlyClickLButtonSetting.activateMethod, rapidlyClickLButtonActivateMethodBtn)
+                    .button(i -> i.betterLButton.rapidlyClickLButtonSetting.activateKey, rapidlyClickLButtonActivateKeyBtn)
+                    .slider(i -> i.betterLButton.rapidlyClickLButtonSetting.triggerInterval, rapidlyClickLButtonTriggerInterval)
+                    .divide(i -> i.betterLButton.remapLButtonSetting.title)
+                    .toggle(i -> i.betterLButton.remapLButtonSetting.enable, enableRemapLButtonToggle)
+                    .button(i -> i.betterLButton.remapLButtonSetting.activateKey, remapLButtonActivateKeyBtn)
                     .build());
-        }
-
-        @Override
-        public String getTitle() {
-            return blbI18n.title;
         }
 
         @Override

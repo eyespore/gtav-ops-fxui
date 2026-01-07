@@ -172,7 +172,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>club.pineclone.gtavops.Main</mainClass>
+                            <mainClass>club.pineclone.gtavops.client.MainFX</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

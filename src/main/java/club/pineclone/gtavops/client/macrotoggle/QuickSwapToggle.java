@@ -3,13 +3,14 @@ package club.pineclone.gtavops.client.macrotoggle;
 import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.config.MacroConfig;
 import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.client.component.VKeyChooseButton;
-import club.pineclone.gtavops.client.forked.ForkedKeyChooser;
+import club.pineclone.gtavops.client.component.I18nKeyChooseButton;
+import club.pineclone.gtavops.client.forked.I18nKeyChooser;
 import club.pineclone.gtavops.client.forked.ForkedSlider;
-import club.pineclone.gtavops.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import club.pineclone.gtavops.macro.MacroCreationStrategies;
 import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.ui.toggle.ToggleSwitch;
+import javafx.beans.property.ObjectProperty;
 
 import java.text.MessageFormat;
 import java.util.UUID;
@@ -19,8 +20,8 @@ public class QuickSwapToggle extends MacroToggle {
 
     private UUID macroId;
 
-    public QuickSwapToggle(ExtendedI18n i18n) {
-        super(i18n);
+    public QuickSwapToggle(ObjectProperty<ExtendedI18n> i18n) {
+        super(i18n, i -> i.quickSwap.title, QSSettingStage::new);
     }
 
     @Override
@@ -32,16 +33,6 @@ public class QuickSwapToggle extends MacroToggle {
     @Override
     protected void onFeatureDisable() {
         MacroRegistry.getInstance().terminateMacro(macroId);
-    }
-
-    @Override
-    protected String getTitle() {
-        return i18n.quickSwap.title;
-    }
-
-    @Override
-    protected MacroSettingStage getSetting() {
-        return new QSSettingStage(i18n);
     }
 
     @Override
@@ -61,57 +52,51 @@ public class QuickSwapToggle extends MacroToggle {
         private final MacroConfig config = getConfig();
         private final MacroConfig.QuickSwap qsConfig = config.getQuickSwap();
         private final MacroConfig.SwapGlitch sgConfig = config.getSwapGlitch();
-        private final ExtendedI18n.QuickSwap qsI18n = i18n.getQuickSwap();
 
-        private static final int FLAG_WITH_KEY_AND_MOUSE = ForkedKeyChooser.FLAG_WITH_KEY  | ForkedKeyChooser.FLAG_WITH_MOUSE;
-        private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | ForkedKeyChooser.FLAG_WITH_WHEEL_SCROLL;
+        private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
+        private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | I18nKeyChooser.FLAG_WITH_WHEEL_SCROLL;
 
         private final ToggleSwitch mapping1Toggle = new ToggleSwitch();  /* 监听远程武器映射1 */
-        private final VKeyChooseButton mapping1SourceKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);  /* 映射1主键 */
-        private final VKeyChooseButton mapping1TargetKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);  /* 映射1目标键 */
+        private final I18nKeyChooseButton mapping1SourceKeyBtn = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);  /* 映射1主键 */
+        private final I18nKeyChooseButton mapping1TargetKeyBtn = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);  /* 映射1目标键 */
 
         private final ToggleSwitch mapping2Toggle = new ToggleSwitch();  /* 监听远程武器映射1 */
-        private final VKeyChooseButton mapping2SourceKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);  /* 映射1主键 */
-        private final VKeyChooseButton mapping2TargetKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);  /* 映射1目标键 */
+        private final I18nKeyChooseButton mapping2SourceKeyBtn = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);  /* 映射1主键 */
+        private final I18nKeyChooseButton mapping2TargetKeyBtn = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);  /* 映射1目标键 */
 
         private final ToggleSwitch mapping3Toggle = new ToggleSwitch();  /* 监听远程武器映射1 */
-        private final VKeyChooseButton mapping3SourceKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);  /* 映射1主键 */
-        private final VKeyChooseButton mapping3TargetKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);  /* 映射1目标键 */
+        private final I18nKeyChooseButton mapping3SourceKeyBtn = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);  /* 映射1主键 */
+        private final I18nKeyChooseButton mapping3TargetKeyBtn = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);  /* 映射1目标键 */
 
         private final ToggleSwitch mapping4Toggle = new ToggleSwitch();  /* 监听远程武器映射4 */
-        private final VKeyChooseButton mapping4SourceKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);  /* 映射1主键 */
-        private final VKeyChooseButton mapping4TargetKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);  /* 映射1目标键 */
+        private final I18nKeyChooseButton mapping4SourceKeyBtn = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);  /* 映射1主键 */
+        private final I18nKeyChooseButton mapping4TargetKeyBtn = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);  /* 映射1目标键 */
 
         private final ToggleSwitch mapping5Toggle = new ToggleSwitch();  /* 监听远程武器映射5 */
-        private final VKeyChooseButton mapping5SourceKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);  /* 映射5主键 */
-        private final VKeyChooseButton mapping5TargetKeyBtn = new VKeyChooseButton(ForkedKeyChooser.FLAG_WITH_KEY);  /* 映射5目标键 */
+        private final I18nKeyChooseButton mapping5SourceKeyBtn = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);  /* 映射5主键 */
+        private final I18nKeyChooseButton mapping5TargetKeyBtn = new I18nKeyChooseButton(i18n, I18nKeyChooser.FLAG_WITH_KEY);  /* 映射5目标键 */
 
         private final ToggleSwitch enableBlockKeyToggle = new ToggleSwitch();  /* 启用屏蔽键 */
-        private final VKeyChooseButton blockKeyBtn = new VKeyChooseButton(FLAG_WITH_ALL);  /* 屏蔽键 */
+        private final I18nKeyChooseButton blockKeyBtn = new I18nKeyChooseButton(i18n, FLAG_WITH_ALL);  /* 屏蔽键 */
         private final ForkedSlider blockDurationSlider = new ForkedSlider() {{  /* 屏蔽有效时间 */
             setLength(300);
             setRange(0, 1000);
         }};
 
-        @Override
-        public String getTitle() {
-            return qsI18n.title;
-        }
-
-        public QSSettingStage(ExtendedI18n i18n) {
-            super(i18n);
+        public QSSettingStage(ObjectProperty<ExtendedI18n> i18n) {
+            super(i18n, i -> i.quickSwap.title);
             getContent().getChildren().addAll(contentBuilder()
                     /* 基础设置 */
-                    .divide(qsI18n.baseSetting.title)
-                    .buttonToggle(MessageFormat.format(qsI18n.baseSetting.quickSwapMapping, 1), mapping1Toggle, mapping1SourceKeyBtn, mapping1TargetKeyBtn)
-                    .buttonToggle(MessageFormat.format(qsI18n.baseSetting.quickSwapMapping, 2), mapping2Toggle, mapping2SourceKeyBtn, mapping2TargetKeyBtn)
-                    .buttonToggle(MessageFormat.format(qsI18n.baseSetting.quickSwapMapping, 3), mapping3Toggle, mapping3SourceKeyBtn, mapping3TargetKeyBtn)
-                    .buttonToggle(MessageFormat.format(qsI18n.baseSetting.quickSwapMapping, 4), mapping4Toggle, mapping4SourceKeyBtn, mapping4TargetKeyBtn)
-                    .buttonToggle(MessageFormat.format(qsI18n.baseSetting.quickSwapMapping, 5), mapping5Toggle, mapping5SourceKeyBtn, mapping5TargetKeyBtn)
+                    .divide(i -> i.quickSwap.baseSetting.title)
+                    .buttonToggle(i -> MessageFormat.format(i.quickSwap.baseSetting.quickSwapMapping, 1), mapping1Toggle, mapping1SourceKeyBtn, mapping1TargetKeyBtn)
+                    .buttonToggle(i -> MessageFormat.format(i.quickSwap.baseSetting.quickSwapMapping, 2), mapping2Toggle, mapping2SourceKeyBtn, mapping2TargetKeyBtn)
+                    .buttonToggle(i -> MessageFormat.format(i.quickSwap.baseSetting.quickSwapMapping, 3), mapping3Toggle, mapping3SourceKeyBtn, mapping3TargetKeyBtn)
+                    .buttonToggle(i -> MessageFormat.format(i.quickSwap.baseSetting.quickSwapMapping, 4), mapping4Toggle, mapping4SourceKeyBtn, mapping4TargetKeyBtn)
+                    .buttonToggle(i -> MessageFormat.format(i.quickSwap.baseSetting.quickSwapMapping, 5), mapping5Toggle, mapping5SourceKeyBtn, mapping5TargetKeyBtn)
                     .gap()
-                    .toggle(qsI18n.baseSetting.enableBlockKey, enableBlockKeyToggle)
-                    .button(qsI18n.baseSetting.blockKey, blockKeyBtn)
-                    .slider(qsI18n.baseSetting.blockDuration, blockDurationSlider)
+                    .toggle(i -> i.quickSwap.baseSetting.enableBlockKey, enableBlockKeyToggle)
+                    .button(i -> i.quickSwap.baseSetting.blockKey, blockKeyBtn)
+                    .slider(i -> i.quickSwap.baseSetting.blockDuration, blockDurationSlider)
                     .build()
             );
         }

@@ -6,7 +6,7 @@ import club.pineclone.gtavops.client.component.VTextField;
 import club.pineclone.gtavops.client.forked.*;
 import club.pineclone.gtavops.client.theme.BaseTheme;
 import club.pineclone.gtavops.pojo.FontpackMetadata;
-import club.pineclone.gtavops.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import club.pineclone.gtavops.service.FontpackService;
 import club.pineclone.gtavops.utils.ColorUtils;
 import club.pineclone.gtavops.utils.PathUtils;
@@ -25,6 +25,7 @@ import io.vproxy.vfx.ui.table.VTableView;
 import io.vproxy.vfx.ui.wrapper.ThemeLabel;
 import io.vproxy.vfx.util.FXUtils;
 import io.vproxy.vfx.util.MiscUtils;
+import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -49,7 +50,6 @@ import java.util.function.Function;
 public class FontPackScene extends SceneTemplate {
 
     private final MacroConfig config;
-    private final ExtendedI18n.FontPackScene fpI18n;
 
     private final FontpackService fontpackService;
     private final VTableView<FontpackMetadata> table;  /* 字体包元数据表格 */
@@ -60,16 +60,14 @@ public class FontPackScene extends SceneTemplate {
     private File update1File;  /* 缓存 */
     private File update2File;
 
-    public FontPackScene(ExtendedI18n i18n) {
+    public FontPackScene(ObjectProperty<ExtendedI18n> i18n) {
         super(i18n);
-
-        fpI18n = i18n.fontPackScene;
         this.config = MacroConfigLoader.get();
 
         fontpackService = FontpackService.getInstance();
         enableAutoContentWidthHeight();
 
-        ThemeLabel pathLabel = new ThemeLabel(fpI18n.gamePath);
+        ThemeLabel pathLabel = new ThemeLabel("fpI18n.gamePath");
         HBox pathLabelContent = new HBox(10);
         pathLabelContent.setPadding(new Insets(24, 0, 0, 0));
 
@@ -81,7 +79,7 @@ public class FontPackScene extends SceneTemplate {
 
             String gameHome = config.gameHome;
             if (gameHome == null || gameHome.isEmpty()) {
-                setText(fpI18n.emptyGameHome);
+                setText("fpI18n.emptyGameHome");
             } else {
                 setText(gameHome);
             }
@@ -97,11 +95,11 @@ public class FontPackScene extends SceneTemplate {
         table.getNode().setPrefHeight(480);
 
 //        var idCol = new ForkedTableColumn<FontPackMetadata, Object>("id", data -> data.id);
-        var nameCol = new ForkedTableColumn<FontpackMetadata, FontpackMetadata>(fpI18n.name, Function.identity());
-        var enabledCol = new ForkedTableColumn<FontpackMetadata, FontpackMetadata>(fpI18n.status, Function.identity());
-        var typeCol = new ForkedTableColumn<>(fpI18n.type, FontpackMetadata::formatType);
-        var sizeCol = new ForkedTableColumn<>(fpI18n.size, FontpackMetadata::formatSize);
-        var createTimeCol = new ForkedTableColumn<>(fpI18n.createAt, FontpackMetadata::formatCreatedAt);
+        var nameCol = new ForkedTableColumn<FontpackMetadata, FontpackMetadata>("fpI18n.name", Function.identity());
+        var enabledCol = new ForkedTableColumn<FontpackMetadata, FontpackMetadata>("fpI18n.status", Function.identity());
+        var typeCol = new ForkedTableColumn<>("fpI18n.type", FontpackMetadata::formatType);
+        var sizeCol = new ForkedTableColumn<>("fpI18n.size", FontpackMetadata::formatSize);
+        var createTimeCol = new ForkedTableColumn<>("fpI18n.createAt", FontpackMetadata::formatCreatedAt);
 
 //        idCol.setMinWidth(300);
         nameCol.setPrefWidth(400);
@@ -166,7 +164,7 @@ public class FontPackScene extends SceneTemplate {
         FusionPane controlPane = new FusionPane(false);
 
         /* 激活字体包按钮 */
-        fontpackToggleBtn = new FusionButton(fpI18n.activateFontpack) {{
+        fontpackToggleBtn = new FusionButton("fpI18n.activateFontpack") {{
             setOnAction(e -> {
                 var selected = table.getSelectedItem();
                 if (selected == null) {
@@ -175,20 +173,20 @@ public class FontPackScene extends SceneTemplate {
 
                 if (config.gameHome == null || config.gameHome.isEmpty()) {
                     /* 未选择家目录，提醒用户选择目录 */
-                    ForkedDialog.simpleDialog(
-                            fpI18n.emptyGameHomeAlert, Modality.APPLICATION_MODAL, ForkedDialog.CONFIRM
+                    FontPackDialog.simpleDialog(
+                            "fpI18n.emptyGameHomeAlert", Modality.APPLICATION_MODAL, FontPackDialog.CONFIRM
                     ).showAndWait();
                     return;
                 }
 
-                ForkedDialog<Integer> dialog = ForkedDialog.simpleDialog(
-                        MessageFormat.format(fpI18n.confirmActivateFontpack, selected.getName()),
+                FontPackDialog<Integer> dialog = FontPackDialog.simpleDialog(
+                        MessageFormat.format("fpI18n.confirmActivateFontpack", selected.getName()),
                         Modality.APPLICATION_MODAL
                 );
 
                 /* 询问用户是否激活字体包 */
                 Optional<Integer> result = dialog.showAndWait();
-                if (result.filter(i -> i == ForkedDialog.CONFIRM).isPresent()) {
+                if (result.filter(i -> i == FontPackDialog.CONFIRM).isPresent()) {
                     /* 用户选择激活字体包 */
                     int structure = selected.getStructure();
                     boolean flag = false;
@@ -199,7 +197,7 @@ public class FontPackScene extends SceneTemplate {
                     }
                     if (!flag) {
                         /* 拷贝失败 */
-                        ForkedDialog.simpleDialog(fpI18n.importFailure, Modality.APPLICATION_MODAL, ForkedDialog.CONFIRM).showAndWait();
+                        FontPackDialog.simpleDialog("fpI18n.importFailure", Modality.APPLICATION_MODAL, FontPackDialog.CONFIRM).showAndWait();
                     }
                 }
             });
@@ -211,10 +209,10 @@ public class FontPackScene extends SceneTemplate {
             FontpackMetadata selectedItem = table.getSelectedItem();
             if (selectedItem != null && selectedItem.getEnabled()) {
                 fontpackToggleBtn.setDisable(true);
-                fontpackToggleBtn.setText(fpI18n.alreadyActivated);
+                fontpackToggleBtn.setText("fpI18n.alreadyActivated");
             } else {
                 fontpackToggleBtn.setDisable(false);
-                fontpackToggleBtn.setText(fpI18n.activateFontpack);
+                fontpackToggleBtn.setText("fpI18n.activateFontpack");
             }
         });
 
@@ -223,14 +221,14 @@ public class FontPackScene extends SceneTemplate {
                 fontpackToggleBtn,
                 new VPadding(10),
                 /* 导入字体包 */
-                new FusionButton(fpI18n.importFontpack) {{
+                new FusionButton("fpI18n.importFontpack") {{
                     setOnAction(e -> {
                         update1File = null;  /* 清除缓存 */
                         update2File = null;
 
-                        ForkedDialog<Integer> dialog = ForkedDialog.simpleDialog(Modality.APPLICATION_MODAL);
+                        FontPackDialog<Integer> dialog = FontPackDialog.simpleDialog(Modality.APPLICATION_MODAL);
                         dialog.getVStage().getStage().setWidth(600);
-                        dialog.setHeaderText(fpI18n.chooseFontpackResource + ": ");
+                        dialog.setHeaderText("fpI18n.chooseFontpackResource" + ": ");
 
                         HBox content = dialog.getBody();
                         content.setAlignment(Pos.CENTER_LEFT);
@@ -238,19 +236,19 @@ public class FontPackScene extends SceneTemplate {
                         HBox update1FileChooseContent = new HBox(10);
                         update1FileChooseContent.setPadding(new Insets(24, 0, 0, 0));
 
-                        ThemeLabel update1FileLabel = new ThemeLabel(fpI18n.update1File);
+                        ThemeLabel update1FileLabel = new ThemeLabel("fpI18n.update1File");
 
                         FusionButton update1FileChooseBtn = new FusionButton() {{
                             setPrefWidth(400);
                             setPrefHeight(35);
-                            setOnAction(e -> selectFontpackFile(fpI18n.chooseUpdate1File).ifPresent(f -> {
+                            setOnAction(e -> selectFontpackFile("fpI18n.chooseUpdate1File").ifPresent(f -> {
                                 update1File = f;
                                 setText(update1File.getAbsolutePath());
                             }));
                             setDisableAnimation(true);
                         }};
 
-                        update1FileChooseBtn.setText(fpI18n.update1FileBtnText);
+                        update1FileChooseBtn.setText("fpI18n.update1FileBtnText");
                         update1FileChooseContent.getChildren().addAll(update1FileLabel, update1FileChooseBtn);
                         update1FileChooseContent.setAlignment(Pos.CENTER);
                         update1FileChooseContent.setLayoutY(10);
@@ -259,18 +257,18 @@ public class FontPackScene extends SceneTemplate {
                         HBox update2FileChooseContent = new HBox(10);
                         update2FileChooseContent.setPadding(new Insets(24, 0, 0, 0));
 
-                        ThemeLabel update2FileLabel = new ThemeLabel(fpI18n.update2File);
+                        ThemeLabel update2FileLabel = new ThemeLabel("fpI18n.update2File");
                         FusionButton update2FileChooseBtn = new FusionButton() {{
                             setPrefWidth(400);
                             setPrefHeight(35);
-                            setOnAction(e -> selectFontpackFile(fpI18n.chooseUpdate2File).ifPresent(f -> {
+                            setOnAction(e -> selectFontpackFile("fpI18n.chooseUpdate2File").ifPresent(f -> {
                                 update2File = f;
                                 setText(update2File.getAbsolutePath());
                             }));
                             setDisableAnimation(true);
                         }};
 
-                        update2FileChooseBtn.setText(fpI18n.update2FileBtnText);
+                        update2FileChooseBtn.setText("fpI18n.update2FileBtnText");
                         update2FileChooseContent.getChildren().addAll(update2FileLabel, update2FileChooseBtn);
                         update2FileChooseContent.setAlignment(Pos.CENTER);
                         update2FileChooseContent.setLayoutY(10);
@@ -283,10 +281,10 @@ public class FontPackScene extends SceneTemplate {
 
                         Optional<Integer> result = dialog.showAndWait();
 
-                        if (result.filter(i -> i == ForkedDialog.CONFIRM).isPresent()) {
+                        if (result.filter(i -> i == FontPackDialog.CONFIRM).isPresent()) {
                             if (update1File == null && update2File == null) {
                                 /* 不允许update1.rpf与update2.rpf同时为null */
-                                ForkedAlert.showAndWait(Alert.AlertType.ERROR, fpI18n.illegalFontpackContribute);
+                                ForkedAlert.showAndWait(Alert.AlertType.ERROR, "fpI18n.illegalFontpackContribute");
                                 return;
                             }
 
@@ -312,25 +310,25 @@ public class FontPackScene extends SceneTemplate {
                 new VPadding(10),
 
                 /* 删除字体包 */
-                new FusionButton(fpI18n.removeFontpack) {{
+                new FusionButton("fpI18n.removeFontpack") {{
                     setOnAction(e -> {
                         var selected = table.getSelectedItem();
                         if (selected == null) return;
 
                         if (selected.getEnabled()) {
                             /* 当前字体包被启用，禁止删除 */
-                            ForkedAlert.showAndWait(Alert.AlertType.WARNING, fpI18n.fontpackIsEnabled);
+                            ForkedAlert.showAndWait(Alert.AlertType.WARNING, "fpI18n.fontpackIsEnabled");
                             return;
                         }
 
                         /* 询问用户是否删除 */
-                        ForkedDialog<Integer> dialog = ForkedDialog.simpleDialog(
-                                MessageFormat.format(fpI18n.confirmRemoveFontpack, selected.getName()),
+                        FontPackDialog<Integer> dialog = FontPackDialog.simpleDialog(
+                                MessageFormat.format("fpI18n.confirmRemoveFontpack", selected.getName()),
                                 Modality.APPLICATION_MODAL
                         );
                         Optional<Integer> result = dialog.showAndWait();
 
-                        if (result.filter(i -> i == ForkedDialog.CONFIRM).isPresent()) {
+                        if (result.filter(i -> i == FontPackDialog.CONFIRM).isPresent()) {
                             try {
                                 boolean flag = fontpackService.deleteFontPack(selected.getId());
                                 if (flag) {
@@ -374,7 +372,7 @@ public class FontPackScene extends SceneTemplate {
             refreshTable();
 
         } catch (IOException ex) {
-            ForkedDialog.stackTraceDialog(ex, ForkedDialog.CONFIRM).showAndWait();
+            FontPackDialog.stackTraceDialog(ex, FontPackDialog.CONFIRM).showAndWait();
         }
     }
 
@@ -386,7 +384,7 @@ public class FontPackScene extends SceneTemplate {
 
     private boolean selectGameHome() {
         /* 让用户选择游戏目录 */
-        File file = selectDirectory(fpI18n.chooseGameHome);
+        File file = selectDirectory("fpI18n.chooseGameHome");
         if (file == null) return false;
 
         String absPath = file.getAbsolutePath();
@@ -396,7 +394,7 @@ public class FontPackScene extends SceneTemplate {
         Path updateDir = path.resolve("update");
         if (Files.notExists(updateDir)) {
             /* update目录不存在，鉴定为错误的游戏目录 */
-            ForkedAlert.showAndWait(Alert.AlertType.WARNING, fpI18n.illegalGameHome);
+            ForkedAlert.showAndWait(Alert.AlertType.WARNING, "fpI18n.illegalGameHome");
             return false;
         }
 
@@ -406,22 +404,22 @@ public class FontPackScene extends SceneTemplate {
 
         if (Files.exists(originalUpdate1File) && Files.exists(originalUpdate2File)) {
             /* 存在原始字体包，询问是否保存 */
-            ForkedDialog<Integer> dialog = ForkedDialog.simpleDialog(
-                    MessageFormat.format(fpI18n.fontpackExisted,
+            FontPackDialog<Integer> dialog = FontPackDialog.simpleDialog(
+                    MessageFormat.format("fpI18n.fontpackExisted",
                             originalUpdate1File.toAbsolutePath().toString(),
                             originalUpdate2File.toAbsolutePath().toString()),
                     Modality.APPLICATION_MODAL
             );
 
             Optional<Integer> result = dialog.showAndWait();
-            if (result.filter(i -> i == ForkedDialog.CONFIRM).isPresent()) {
+            if (result.filter(i -> i == FontPackDialog.CONFIRM).isPresent()) {
                 /* 用户确认保存字体包，键入字体包名称 */
                 Optional<String> fontpackName = readFontpackNameFromUser();
                 fontpackName.ifPresent(s -> importBaseFontpack(s, originalUpdate1File, originalUpdate2File));
             }
         } else {
             /* 原始字体包不完整，提醒用户校验文件完整性 */
-            ForkedAlert.showAndWait(Alert.AlertType.ERROR, fpI18n.illegalOriginalFontpackContribute);
+            ForkedAlert.showAndWait(Alert.AlertType.ERROR, "fpI18n.illegalOriginalFontpackContribute");
             return false;
         }
         config.gameHome = absPath;
@@ -430,16 +428,16 @@ public class FontPackScene extends SceneTemplate {
     }
 
     private Optional<String> readFontpackNameFromUser() {
-        ForkedDialog<Integer> dialog = ForkedDialog.simpleDialog(Modality.APPLICATION_MODAL);
+        FontPackDialog<Integer> dialog = FontPackDialog.simpleDialog(Modality.APPLICATION_MODAL);
         dialog.getVStage().getStage().setWidth(600);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String defaultFontpackName = fpI18n.defaultNaming + ZonedDateTime.now().format(formatter);
+        String defaultFontpackName = "fpI18n.defaultNaming" + ZonedDateTime.now().format(formatter);
 
         HBox content = dialog.getBody();
         content.setAlignment(Pos.CENTER_LEFT);
 
-        ThemeLabel fontpackNameLabel = new ThemeLabel(fpI18n.fontpackName + ": ");
+        ThemeLabel fontpackNameLabel = new ThemeLabel("fpI18n.fontpackName" + ": ");
         VTextField fontpackTextField = new VTextField() {{
             setPromptText(defaultFontpackName);
             setPrefWidth(350);
@@ -451,7 +449,7 @@ public class FontPackScene extends SceneTemplate {
                 fontpackTextField);
 
         Optional<Integer> result = dialog.showAndWait();
-        if (result.filter(i -> i == ForkedDialog.CONFIRM).isPresent()) {
+        if (result.filter(i -> i == FontPackDialog.CONFIRM).isPresent()) {
             String fontpackName = fontpackTextField.getText();
 
             if (fontpackName == null || fontpackName.trim().isEmpty()) {
@@ -489,7 +487,7 @@ public class FontPackScene extends SceneTemplate {
                         asyncCopyWithProgress(patchFile, patchFileTarget, new Callback<>() {
                             @Override
                             protected void onSucceeded(Void unused) {
-                                FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, fpI18n.importSuccess));
+                                FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, "fpI18n.importSuccess"));
                                 /*拷贝成功 变更状态 */
                                 updateAsEnableFontpack(fontpack);
                             }
@@ -498,13 +496,13 @@ public class FontPackScene extends SceneTemplate {
                             protected void onFailed(LoadingFailure loadingFailure) {
                                 FXUtils.runDelay(20, () ->
                                         ForkedAlert.showAndWait(Alert.AlertType.ERROR, loadingFailure.getMessage()));
-                                ForkedDialog.stackTraceDialog(loadingFailure.getCause(), ForkedDialog.CONFIRM).showAndWait();
+                                FontPackDialog.stackTraceDialog(loadingFailure.getCause(), FontPackDialog.CONFIRM).showAndWait();
                             }
-                        }, () -> {}, identity == 1 ? fpI18n.copyingUpdate1File : fpI18n.copyingUpdate2File);
+                        }, () -> {}, identity == 1 ? "fpI18n.copyingUpdate1File" : "fpI18n.copyingUpdate2File");
 
                     } catch (IOException ex) {
                         /* 拷贝失败 */
-                        ForkedDialog.stackTraceDialog(ex, ForkedDialog.CONFIRM).showAndWait();
+                        FontPackDialog.stackTraceDialog(ex, FontPackDialog.CONFIRM).showAndWait();
                         Logger.error(LogType.FILE_ERROR, ex.getMessage());
                     }
                 }
@@ -513,13 +511,13 @@ public class FontPackScene extends SceneTemplate {
                 protected void onFailed(LoadingFailure loadingFailure) {
                     FXUtils.runDelay(20, () ->
                             ForkedAlert.showAndWait(Alert.AlertType.ERROR, loadingFailure.getMessage()));
-                    ForkedDialog.stackTraceDialog(loadingFailure.getCause(), ForkedDialog.CONFIRM).showAndWait();
+                    FontPackDialog.stackTraceDialog(loadingFailure.getCause(), FontPackDialog.CONFIRM).showAndWait();
                 }
-            }, () -> {}, identity == 0 ? fpI18n.copyingUpdate1File : fpI18n.copyingUpdate2File);
+            }, () -> {}, identity == 0 ? "fpI18n.copyingUpdate1File" : "fpI18n.copyingUpdate2File");
 
         } catch (IOException ex) {
             /* 拷贝失败 */
-            ForkedDialog.stackTraceDialog(ex, ForkedDialog.CONFIRM).showAndWait();
+            FontPackDialog.stackTraceDialog(ex, FontPackDialog.CONFIRM).showAndWait();
             Logger.error(LogType.FILE_ERROR, ex.getMessage());
         }
 
@@ -546,7 +544,7 @@ public class FontPackScene extends SceneTemplate {
                         asyncCopyWithProgress(update2File, update2FileTarget, new Callback<>() {
                             @Override
                             protected void onSucceeded(Void unused) {
-                                FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, fpI18n.importSuccess));
+                                FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, "fpI18n.importSuccess"));
                                 /*拷贝成功 变更状态 */
                                 updateAsEnableFontpack(fontpack);
                             }
@@ -555,13 +553,13 @@ public class FontPackScene extends SceneTemplate {
                             protected void onFailed(LoadingFailure loadingFailure) {
                                 FXUtils.runDelay(20, () ->
                                         ForkedAlert.showAndWait(Alert.AlertType.ERROR, loadingFailure.getMessage()));
-                                ForkedDialog.stackTraceDialog(loadingFailure.getCause(), ForkedDialog.CONFIRM).showAndWait();
+                                FontPackDialog.stackTraceDialog(loadingFailure.getCause(), FontPackDialog.CONFIRM).showAndWait();
                             }
-                        }, () -> {}, fpI18n.copyingUpdate2File);
+                        }, () -> {}, "fpI18n.copyingUpdate2File");
 
                     } catch (IOException ex) {
                         /* 拷贝失败 */
-                        ForkedDialog.stackTraceDialog(ex, ForkedDialog.CONFIRM).showAndWait();
+                        FontPackDialog.stackTraceDialog(ex, FontPackDialog.CONFIRM).showAndWait();
                         Logger.error(LogType.FILE_ERROR, ex.getMessage());
                     }
                 }
@@ -570,13 +568,13 @@ public class FontPackScene extends SceneTemplate {
                 protected void onFailed(LoadingFailure loadingFailure) {
                     FXUtils.runDelay(20, () ->
                             ForkedAlert.showAndWait(Alert.AlertType.ERROR, loadingFailure.getMessage()));
-                    ForkedDialog.stackTraceDialog(loadingFailure.getCause(), ForkedDialog.CONFIRM).showAndWait();
+                    FontPackDialog.stackTraceDialog(loadingFailure.getCause(), FontPackDialog.CONFIRM).showAndWait();
                 }
-            }, () -> {}, fpI18n.copyingUpdate1File);
+            }, () -> {}, "fpI18n.copyingUpdate1File");
 
         } catch (IOException ex) {
             /* 拷贝失败 */
-            ForkedDialog.stackTraceDialog(ex, ForkedDialog.CONFIRM).showAndWait();
+            FontPackDialog.stackTraceDialog(ex, FontPackDialog.CONFIRM).showAndWait();
             Logger.error(LogType.FILE_ERROR, ex.getMessage());
         }
 
@@ -602,7 +600,7 @@ public class FontPackScene extends SceneTemplate {
                 @Override
                 protected void onSucceeded(Void unused) {
                     /* 拷贝成功 */
-                    FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, fpI18n.importSuccess));
+                    FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, "fpI18n.importSuccess"));
                     refreshTable();  /* 刷新表格 */
                 }
 
@@ -610,10 +608,10 @@ public class FontPackScene extends SceneTemplate {
                 protected void onFailed(LoadingFailure loadingFailure) {
                     FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
                 }
-            }, () -> {}, identity == 0 ? fpI18n.copyingUpdate1File : fpI18n.copyingUpdate2File);
+            }, () -> {}, identity == 0 ? "fpI18n.copyingUpdate1File" : "fpI18n.copyingUpdate2File");
 
         } catch (IOException e) {
-            ForkedDialog.stackTraceDialog(e, ForkedDialog.CONFIRM).showAndWait();
+            FontPackDialog.stackTraceDialog(e, FontPackDialog.CONFIRM).showAndWait();
             Logger.error(LogType.FILE_ERROR, e.getMessage());
         }
     }
@@ -644,7 +642,7 @@ public class FontPackScene extends SceneTemplate {
                             @Override
                             protected void onSucceeded(Void unused) {
                                 /* 拷贝成功 */
-                                FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, fpI18n.importSuccess));
+                                FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, "fpI18n.importSuccess"));
                                 refreshTable();
                             }
 
@@ -652,10 +650,10 @@ public class FontPackScene extends SceneTemplate {
                             protected void onFailed(LoadingFailure loadingFailure) {
                                 FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
                             }
-                        }, () -> {}, fpI18n.copyingUpdate2File);
+                        }, () -> {}, "fpI18n.copyingUpdate2File");
 
                     } catch (IOException e) {
-                        ForkedDialog.stackTraceDialog(e, ForkedDialog.CONFIRM).showAndWait();
+                        FontPackDialog.stackTraceDialog(e, FontPackDialog.CONFIRM).showAndWait();
                         Logger.error(LogType.FILE_ERROR, e.getMessage());
                     }
                 }
@@ -664,10 +662,10 @@ public class FontPackScene extends SceneTemplate {
                 protected void onFailed(LoadingFailure loadingFailure) {
                     FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
                 }
-            }, () -> {}, fpI18n.copyingUpdate1File);
+            }, () -> {}, "fpI18n.copyingUpdate1File");
 
         } catch (IOException e) {
-            ForkedDialog.stackTraceDialog(e, ForkedDialog.CONFIRM).showAndWait();
+            FontPackDialog.stackTraceDialog(e, FontPackDialog.CONFIRM).showAndWait();
             Logger.error(LogType.FILE_ERROR, e.getMessage());
         }
     }
@@ -701,7 +699,7 @@ public class FontPackScene extends SceneTemplate {
                             @Override
                             protected void onSucceeded(Void unused) {
                                 /* 拷贝成功 */
-                                FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, fpI18n.importSuccess));
+                                FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, "fpI18n.importSuccess"));
                                 updateAsEnableFontpack(newFontpack);  /* 将基础字体包设置为激活状态 */
                                 refreshTable();  /* 刷新表格 */
                             }
@@ -710,10 +708,10 @@ public class FontPackScene extends SceneTemplate {
                             protected void onFailed(LoadingFailure loadingFailure) {
                                 FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
                             }
-                        }, () -> {}, fpI18n.copyingUpdate2File);
+                        }, () -> {}, "fpI18n.copyingUpdate2File");
 
                     } catch (IOException e) {
-                        ForkedDialog.stackTraceDialog(e, ForkedDialog.CONFIRM).showAndWait();
+                        FontPackDialog.stackTraceDialog(e, FontPackDialog.CONFIRM).showAndWait();
                         Logger.error(LogType.FILE_ERROR, e.getMessage());
                     }
                 }
@@ -722,26 +720,26 @@ public class FontPackScene extends SceneTemplate {
                 protected void onFailed(LoadingFailure loadingFailure) {
                     FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
                 }
-            }, () -> {}, fpI18n.copyingUpdate1File);
+            }, () -> {}, "fpI18n.copyingUpdate1File");
 
         } catch (IOException ex) {
             /* 创建字体包出错，回滚 */
-            ForkedDialog.stackTraceDialog(ex, ForkedDialog.CONFIRM).showAndWait();
+            FontPackDialog.stackTraceDialog(ex, FontPackDialog.CONFIRM).showAndWait();
             Logger.error(LogType.FILE_ERROR, ex.getMessage());
         }
     }
 
     private void onFailed(LoadingFailure loadingFailure, String fontpackId) {
-        FXUtils.runDelay(20, () -> ForkedDialog.stackTraceDialog(loadingFailure.getCause(), ForkedDialog.CONFIRM).showAndWait());
+        FXUtils.runDelay(20, () -> FontPackDialog.stackTraceDialog(loadingFailure.getCause(), FontPackDialog.CONFIRM).showAndWait());
         try {
             fontpackService.deleteFontPack(fontpackId);  /* 清理文件 */
         } catch (IOException e) {
-            ForkedDialog.stackTraceDialog(e, ForkedDialog.CONFIRM).showAndWait();
+            FontPackDialog.stackTraceDialog(e, FontPackDialog.CONFIRM).showAndWait();
         }
     }
 
     private void asyncCopyWithProgress(Path source, Path target, Callback<Void, LoadingFailure> cb, Runnable doFinally, String intro) throws IOException {
-        var stage = new ForkedLoadingStage(fpI18n.importingFontpack);
+        var stage = new ForkedLoadingStage("fpI18n.importingFontpack");
         stage.getStage().initModality(Modality.APPLICATION_MODAL);
 
         List<LoadingItem> loadingItems = new ArrayList<>();
@@ -776,7 +774,7 @@ public class FontPackScene extends SceneTemplate {
                     in.close();
                     out.close();
                 } catch (IOException ex) {
-                    ForkedDialog.stackTraceDialog(ex, ForkedDialog.CONFIRM).showAndWait();
+                    FontPackDialog.stackTraceDialog(ex, FontPackDialog.CONFIRM).showAndWait();
                     Logger.error(LogType.FILE_ERROR, ex.getMessage());
                 } finally {
                     stage.close();
@@ -812,7 +810,7 @@ public class FontPackScene extends SceneTemplate {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
         fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter(fpI18n.fontpackFileDesc, "*.rpf")
+                new FileChooser.ExtensionFilter("fpI18n.fontpackFileDesc", "*.rpf")
         );
         return Optional.of(fileChooser.showOpenDialog(this.getContentPane().getScene().getWindow()));
     }
@@ -820,10 +818,5 @@ public class FontPackScene extends SceneTemplate {
     /* 刷新表 */
     private void refreshTable() {
         table.setItems(fontpackService.listFontPacks());
-    }
-
-    @Override
-    public String getTitle() {
-        return i18n.fontPackScene.title;
     }
 }
