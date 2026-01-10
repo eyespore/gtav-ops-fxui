@@ -1,7 +1,7 @@
 package club.pineclone.gtavops.config;
 
 import club.pineclone.gtavops.common.SessionType;
-import club.pineclone.gtavops.macro.trigger.TriggerMode;
+import club.pineclone.gtavops.common.TriggerMode;
 import io.vproxy.vfx.entity.input.Key;
 import io.vproxy.vfx.entity.input.KeyCode;
 import io.vproxy.vfx.entity.input.MouseWheelScroll;
@@ -9,8 +9,6 @@ import javafx.scene.input.MouseButton;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor

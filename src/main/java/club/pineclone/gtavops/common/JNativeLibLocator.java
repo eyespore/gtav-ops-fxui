@@ -1,6 +1,5 @@
 package club.pineclone.gtavops.common;
 
-import club.pineclone.gtavops.utils.PathUtils;
 import com.github.kwhat.jnativehook.DefaultLibraryLocator;
 import com.github.kwhat.jnativehook.NativeLibraryLocator;
 
@@ -10,10 +9,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class JLibLocator implements NativeLibraryLocator {
+public class JNativeLibLocator implements NativeLibraryLocator {
 
     static {
-        System.setProperty("jnativehook.lib.locator", JLibLocator.class.getCanonicalName());
+        System.setProperty("jnativehook.lib.locator", JNativeLibLocator.class.getCanonicalName());
     }
 
     private static final DefaultLibraryLocator defaultLocator = new DefaultLibraryLocator();

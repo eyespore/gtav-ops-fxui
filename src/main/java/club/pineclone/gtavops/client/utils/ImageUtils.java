@@ -1,4 +1,4 @@
-package club.pineclone.gtavops.utils;
+package club.pineclone.gtavops.client.utils;
 
 import io.vproxy.base.util.LogType;
 import io.vproxy.base.util.Logger;

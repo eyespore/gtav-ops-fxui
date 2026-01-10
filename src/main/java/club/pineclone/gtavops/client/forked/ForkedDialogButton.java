@@ -1,14 +1,12 @@
 package club.pineclone.gtavops.client.forked;
 
-import club.pineclone.gtavops.client.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.I18nContext;
+import club.pineclone.gtavops.client.i18n.I18nText;
 import io.vproxy.vfx.ui.button.FusionButton;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ForkedDialogButton<T> {
@@ -34,9 +32,10 @@ public class ForkedDialogButton<T> {
     }
 
     public static class I18nDialogButton<T> extends ForkedDialogButton<T> {
-        public I18nDialogButton(T value, ObjectProperty<ExtendedI18n> i18n, Function<ExtendedI18n, String> textProvider) {
+
+        public I18nDialogButton(T value, I18nContext i18nContext, I18nText buttonText) {
             super(value);
-            textProperty().bind(Bindings.createStringBinding(() -> textProvider.apply(i18n.get()), i18n));
+            textProperty().bind(buttonText.binding(i18nContext));
         }
     }
 }

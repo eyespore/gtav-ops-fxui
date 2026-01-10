@@ -39,6 +39,10 @@ module club.pineclone.gtavops {
     exports club.pineclone.gtavops.macro.action.impl.actionext;
     exports club.pineclone.gtavops.client;
     exports club.pineclone.gtavops.client.config;
+    exports club.pineclone.gtavops.client.component;
+    exports club.pineclone.gtavops.client.forked;
     opens club.pineclone.gtavops.client;
     exports club.pineclone.gtavops.macro.action.impl.swapglitch;
+    exports club.pineclone.gtavops.client.utils;
+    opens club.pineclone.gtavops.client.utils;
 }

@@ -1,5 +1,6 @@
 package club.pineclone.gtavops.macro.trigger;
 
+import club.pineclone.gtavops.common.TriggerMode;
 import club.pineclone.gtavops.macro.trigger.policy.ActivationPolicy;
 import club.pineclone.gtavops.macro.trigger.source.KeyboardSource;
 import club.pineclone.gtavops.macro.trigger.source.MouseButtonSource;
@@ -8,7 +9,6 @@ import io.vproxy.vfx.entity.input.Key;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

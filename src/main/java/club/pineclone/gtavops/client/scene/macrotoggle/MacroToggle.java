@@ -1,13 +1,12 @@
-package club.pineclone.gtavops.client.macrotoggle;
+package club.pineclone.gtavops.client.scene.macrotoggle;
 
 import club.pineclone.gtavops.client.UILifecycleAware;
 import club.pineclone.gtavops.client.forked.ForkedThemeLabel;
-import club.pineclone.gtavops.client.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.I18nContext;
+import club.pineclone.gtavops.client.i18n.I18nText;
 import io.vproxy.vfx.ui.pane.FusionPane;
 import io.vproxy.vfx.ui.toggle.ToggleSwitch;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -19,8 +18,7 @@ import javafx.scene.layout.Region;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.BiFunction;
 
 /**
  * 功能开关用于配置某一项功能是否被开启，主要用于编写宏相关功能的UI界面，一个功能开关在左键点击时会开关对应的功能，
@@ -31,29 +29,31 @@ public abstract class MacroToggle implements UILifecycleAware {
     private final ToggleSwitch toggle;  /* 宏功能开关 */
     private final FusionPane content;  /* UI 面板 */
 
-    protected final ObjectProperty<ExtendedI18n> i18n;
+    protected final I18nContext i18nContext;
     protected final Logger log = LoggerFactory.getLogger(getClass());
     protected final ForkedThemeLabel label;
-    protected final Function<ObjectProperty<ExtendedI18n>, MacroSettingStage> settingStageSupplier;
+    protected final BiFunction<I18nContext, I18nText, MacroSettingStage> settingStageSupplier;
+    protected final I18nText introLabel;
 
     /**
      * 创建一个宏开关面板，所有宏开关面板会被基于gridPane布局按照行列排列在MacroToggleScene当中
-     * @param i18n 本地化
-     * @param titleProvider 为宏开关提供标题
+     * @param i18nContext 本地化
+     * @param introTitle 功能标题，该标题默认作为设置页的标题使用，除非显式修改标题获取逻辑
      * @param settingStageProvider 为宏开关提供右击菜单面板
      */
     public MacroToggle(
-            ObjectProperty<ExtendedI18n> i18n,
-            Function<ExtendedI18n, String> titleProvider,
-            Function<ObjectProperty<ExtendedI18n>, MacroSettingStage> settingStageProvider) {
+            I18nContext i18nContext,
+            I18nText introTitle,
+            BiFunction<I18nContext, I18nText, MacroSettingStage> settingStageProvider) {
 
-        this.i18n = i18n;
+        this.introLabel = introTitle;
+        this.i18nContext = i18nContext;
         HBox hBox = new HBox(0);
         hBox.setPadding(new Insets(6, 22, 0, 5));
 
         label = new ForkedThemeLabel();
         label.setPadding(new Insets(4, 0, 0, 0));
-        label.textProperty().bind(Bindings.createStringBinding(() -> titleProvider.apply(i18n.get()), i18n));
+        label.textProperty().bind(introTitle.binding(i18nContext));
 
         Region spacer = new Region();
         spacer.setMinWidth(10);
@@ -104,7 +104,7 @@ public abstract class MacroToggle implements UILifecycleAware {
                 boolean flag = toggle.selectedProperty().get();  // 判断启用宏
                 toggle.setSelected(!flag);
             } else if (e.getButton() == MouseButton.SECONDARY) {  /* 右击弹出设置菜单 */
-                MacroSettingStage settingStage = MacroToggle.this.settingStageSupplier.apply(i18n);
+                MacroSettingStage settingStage = MacroToggle.this.settingStageSupplier.apply(i18nContext, introLabel);
                 if (settingStage == null) return;  /* 设置菜单不存在，直接返回 */
                 settingStage.initVSettingStage();  // 设置页面初始化
                 settingStage.showAndWait();  // 展示设置页面

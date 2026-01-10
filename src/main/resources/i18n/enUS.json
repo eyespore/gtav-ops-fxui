@@ -33,8 +33,12 @@
       "middleMouseButton" : "Middle",
       "cancel" : "Cancel",
       "unset" : "Unset",
-      "mouseScrollUp": "Scroll Up",
-      "mouseScrollDown": "Scroll Down"
+      "mouseScrollUp" : "Scroll Up",
+      "mouseScrollDown" : "Scroll Down"
+    },
+    "listConfigEditor" : {
+      "noDataDescription" : "Data Not Found",
+      "addDefaultValue" : "Add"
     }
   },
   "swapGlitch" : {
@@ -148,7 +152,10 @@
       "quickSwapMapping" : "enable mapping [{0}]",
       "enableBlockKey" : "enable block key",
       "blockKey" : "block key",
-      "blockDuration" : "block duration(ms)"
+      "blockDuration" : "block duration(ms)",
+      "keyMapListEditor" : "Key Map Editor",
+      "keyMapIntro" : "KeyMap {0}",
+      "keyMapNotFount" : "There's no key map yet"
     }
   },
   "delayClimb" : {

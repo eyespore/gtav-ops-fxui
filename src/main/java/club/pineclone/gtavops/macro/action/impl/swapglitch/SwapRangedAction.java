@@ -11,6 +11,7 @@ import javafx.scene.input.MouseButton;
 
 import java.util.Map;
 
+// TODO: 引入优先级
 public class SwapRangedAction extends ActionDecorator {
 
     private final Key leftButtonKey = new Key(MouseButton.PRIMARY);

@@ -1,7 +1,7 @@
 package club.pineclone.gtavops.config;
 
 import club.pineclone.gtavops.common.SessionType;
-import club.pineclone.gtavops.utils.KeyUtils;
+import club.pineclone.gtavops.common.KeyUtils;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import io.vproxy.base.util.Logger;
 import io.vproxy.vfx.entity.input.Key;
 
 import java.io.IOException;

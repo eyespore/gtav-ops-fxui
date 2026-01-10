@@ -1,4 +1,4 @@
-package club.pineclone.gtavops.macro.trigger;
+package club.pineclone.gtavops.common;
 
 public enum TriggerMode {
     TOGGLE,  /* 切换触发 */

@@ -1,5 +1,6 @@
 package club.pineclone.gtavops.macro.trigger;
 
+import club.pineclone.gtavops.common.TriggerMode;
 import io.vproxy.vfx.entity.input.Key;
 import lombok.Getter;
 

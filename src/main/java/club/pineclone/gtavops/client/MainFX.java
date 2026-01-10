@@ -3,14 +3,15 @@ package club.pineclone.gtavops.client;
 import club.pineclone.gtavops.Main;
 import club.pineclone.gtavops.client.config.ClientConfig;
 import club.pineclone.gtavops.client.config.ClientConfigLoader;
-import club.pineclone.gtavops.client.theme.BaseTheme;
+import club.pineclone.gtavops.client.i18n.I18nContext;
+import club.pineclone.gtavops.client.i18n.I18nText;
+import club.pineclone.gtavops.client.theme.DimTheme;
 import club.pineclone.gtavops.common.JNativeHookManager;
 import club.pineclone.gtavops.common.SingletonLock;
 import club.pineclone.gtavops.client.scene.*;
-import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import club.pineclone.gtavops.client.i18n.I18nLoader;
-import club.pineclone.gtavops.utils.ImageUtils;
-import club.pineclone.gtavops.utils.PathUtils;
+import club.pineclone.gtavops.client.utils.ImageUtils;
+import club.pineclone.gtavops.common.PathUtils;
 import io.vproxy.vfx.manager.task.TaskManager;
 import io.vproxy.vfx.theme.Theme;
 import io.vproxy.vfx.ui.alert.StackTraceAlert;
@@ -23,22 +24,15 @@ import io.vproxy.vfx.ui.scene.*;
 import io.vproxy.vfx.ui.stage.VStage;
 import io.vproxy.vfx.ui.stage.VStageInitParams;
 import io.vproxy.vfx.util.FXUtils;
-import javafx.animation.PauseTransition;
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.Insets;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * 主窗口
@@ -56,10 +50,12 @@ public class MainFX extends Application {
 
     private FusionPane navigatePane;
     private List<FusionButton> navigatorButtons;
-    private boolean isSwitch = false;
+    private volatile boolean isSwitch = false;
+    private volatile int targetIndex;
 
-    private final ObjectProperty<ExtendedI18n> i18n = new SimpleObjectProperty<>();  /* 客户端本地化 */
+    private final I18nContext i18nContext = new I18nContext();
     private final ObjectProperty<ClientConfig> config = new SimpleObjectProperty<>();  /* 客户端配置 */
+
 
     @Override
     public void init() throws Exception {
@@ -83,7 +79,7 @@ public class MainFX extends Application {
 
             log.info("Scanning and loading i18n configuration");
             I18nLoader.getInstance().init();  /* 扫描本地化，并基于客户端配置初始化本地化 */
-            i18n.set(I18nLoader.getInstance().load(config.get().lang));  /* 加载默认本地化 */
+            i18nContext.set(I18nLoader.getInstance().load(config.get().lang));  /* 加载默认本地化到上下文 */
 
             log.info("Register jnativehook global native hook for fxui");
             JNativeHookManager.register(MainFX.class);  /* 注册全局钩子 */
@@ -100,7 +96,7 @@ public class MainFX extends Application {
             return;
         }
 
-        VStage vStage = new VStage(new VStageInitParams().setResizable(false).setMaximizeAndResetButton(false)) {
+        VStage vStage = new VStage(new VStageInitParams().setResizable(true).setMaximizeAndResetButton(false)) {
             @Override
             public void close() {
                 super.close();
@@ -110,36 +106,15 @@ public class MainFX extends Application {
         vStage.getInitialScene().enableAutoContentWidthHeight();
         vStage.setTitle(APPLICATION_TITLE);
 
-        /* 注册所有场景 */
-        mainScenes.add(new IntroScene(i18n));
-        mainScenes.add(new MacroToggleScene(i18n));
-        mainScenes.add(new ConfigScene(i18n, config));
-
-//        mainScenes.add(new FontPackScene(oldI18n));
-
-        mainScenes.forEach(MainFX::addUIListener);
-        uiListeners.forEach(UILifecycleAware::onUIInit);  /* 调用初始化逻辑 */
-
-        var initialScene = mainScenes.get(0);
-
-        /* 场景导航栏 */
-        sceneGroup = new VSceneGroup(initialScene);
-        for (var s : mainScenes) {
-            if (s == initialScene) continue;
-            sceneGroup.addScene(s);
-        }
-
+        /* 初始化导航栏按钮 */
         navigatePane = new FusionPane();
         navigatePane.getNode().setPrefHeight(60);
-        FXUtils.observeHeight(vStage.getInitialScene().getContentPane(), sceneGroup.getNode(), -10 - 60 - 5 - 10);
-        FXUtils.observeWidth(vStage.getInitialScene().getContentPane(), sceneGroup.getNode(), -20);
         FXUtils.observeWidth(vStage.getInitialScene().getContentPane(), navigatePane.getNode(), -20);
-
         navigatorButtons = new ArrayList<>() {{
-            add(createNavigateButton(i -> i.introScene.introNavigate, 0));
-            add(createNavigateButton(i -> i.introScene.featureNavigate, 1));
-            add(createNavigateButton(i -> i.introScene.configNavigate, 2));
-//            add(createNavigateButton(iI18n.fontpackNavigate, 3));
+            add(createNavigateButton(I18nText.of(i -> i.introScene.introNavigate), 0));
+            add(createNavigateButton(I18nText.of(i -> i.introScene.featureNavigate), 1));
+            add(createNavigateButton(I18nText.of(i -> i.introScene.configNavigate), 2));
+//            add(createNavigateButton(i -> i.introScene.fontpackNavigate, 3));
         }};
 
         navigatorButtons.get(0).setDisable(true);  /* 默认页禁用 */
@@ -163,6 +138,36 @@ public class MainFX extends Application {
             }
         });
 
+        /* 注册所有场景 */
+        mainScenes.add(new IntroScene(i18nContext));
+        mainScenes.add(new MacroToggleScene(i18nContext));
+        mainScenes.add(new ConfigScene(i18nContext, config));
+//        mainScenes.add(new FontPackScene(i18n));
+//        mainScenes.add(new FontPackScene(oldI18n));
+
+        mainScenes.forEach(s -> {
+            addUIListener(s);  /* 正向注册 */
+            s.readyProperty().addListener((obs, oldVal, newVal) -> {
+                isSwitch = false;
+                for (int i = 0; i < navigatorButtons.size(); i++) {
+                    navigatorButtons.get(i).setDisable(i == targetIndex);
+                }
+            });  /* 反向注册 */
+        });
+        uiListeners.forEach(UILifecycleAware::onUIInit);  /* 调用初始化逻辑 */
+
+        /* 初始场景 */
+        var initialScene = mainScenes.get(0);
+        sceneGroup = new VSceneGroup(initialScene);
+        for (var s : mainScenes) {
+            if (s == initialScene) continue;
+            sceneGroup.addScene(s);
+        }
+
+        /* 场景位置修正 */
+        FXUtils.observeHeight(vStage.getInitialScene().getContentPane(), sceneGroup.getNode(), -10 - 60 - 5 - 10);
+        FXUtils.observeWidth(vStage.getInitialScene().getContentPane(), sceneGroup.getNode(), -20);
+
         var box = new HBox(
                 new HPadding(10),
                 new VBox(
@@ -173,6 +178,7 @@ public class MainFX extends Application {
                 )
         );
         vStage.getInitialScene().getContentPane().getChildren().add(box);
+
 
 //        var menuScene = new VScene(VSceneRole.DRAWER_VERTICAL);
 //        menuScene.getNode().setPrefWidth(300);
@@ -220,6 +226,7 @@ public class MainFX extends Application {
 //        }
 //        menuVBox.getChildren().add(new VPadding(20));
 
+        /* 左上角帮助按钮 */
         var menuBtn = new FusionImageButton(ImageUtils.loadImage("/img/check.png")) {{
             setPrefWidth(40);
             setPrefHeight(VStage.TITLE_BAR_HEIGHT + 1);
@@ -229,7 +236,29 @@ public class MainFX extends Application {
         }};
 
 //        menuBtn.setOnAction(e -> vStage.getRootSceneGroup().show(menuScene, VSceneShowMethod.FROM_LEFT));
-        menuBtn.setOnAction(e -> {});
+//        menuBtn.setOnAction(e -> {
+//            var scene = new VScene(VSceneRole.POPUP);
+//            scene.enableAutoContentWidthHeight();
+//            scene.getNode().setPrefWidth(500);
+//            scene.getNode().setPrefHeight(300);
+//            scene.getNode().setBackground(new Background(new BackgroundFill(
+//                    new Color(0x8f / 255d, 0xb8 / 255d, 0xd8 / 255d, 1), //
+//                    CornerRadii.EMPTY,
+//                    Insets.EMPTY
+//            )));
+//            var closeBtn = new FusionButton("hide") {{
+//                setPrefWidth(300);
+//                setPrefHeight(150);
+//            }};
+//            closeBtn.setOnAction(ee -> {
+//                sceneGroup.hide(scene, VSceneHideMethod.FADE_OUT);
+//                FXUtils.runDelay(VScene.ANIMATION_DURATION_MILLIS, () -> sceneGroup.removeScene(scene));
+//            });
+//            scene.getContentPane().getChildren().add(closeBtn);
+//            FXUtils.observeWidthHeightCenter(scene.getContentPane(), closeBtn);
+//            sceneGroup.addScene(scene, VSceneHideMethod.FADE_OUT);
+//            FXUtils.runDelay(0, () -> sceneGroup.show(scene, VSceneShowMethod.FADE_IN));
+//        });
 
         vStage.getRoot().getContentPane().getChildren().add(menuBtn);
 
@@ -244,12 +273,12 @@ public class MainFX extends Application {
         uiListeners.add(listener);
     }
 
-    private FusionButton createNavigateButton(Function<ExtendedI18n, String> textProvider, int index) {
+    private FusionButton createNavigateButton(I18nText labelText, int index) {
         return new FusionButton() {{
             setPrefWidth(150);
             setPrefHeight(navigatePane.getNode().getPrefHeight() - FusionPane.PADDING_V * 2);  /* 40 */
             setDisableAnimation(true);
-            getTextNode().textProperty().bind(Bindings.createStringBinding(() -> textProvider.apply(i18n.get()), i18n));
+            getTextNode().textProperty().bind(labelText.binding(i18nContext));
 
             setOnAction(e -> {
                 if (isSwitch) return;  /* Scene 正在切换，禁用事件点击 */
@@ -262,20 +291,11 @@ public class MainFX extends Application {
                 VSceneShowMethod method = index > currentIndex ?
                         VSceneShowMethod.FROM_RIGHT : VSceneShowMethod.FROM_LEFT;
 
+                targetIndex = index;
                 isSwitch = true;
                 navigatorButtons.forEach(b -> b.setDisable(true));
-
                 SceneTemplate newScene = mainScenes.get(index);
-                sceneGroup.show(newScene, method);
-
-                PauseTransition pause = new PauseTransition(Duration.millis(400));
-                pause.setOnFinished(e2 -> {
-                    isSwitch = false;
-                    for (int i = 0; i < navigatorButtons.size(); i++) {
-                        navigatorButtons.get(i).setDisable(i == index);
-                    }
-                });
-                pause.play();
+                sceneGroup.show(newScene, VSceneShowMethod.FADE_IN);
             });
         }};
     }
@@ -290,7 +310,8 @@ public class MainFX extends Application {
     }
 
     public static void main(String[] args) {
-        Theme.setTheme(new BaseTheme());
+        Theme.setTheme(new DimTheme());
+//        Theme.setTheme(new LightTheme());
         Application.launch(MainFX.class, args);
     }
 }

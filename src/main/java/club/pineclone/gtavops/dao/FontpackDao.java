@@ -1,7 +1,7 @@
 package club.pineclone.gtavops.dao;
 
 import club.pineclone.gtavops.pojo.FontpackMetadata;
-import club.pineclone.gtavops.utils.PathUtils;
+import club.pineclone.gtavops.common.PathUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Getter;

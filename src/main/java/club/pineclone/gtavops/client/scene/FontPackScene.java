@@ -1,15 +1,16 @@
 package club.pineclone.gtavops.client.scene;
 
+import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.config.MacroConfigLoader;
 import club.pineclone.gtavops.config.MacroConfig;
 import club.pineclone.gtavops.client.component.VTextField;
 import club.pineclone.gtavops.client.forked.*;
-import club.pineclone.gtavops.client.theme.BaseTheme;
+import club.pineclone.gtavops.client.theme.DimTheme;
 import club.pineclone.gtavops.pojo.FontpackMetadata;
 import club.pineclone.gtavops.client.i18n.ExtendedI18n;
 import club.pineclone.gtavops.service.FontpackService;
-import club.pineclone.gtavops.utils.ColorUtils;
-import club.pineclone.gtavops.utils.PathUtils;
+import club.pineclone.gtavops.client.utils.ColorUtils;
+import club.pineclone.gtavops.common.PathUtils;
 import io.vproxy.base.util.LogType;
 import io.vproxy.base.util.Logger;
 import io.vproxy.base.util.callback.Callback;
@@ -60,7 +61,7 @@ public class FontPackScene extends SceneTemplate {
     private File update1File;  /* 缓存 */
     private File update2File;
 
-    public FontPackScene(ObjectProperty<ExtendedI18n> i18n) {
+    public FontPackScene(I18nContext i18n) {
         super(i18n);
         this.config = MacroConfigLoader.get();
 
@@ -109,7 +110,7 @@ public class FontPackScene extends SceneTemplate {
             var textField = new VTextField();
             var text = new ForkedFusionW(textField) {{
                 FontManager.get().setFont(FontUsages.tableCellText, getLabel());
-                String colorStr = ColorUtils.formatAsHex(((BaseTheme) BaseTheme.current()).activeTextColor());
+                String colorStr = ColorUtils.formatAsHex(((DimTheme) DimTheme.current()).activeTextColor());
                 node.setStyle("-fx-background-color: transparent; -fx-text-fill: " + colorStr + "; -fx-padding: 8 0 8 0; -fx-border-color: transparent");
             }};
 
@@ -180,7 +181,7 @@ public class FontPackScene extends SceneTemplate {
                 }
 
                 FontPackDialog<Integer> dialog = FontPackDialog.simpleDialog(
-                        MessageFormat.format("fpI18n.confirmActivateFontpack", selected.getName()),
+//                        MessageFormat.format("fpI18n.confirmActivateFontpack", selected.getName()),
                         Modality.APPLICATION_MODAL
                 );
 
@@ -323,7 +324,7 @@ public class FontPackScene extends SceneTemplate {
 
                         /* 询问用户是否删除 */
                         FontPackDialog<Integer> dialog = FontPackDialog.simpleDialog(
-                                MessageFormat.format("fpI18n.confirmRemoveFontpack", selected.getName()),
+//                                MessageFormat.format("fpI18n.confirmRemoveFontpack", selected.getName()),
                                 Modality.APPLICATION_MODAL
                         );
                         Optional<Integer> result = dialog.showAndWait();
@@ -405,9 +406,9 @@ public class FontPackScene extends SceneTemplate {
         if (Files.exists(originalUpdate1File) && Files.exists(originalUpdate2File)) {
             /* 存在原始字体包，询问是否保存 */
             FontPackDialog<Integer> dialog = FontPackDialog.simpleDialog(
-                    MessageFormat.format("fpI18n.fontpackExisted",
-                            originalUpdate1File.toAbsolutePath().toString(),
-                            originalUpdate2File.toAbsolutePath().toString()),
+//                    MessageFormat.format("fpI18n.fontpackExisted",
+//                            originalUpdate1File.toAbsolutePath().toString(),
+//                            originalUpdate2File.toAbsolutePath().toString()),
                     Modality.APPLICATION_MODAL
             );
 

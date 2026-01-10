@@ -1,14 +1,10 @@
 package club.pineclone.gtavops.client.scene;
 
 import club.pineclone.gtavops.client.forked.ForkedThemeLabel;
-import club.pineclone.gtavops.client.i18n.I18nLoader;
-import club.pineclone.gtavops.client.macrotoggle.MacroToggle;
-import club.pineclone.gtavops.client.macrotoggle.*;
-import club.pineclone.gtavops.client.i18n.ExtendedI18n;
-import io.vproxy.vfx.ui.wrapper.ThemeLabel;
+import club.pineclone.gtavops.client.i18n.I18nContext;
+import club.pineclone.gtavops.client.i18n.I18nText;
+import club.pineclone.gtavops.client.scene.macrotoggle.*;
 import io.vproxy.vfx.util.FXUtils;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
@@ -19,11 +15,11 @@ public class MacroToggleScene extends SceneTemplate {
 
     private final List<MacroToggle> macroToggles;
 
-    public MacroToggleScene(ObjectProperty<ExtendedI18n> i18n) {
-        super(i18n);
+    public MacroToggleScene(I18nContext i18nContext) {
+        super(i18nContext);
         enableAutoContentWidthHeight();
         ForkedThemeLabel headerLabel = new ForkedThemeLabel();
-        headerLabel.textProperty().bind(Bindings.createStringBinding(() -> i18n.get().macroToggleScene.header, i18n));
+        headerLabel.textProperty().bind(I18nText.of(i -> i.macroToggleScene.header).binding(i18nContext));
         FXUtils.observeWidthCenter(getContentPane(), headerLabel);
         headerLabel.setLayoutY(40);
 
@@ -47,17 +43,18 @@ public class MacroToggleScene extends SceneTemplate {
         int vIndex = 0;
 
         /* 注册所有宏功能开关 */
+
         macroToggles = List.of(
-                new SwapGlitchToggle(i18n),
-                new RouletteSnakeToggle(i18n),
-                new ADSwingToggle(i18n),
-                new MeleeGlitchToggle(i18n),
-                new BetterMMenuToggle(i18n),
-                new BetterLButtonToggle(i18n),
-                new QuickSwapToggle(i18n),
-                new DelayClimbToggle(i18n),
-                new BetterPMenuToggle(i18n),
-                new AutoFireFeatureToggle(i18n)
+                new SwapGlitchToggle(i18nContext),
+                new RouletteSnakeToggle(i18nContext),
+                new ADSwingToggle(i18nContext),
+                new MeleeGlitchToggle(i18nContext),
+                new BetterMMenuToggle(i18nContext),
+                new BetterLButtonToggle(i18nContext),
+                new QuickSwapToggle(i18nContext),
+                new DelayClimbToggle(i18nContext),
+                new BetterPMenuToggle(i18nContext),
+                new AutoFireFeatureToggle(i18nContext)
         );
 
         for (MacroToggle toggle : macroToggles) {

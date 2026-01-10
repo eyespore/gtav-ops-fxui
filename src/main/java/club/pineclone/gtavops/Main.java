@@ -1,12 +1,12 @@
 package club.pineclone.gtavops;
 
-import club.pineclone.gtavops.common.JLibLocator;
+import club.pineclone.gtavops.common.JNativeLibLocator;
 import club.pineclone.gtavops.common.JNativeHookManager;
 import club.pineclone.gtavops.config.MacroConfigLoader;
 import club.pineclone.gtavops.jni.PlatformFocusMonitor;
 import club.pineclone.gtavops.macro.MacroRegistry;
 import club.pineclone.gtavops.macro.MacroTaskScheduler;
-import club.pineclone.gtavops.utils.PathUtils;
+import club.pineclone.gtavops.common.PathUtils;
 import com.github.kwhat.jnativehook.GlobalScreen;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ public class Main {
         PathUtils.initCoreHome();
 
         log.info("Loading native library for jnativehook and terminate jnativehook logging ");  /* 加载 jnativehook 依赖的本地库 */
-        Class.forName(JLibLocator.class.getName());
+        Class.forName(JNativeLibLocator.class.getName());
         Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());  /* 停止 jnativehook 日志记录 */
         logger.setLevel(Level.OFF);
         logger.setUseParentHandlers(false);

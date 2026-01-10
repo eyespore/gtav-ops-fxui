@@ -263,6 +263,10 @@ public class ExtendedI18n implements InternalI18n {
             public String enableBlockKey = "quickSwap.baseSetting.enableBlockKey";
             public String blockKey = "quickSwap.baseSetting.blockKey";
             public String blockDuration = "quickSwap.baseSetting.blockDuration";
+
+            public String keyMapListEditor = "quickSwap.baseSetting.KeyMapListEditor";  /* 按键映射编辑器 */
+            public String keyMapIntro = "quickSwap.baseSetting.keyMapIntro";  /* 按键映射配置栏标题 */  /* 提供当前索引 */
+            public String keyMapNotFount = "quickSwap.baseSetting.keyMapNotFount";  /* 当前没有找到任何按键映射 */
         }
     }
 
@@ -336,6 +340,7 @@ public class ExtendedI18n implements InternalI18n {
     /* VFX UI 组件 */
     public static class VFXComponent {
         public KeyChooser keyChooser = new KeyChooser();
+        public ListConfigEditor listConfigEditor = new ListConfigEditor();
 
         public static class KeyChooser {
             public String description = "vfxComponent.keyChooser.description";
@@ -348,6 +353,11 @@ public class ExtendedI18n implements InternalI18n {
             public String unset = "vfxComponent.keyChooser.unset";  /* 未设置 */
             public String mouseScrollUp = "vfxComponent.keyChooser.mouseScrollUp";  /* 上滚轮 */
             public String mouseScrollDown = "vfxComponent.keyChooser.mouseScrollDown";  /* 下滚轮 */
+        }
+
+        public static class ListConfigEditor {  /* 列表编辑器 */
+            public String noDataDescription = "vfxComponent.listConfigEditor.noDataDescription";
+            public String addDefaultValue = "vfxComponent.listConfigEditor.addDefaultValue";
         }
     }
 

@@ -1,15 +1,14 @@
 package club.pineclone.gtavops.client.scene;
 
 import club.pineclone.gtavops.client.forked.ForkedThemeLabel;
+import club.pineclone.gtavops.client.i18n.I18nContext;
+import club.pineclone.gtavops.client.i18n.I18nText;
 import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.client.i18n.ExtendedI18n;
-import club.pineclone.gtavops.utils.ImageUtils;
+import club.pineclone.gtavops.client.utils.ImageUtils;
 import io.vproxy.vfx.manager.font.FontManager;
 import io.vproxy.vfx.ui.layout.VPadding;
 import io.vproxy.vfx.ui.wrapper.ThemeLabel;
 import io.vproxy.vfx.util.FXUtils;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
@@ -21,8 +20,8 @@ import java.nio.charset.StandardCharsets;
 
 public class IntroScene extends SceneTemplate {
 
-    public IntroScene(ObjectProperty<ExtendedI18n> i18n) {
-        super(i18n);
+    public IntroScene(I18nContext i18nContext) {
+        super(i18nContext);
         enableAutoContentWidthHeight();
         setBackgroundImage(ImageUtils.loadImage("/img/bg1.png"));
 
@@ -39,19 +38,21 @@ public class IntroScene extends SceneTemplate {
 
         final String finalVersion = version;
         var vBox = new VBox(
+                // TODO: 优化为I18nText
+
                 new ForkedThemeLabel() {{
                     FontManager.get().setFont(this, settings -> settings.setSize(30));
-                    textProperty().bind(Bindings.createStringBinding(() -> i18n.get().introScene.header, i18n));
+                    textProperty().bind(I18nText.of(i -> i.introScene.header).binding(i18nContext));
                 }},
                 new VPadding(10),
                 new ThemeLabel() {{
                     FontManager.get().setFont(this, settings -> settings.setSize(23));
-                    textProperty().bind(Bindings.createStringBinding(() -> i18n.get().introScene.coreVersionLabel + ": " + finalVersion, i18n));
+                    textProperty().bind(I18nText.of(i -> i.introScene.coreVersionLabel + ": " + finalVersion).binding(i18nContext));
                 }},
                 new VPadding(10),
                 new ThemeLabel() {{
                     FontManager.get().setFont(this, settings -> settings.setSize(23).setWeight(FontWeight.BOLD));
-                    textProperty().bind(Bindings.createStringBinding(() -> i18n.get().introScene.acknowledgement, i18n));
+                    textProperty().bind(I18nText.of(i -> i.introScene.acknowledgement).binding(i18nContext));
                 }}
         ) {{
             setAlignment(Pos.CENTER);

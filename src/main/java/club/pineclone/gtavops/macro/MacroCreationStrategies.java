@@ -18,7 +18,7 @@ import club.pineclone.gtavops.macro.action.impl.betterpmenu.JoinANewSessionActio
 import club.pineclone.gtavops.macro.trigger.Trigger;
 import club.pineclone.gtavops.macro.trigger.TriggerFactory;
 import club.pineclone.gtavops.macro.trigger.TriggerIdentity;
-import club.pineclone.gtavops.macro.trigger.TriggerMode;
+import club.pineclone.gtavops.common.TriggerMode;
 import io.vproxy.vfx.entity.input.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,6 @@ public class MacroCreationStrategies {
     private static final Logger log = LoggerFactory.getLogger(MacroCreationStrategies.class);
 
     /* 切枪偷速宏 */
-    // TODO: 将宏策略移交到独立的工具类MacroCreationStrategies当中，考虑是否抽离Dto
     public static final MacroCreationStrategy SWAP_GLITCH_MACRO_CREATION_STRATEGY = new MacroCreationStrategy() {
         @Override
         public Macro apply(MacroConfig config) {
@@ -138,7 +137,7 @@ public class MacroCreationStrategies {
                 trigger = TriggerFactory.simple(TriggerIdentity.of(mode, activatekey));  /* 触发器 */
             }
 
-            long triggerInterval = (long) Math.floor(adwConfig.baseSetting.triggerInterval);
+            long triggerInterval = (long) Math.floor(adwConfig.baseSetting.triggerInterval);  // TODO: 改用最大最小值+百分比计算模式
             Key moveLeftKey = adwConfig.baseSetting.moveLeftKey;
             Key moveRightKey = adwConfig.baseSetting.moveRightKey;
             Action action = new ADSwingAction(triggerInterval, moveLeftKey, moveRightKey);

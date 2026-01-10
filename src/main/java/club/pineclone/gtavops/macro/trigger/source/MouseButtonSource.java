@@ -1,6 +1,6 @@
 package club.pineclone.gtavops.macro.trigger.source;
 
-import club.pineclone.gtavops.utils.KeyUtils;
+import club.pineclone.gtavops.common.KeyUtils;
 import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
 import com.github.kwhat.jnativehook.mouse.NativeMouseListener;
 import io.vproxy.vfx.entity.input.Key;

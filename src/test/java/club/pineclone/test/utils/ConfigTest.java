@@ -1,7 +1,7 @@
 package club.pineclone.test.utils;
 
 import club.pineclone.gtavops.config.MacroConfig;
-import club.pineclone.gtavops.utils.KeyUtils;
+import club.pineclone.gtavops.common.KeyUtils;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

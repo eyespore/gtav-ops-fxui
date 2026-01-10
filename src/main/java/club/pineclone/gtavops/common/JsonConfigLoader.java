@@ -1,8 +1,6 @@
-package club.pineclone.gtavops.utils;
+package club.pineclone.gtavops.common;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 
-public class JsonConfigUtils {
+public class JsonConfigLoader {
 
     // TODO: 基于自定义实现类DeserializationProblemHandler实现收集多余配置项并返回报告
     /**

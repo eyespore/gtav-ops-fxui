@@ -1,6 +1,6 @@
 package club.pineclone.gtavops.macro.action.robot;
 
-import club.pineclone.gtavops.utils.KeyUtils;
+import club.pineclone.gtavops.common.KeyUtils;
 import io.vproxy.vfx.entity.input.Key;
 import lombok.Getter;
 

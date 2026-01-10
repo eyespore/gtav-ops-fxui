@@ -1,7 +1,7 @@
 package club.pineclone.gtavops.client.config;
 
 import club.pineclone.gtavops.config.ConfigCodecs;
-import club.pineclone.gtavops.utils.JsonConfigUtils;
+import club.pineclone.gtavops.common.JsonConfigLoader;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -31,15 +31,15 @@ public class ClientConfigLoader {
 
     /* 加载客户端配置 */
     public ClientConfig load(Path path) throws IOException {
-        ClientConfig config = JsonConfigUtils.load(path, ClientConfig::new, mapper);
-        JsonConfigUtils.save(path, config, mapper);
+        ClientConfig config = JsonConfigLoader.load(path, ClientConfig::new, mapper);
+        JsonConfigLoader.save(path, config, mapper);
         log.debug("Client using locale: {}", config.lang);
         return config;
     }
 
     /* 保存配置 */
     public void save(ClientConfig config, Path path) throws IOException {
-        JsonConfigUtils.save(path, config, mapper);
+        JsonConfigLoader.save(path, config, mapper);
     }
 
 }

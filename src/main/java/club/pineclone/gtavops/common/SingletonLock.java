@@ -1,7 +1,5 @@
 package club.pineclone.gtavops.common;
 
-import club.pineclone.gtavops.utils.PathUtils;
-
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;

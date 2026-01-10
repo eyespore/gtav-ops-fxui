@@ -1,6 +1,7 @@
 package club.pineclone.gtavops.macro;
 
 import club.pineclone.gtavops.macro.trigger.TriggerEvent;
+import io.vproxy.base.util.anno.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -9,7 +10,7 @@ import lombok.ToString;
 @ToString
 public class MacroEvent {
 
-    private final TriggerEvent triggerEvent;
+    @Nullable private final TriggerEvent triggerEvent;
     private final MacroContext macroContext;  /* 宏上下文 */
 
     public MacroEvent(TriggerEvent triggerEvent, MacroContext macroContext) {

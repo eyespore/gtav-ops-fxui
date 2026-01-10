@@ -14,7 +14,10 @@ import lombok.Getter;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class BaseTheme extends DarkTheme {
+/**
+ * 基于 VFX 深色模式拓展得到的主题模式
+ */
+public class DimTheme extends DarkTheme {
 
     @Getter
     @AllArgsConstructor
@@ -33,7 +36,7 @@ public class BaseTheme extends DarkTheme {
     public Color activeTextColor() {
         return Color.web("lightblue");
     }
-
+    
     @Override
     public FontProvider fontProvider() {
         Font.loadFont(getClass().getResourceAsStream(FONT_ON_USE.getPath()), 1);

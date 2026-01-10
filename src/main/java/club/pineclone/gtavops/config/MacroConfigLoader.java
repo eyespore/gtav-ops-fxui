@@ -1,7 +1,7 @@
 package club.pineclone.gtavops.config;
 
-import club.pineclone.gtavops.utils.JsonConfigUtils;
-import club.pineclone.gtavops.utils.PathUtils;
+import club.pineclone.gtavops.common.JsonConfigLoader;
+import club.pineclone.gtavops.common.PathUtils;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.slf4j.Logger;
@@ -26,8 +26,8 @@ public class MacroConfigLoader {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);  /* 美观输出 */
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);  /* 即使读取到未知属性也不会报错 */
 
-        config = JsonConfigUtils.load(PathUtils.getMacroConfigPath(), MacroConfig::new, mapper);
-        JsonConfigUtils.save(PathUtils.getMacroConfigPath(), config, mapper);
+        config = JsonConfigLoader.load(PathUtils.getMacroConfigPath(), MacroConfig::new, mapper);
+        JsonConfigLoader.save(PathUtils.getMacroConfigPath(), config, mapper);
         /* 若用户端配置存在无效属性，将会在这一步骤被一并移除 */
         /* 对于 Json 错误引起的异常则会被正常抛出 */
     }
@@ -40,6 +40,6 @@ public class MacroConfigLoader {
     public static void save() throws IOException {
         log.debug("Save macro config to {}", PathUtils.getMacroConfigPath());
         log.debug("DelayClimb status: {}", config.delayClimb.baseSetting.enable);
-        JsonConfigUtils.save(PathUtils.getMacroConfigPath(), config, mapper);
+        JsonConfigLoader.save(PathUtils.getMacroConfigPath(), config, mapper);
     }
 }

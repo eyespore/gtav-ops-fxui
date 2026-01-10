@@ -23,12 +23,12 @@ import javafx.scene.transform.Rotate;
 
 import java.util.function.DoubleFunction;
 
-public class ForkedSlider extends Pane {
+public class LongSlider extends Pane {
 
     public static final int BUTTON_RADIUS = 15;
 
-    private double minValue = 0;
-    private double maxValue = 100;
+    private long minValue = 0;
+    private long maxValue = 100;
 
     private final SliderDirection sliderDirection;
     private final Group positionGroup = new Group();
@@ -52,14 +52,14 @@ public class ForkedSlider extends Pane {
             .setApply((from, to, d) -> buttonLabel.setOpacity(d.value))
             .build(labelInvisible);
 
-    private final DoubleProperty valueProperty = new SimpleDoubleProperty(-1);  /* 当前值 */
+    private final LongProperty valueProperty = new SimpleLongProperty(-1);  /* 当前值 */
     private final IntegerProperty updateProperty = new SimpleIntegerProperty(-1);
 
-    public ForkedSlider() {
+    public LongSlider() {
         this(SliderDirection.LEFT_TO_RIGHT);
     }
 
-    public ForkedSlider(SliderDirection sliderDirection) {
+    public LongSlider(SliderDirection sliderDirection) {
         this.sliderDirection = sliderDirection;
 
         valueProperty.bind(Bindings.createDoubleBinding(() -> {
@@ -215,7 +215,7 @@ public class ForkedSlider extends Pane {
         return bar.progressProperty();
     }
 
-    public DoubleProperty valueProperty() {
+    public LongProperty valueProperty() {
         return valueProperty;
     }
 
@@ -247,7 +247,6 @@ public class ForkedSlider extends Pane {
         updateProperty.set(updateProperty.get() + 1);
     }
 
-    @Deprecated
     public void setValue(double value) {
         double percentage = (value - minValue) / (maxValue - minValue);
         percentageProperty().set(percentage);

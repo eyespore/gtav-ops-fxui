@@ -1,13 +1,14 @@
 package club.pineclone.gtavops.client.component;
 
 import club.pineclone.gtavops.client.theme.ExtendedFontUsages;
-import club.pineclone.gtavops.utils.ColorUtils;
+import club.pineclone.gtavops.client.utils.ColorUtils;
 import io.vproxy.vfx.manager.font.FontManager;
 import io.vproxy.vfx.theme.Theme;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 
+@Deprecated
 public class VTextField extends TextField {
 
     public VTextField() {

@@ -1,6 +1,7 @@
 package club.pineclone.gtavops.client.forked;
 
-import club.pineclone.gtavops.client.i18n.ExtendedI18n;
+import club.pineclone.gtavops.client.i18n.I18nContext;
+import club.pineclone.gtavops.client.i18n.I18nText;
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
@@ -13,11 +14,8 @@ import io.vproxy.vfx.entity.input.KeyCode;
 import io.vproxy.vfx.entity.input.MouseWheelScroll;
 import io.vproxy.vfx.manager.internal_i18n.InternalI18n;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
 import javafx.scene.input.MouseButton;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,25 +36,21 @@ public class I18nKeyChooser extends ForkedDialog<Key> {
     public static final int FLAG_WITH_MOUSE = 0x0002;  // 1 << 1, 监听鼠标按键
     public static final int FLAG_WITH_WHEEL_SCROLL = 0x0004;  // 1 << 2, 监听鼠标滚轮
 
-    protected final ObjectProperty<ExtendedI18n> i18n;
-
-    public I18nKeyChooser(ObjectProperty<ExtendedI18n> i18n) {
-        this(i18n, FLAG_WITH_KEY);  // 默认监听键盘
+    public I18nKeyChooser(I18nContext i18nContext) {
+        this(i18nContext, FLAG_WITH_KEY);  // 默认监听键盘
     }
 
-    public I18nKeyChooser(ObjectProperty<ExtendedI18n> i18n, int flags) {
+    public I18nKeyChooser(I18nContext i18nContext, int flags) {
         this.flags = flags;
-        this.i18n = i18n;
-
         List<ForkedDialogButton<Key>> buttons = new ArrayList<>();
         if ((flags & FLAG_WITH_MOUSE) == FLAG_WITH_MOUSE) {
-            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.PRIMARY), i18n, i -> i.vfxComponent.keyChooser.primaryMouseButton));
-            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.MIDDLE), i18n, i -> i.vfxComponent.keyChooser.middleMouseButton));
-            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.SECONDARY), i18n, i -> i.vfxComponent.keyChooser.secondaryMouseButton));
-            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.FORWARD), i18n, i -> i.vfxComponent.keyChooser.forwardMouseButton));
-            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.BACK), i18n, i -> i.vfxComponent.keyChooser.backwardMouseButton));
+            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.PRIMARY), i18nContext, I18nText.of(i -> i.vfxComponent.keyChooser.primaryMouseButton)));
+            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.MIDDLE), i18nContext, I18nText.of(i -> i.vfxComponent.keyChooser.middleMouseButton)));
+            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.SECONDARY), i18nContext, I18nText.of(i -> i.vfxComponent.keyChooser.secondaryMouseButton)));
+            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.FORWARD), i18nContext, I18nText.of(i -> i.vfxComponent.keyChooser.forwardMouseButton)));
+            buttons.add(new ForkedDialogButton.I18nDialogButton<>(new Key(MouseButton.BACK), i18nContext, I18nText.of(i -> i.vfxComponent.keyChooser.backwardMouseButton)));
         }
-        buttons.add(new ForkedDialogButton.I18nDialogButton<>(null, i18n, i -> i.vfxComponent.keyChooser.cancel));
+        buttons.add(new ForkedDialogButton.I18nDialogButton<>(null, i18nContext, I18nText.of(i -> i.vfxComponent.keyChooser.cancel)));
 
         setButtons(buttons);  /* 调用 setButtons 之后，VDialogButton中的FusionButton button字段初始化完毕 */
 
@@ -72,19 +66,17 @@ public class I18nKeyChooser extends ForkedDialog<Key> {
         List<String> listenedComponents = new ArrayList<>();
 
         if ((flags & FLAG_WITH_KEY) != 0) {
-            listenedComponents.add(i18n.get().common.keyboard);
+            listenedComponents.add(i18nContext.get().common.keyboard);
         }
 
         if ((flags & FLAG_WITH_MOUSE) != 0) {
-            listenedComponents.add(i18n.get().common.mouseButton);
+            listenedComponents.add(i18nContext.get().common.mouseButton);
         }
         if ((flags & FLAG_WITH_WHEEL_SCROLL) != 0) {
-            listenedComponents.add(i18n.get().common.mouseWheel);
+            listenedComponents.add(i18nContext.get().common.mouseWheel);
         }
 
-        getMessageNode().textProperty().bind(Bindings.createStringBinding(() ->
-                MessageFormat.format(i18n.get().vfxComponent.keyChooser.description,
-                        String.join(",", listenedComponents)), i18n));
+        getMessageNode().textProperty().bind(I18nText.of(i -> i.vfxComponent.keyChooser.description, String.join(",", listenedComponents)).binding(i18nContext));
     }
 
     private void registerListeners(int flags) {

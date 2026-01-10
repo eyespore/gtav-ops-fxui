@@ -1,4 +1,4 @@
-package club.pineclone.gtavops.utils;
+package club.pineclone.gtavops.common;
 
 import com.github.kwhat.jnativehook.NativeSystem;
 

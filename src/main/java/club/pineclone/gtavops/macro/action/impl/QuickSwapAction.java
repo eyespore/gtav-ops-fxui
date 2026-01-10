@@ -7,10 +7,8 @@ import club.pineclone.gtavops.macro.action.impl.actionext.BlockAction;
 import club.pineclone.gtavops.macro.action.robot.RobotFactory;
 import club.pineclone.gtavops.macro.action.robot.VCRobotAdapter;
 
-import club.pineclone.gtavops.macro.trigger.Trigger;
-import club.pineclone.gtavops.macro.trigger.TriggerFactory;
-import club.pineclone.gtavops.macro.trigger.TriggerIdentity;
-import club.pineclone.gtavops.macro.trigger.TriggerMode;
+import club.pineclone.gtavops.macro.trigger.*;
+import club.pineclone.gtavops.macro.trigger.source.InputSourceEvent;
 import io.vproxy.base.util.LogType;
 import io.vproxy.base.util.Logger;
 import io.vproxy.vfx.entity.input.Key;
@@ -21,6 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /* 快速切枪 */
+// TODO: 引入优先级
 public class QuickSwapAction extends Action {
 
     private final VCRobotAdapter robot;
@@ -64,8 +63,11 @@ public class QuickSwapAction extends Action {
 
     @Override
     public void deactivate(MacroEvent event) {
-        if (blockKey != null && blockKey.equals(event.getTriggerEvent().getInputSourceEvent().getKey())) {
-            blockAction.deactivate(event);
+        TriggerEvent triggerEvent = event.getTriggerEvent();
+        if (triggerEvent != null && blockKey != null) {
+            if (blockKey.equals(triggerEvent.getInputSourceEvent().getKey())) {
+                blockAction.deactivate(event);
+            }
         }
     }
 }

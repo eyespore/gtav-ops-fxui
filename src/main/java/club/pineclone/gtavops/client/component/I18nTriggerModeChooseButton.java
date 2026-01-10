@@ -1,74 +1,31 @@
 package club.pineclone.gtavops.client.component;
 
-import club.pineclone.gtavops.client.i18n.ExtendedI18n;
-import club.pineclone.gtavops.client.i18n.I18nLoader;
-import club.pineclone.gtavops.macro.trigger.TriggerMode;
-import io.vproxy.vfx.ui.button.FusionButton;
-import io.vproxy.vfx.util.FXUtils;
-import javafx.beans.property.*;
-import javafx.geometry.Rectangle2D;
+import club.pineclone.gtavops.client.i18n.I18nContext;
+import club.pineclone.gtavops.client.i18n.I18nText;
+import club.pineclone.gtavops.common.TriggerMode;
 
-import java.util.*;
+import java.util.LinkedHashMap;
 
 /* 触发模式选择器，供选择触发模式为单击触发、切换出发或按住触发 */
-public class I18nTriggerModeChooseButton extends FusionButton {
+public class I18nTriggerModeChooseButton extends I18nOptionButton<TriggerMode> {
 
     public static final int FLAG_WITH_TOGGLE = 0x0001;   // 1 << 0, 切换触发
     public static final int FLAG_WITH_HOLD = 0x0002;  // 1 << 1, 按住触发
     public static final int FLAG_WITH_CLICK = 0x0004;  // 1 << 2, 点击触发
 
-    private final ObjectProperty<TriggerMode> triggerModeProperty = new SimpleObjectProperty<>();
-    private final Map<TriggerMode, TriggerModeOptionItem> itemMap = new EnumMap<>(TriggerMode.class);
-    private final List<TriggerMode> triggerModeOrder = new ArrayList<>();
+    public I18nTriggerModeChooseButton(I18nContext i18nContext, int flags) {
+        super(i18nContext, new LinkedHashMap<>() {{
+            if ((flags & FLAG_WITH_TOGGLE) != 0) {
+                this.put(TriggerMode.TOGGLE, I18nText.of(i -> i.common.toggle));
+            }
 
-    private int currentIndex = 0;
+            if ((flags & FLAG_WITH_HOLD) != 0) {
+                this.put(TriggerMode.HOLD, I18nText.of(i -> i.common.hold));
+            }
 
-    public I18nTriggerModeChooseButton(ObjectProperty<ExtendedI18n> i18n, int flags) {
-        StringProperty textProperty = new SimpleStringProperty();
-        textProperty.addListener((observable, oldValue, newValue) -> {
-            Rectangle2D textBounds = FXUtils.calculateTextBounds(getTextNode());
-            setPrefWidth(Math.max(textBounds.getWidth() + 40, 120));
-        });
-        setPrefHeight(40);
-
-        triggerModeProperty.addListener((obs, oldVal, newVal) -> {
-            TriggerModeOptionItem item = itemMap.get(newVal);
-            currentIndex = triggerModeOrder.indexOf(newVal);
-            textProperty.set(item.text);
-        });
-
-        getTextNode().textProperty().bind(textProperty);
-        setOnMouseClicked(event -> {
-            if (triggerModeOrder.size() == 1) return;
-            currentIndex ++;
-            if (currentIndex >= triggerModeOrder.size()) currentIndex = 0;
-            triggerModeProperty.set(triggerModeOrder.get(currentIndex));
-        });
-
-        if ((flags & FLAG_WITH_TOGGLE) != 0) {
-            itemMap.put(TriggerMode.TOGGLE, new TriggerModeOptionItem(TriggerMode.TOGGLE, i18n.get().common.toggle));
-            triggerModeOrder.add(TriggerMode.TOGGLE);
-        }
-
-        if ((flags & FLAG_WITH_HOLD) != 0) {
-            itemMap.put(TriggerMode.HOLD, new TriggerModeOptionItem(TriggerMode.HOLD, i18n.get().common.hold));
-            triggerModeOrder.add(TriggerMode.HOLD);
-        }
-
-        if ((flags & FLAG_WITH_CLICK) != 0) {
-            itemMap.put(TriggerMode.CLICK, new TriggerModeOptionItem(TriggerMode.CLICK, i18n.get().common.click));
-            triggerModeOrder.add(TriggerMode.CLICK);
-        }
-
-        if (!triggerModeOrder.isEmpty()) {
-            triggerModeProperty.set(triggerModeOrder.get(0));
-        }
+            if ((flags & FLAG_WITH_CLICK) != 0) {
+                this.put(TriggerMode.CLICK, I18nText.of(i -> i.common.click));
+            }
+        }});
     }
-
-    public ObjectProperty<TriggerMode> triggerModeProperty() {
-        return triggerModeProperty;
-    }
-
-    private record TriggerModeOptionItem(TriggerMode mode, String text) { }
-
 }

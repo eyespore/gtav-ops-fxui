@@ -1,6 +1,6 @@
 package club.pineclone.gtavops.client.i18n;
 
-import club.pineclone.gtavops.utils.JsonConfigUtils;
+import club.pineclone.gtavops.common.JsonConfigLoader;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -75,7 +75,7 @@ public class I18nLoader {
     private ExtendedI18n loadI18n(String lang) {
         /* 建立 Lang 到 I18nItem 的映射 */
         try (InputStream in = I18nLoader.class.getResourceAsStream("/i18n/" + lang + ".json")) {
-            return JsonConfigUtils.load(in, ExtendedI18n::new, mapper);
+            return JsonConfigLoader.load(in, ExtendedI18n::new, mapper);
         } catch (IOException e) {
             throw new RuntimeException(e);  /* 加载失败，若本地化加载失败会向上层抛出 */
         }
@@ -94,7 +94,7 @@ public class I18nLoader {
         ExtendedI18n i18n = getInstance().loadI18n(lang);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         Path path = Path.of("target/" + lang + ".json");  /* 创建本地化文件 */
-        JsonConfigUtils.save(path, i18n, mapper);
+        JsonConfigLoader.save(path, i18n, mapper);
     }
 
     /* 这个方法用于导出本地化 pojo 到json，从而创建更多的本地化配置 */
