@@ -3,12 +3,7 @@ package club.pineclone.gtavops.client.scene.macrotoggle;
 import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.client.i18n.I18nText;
 import club.pineclone.gtavops.client.utils.ConfigContentBuilder;
-import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.common.TriggerMode;
-import club.pineclone.gtavops.config.MacroConfig;
-import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.macro.MacroCreationStrategies;
-import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.entity.input.Key;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -31,30 +26,29 @@ public class AutoFireFeatureToggle extends MacroToggle {
 
     @Override
     protected void onFeatureEnable() {
-        macroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.AUTO_FIRE_MACRO_CREATION_STRATEGY);
-        MacroRegistry.getInstance().launchMacro(macroId);
+//        macroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.AUTO_FIRE_MACRO_CREATION_STRATEGY);
+//        MacroRegistry.getInstance().launchMacro(macroId);
     }
 
     @Override
     protected void onFeatureDisable() {
-        MacroRegistry.getInstance().terminateMacro(macroId);
+//        MacroRegistry.getInstance().terminateMacro(macroId);
     }
 
     @Override
     public void onUIInit() {
-        selectedProperty().set(MacroConfigLoader.get().autoFire.baseSetting.enable);
+//        selectedProperty().set(MacroConfigLoader.get().autoFire.baseSetting.enable);
     }
 
     @Override
     public void onUIDispose() {
-        MacroConfigLoader.get().autoFire.baseSetting.enable = selectedProperty().get();
+//        MacroConfigLoader.get().autoFire.baseSetting.enable = selectedProperty().get();
     }
 
-    private static class AutoFireSettingStage
-            extends MacroSettingStage implements ResourceHolder {
+    private static class AutoFireSettingStage extends MacroSettingStage {
 
-        private final MacroConfig config = getConfig();
-        private final MacroConfig.AutoFire aRpgConfig = config.autoFire;
+//        private final MacroConfig config = getConfig();
+//        private final MacroConfig.AutoFire aRpgConfig = config.autoFire;
 
         /* Join A New Session */
         private final ObjectProperty<TriggerMode> activateMethod = new SimpleObjectProperty<>();
@@ -78,22 +72,22 @@ public class AutoFireFeatureToggle extends MacroToggle {
 
         @Override
         public void onVSettingStageInit() {
-            activateMethod.set(aRpgConfig.baseSetting.activateMethod);
-            activateKey.set(aRpgConfig.baseSetting.activateKey);
-            heavyWeaponKey.set(aRpgConfig.baseSetting.heavyWeaponKey);
-            specialWeaponKey.set(aRpgConfig.baseSetting.specialWeaponKey);
-            triggerInterval.set(aRpgConfig.baseSetting.triggerInterval);
-            mousePressInterval.set(aRpgConfig.baseSetting.mousePressInterval);
+//            activateMethod.set(aRpgConfig.baseSetting.activateMethod);
+//            activateKey.set(aRpgConfig.baseSetting.activateKey);
+//            heavyWeaponKey.set(aRpgConfig.baseSetting.heavyWeaponKey);
+//            specialWeaponKey.set(aRpgConfig.baseSetting.specialWeaponKey);
+//            triggerInterval.set(aRpgConfig.baseSetting.triggerInterval);
+//            mousePressInterval.set(aRpgConfig.baseSetting.mousePressInterval);
         }
 
         @Override
         public void onVSettingStageExit() {
-            aRpgConfig.baseSetting.activateMethod = activateMethod.get();
-            aRpgConfig.baseSetting.activateKey = activateKey.get();
-            aRpgConfig.baseSetting.heavyWeaponKey = heavyWeaponKey.get();
-            aRpgConfig.baseSetting.specialWeaponKey = specialWeaponKey.get();
-            aRpgConfig.baseSetting.triggerInterval = triggerInterval.get();
-            aRpgConfig.baseSetting.mousePressInterval = mousePressInterval.get();
+//            aRpgConfig.baseSetting.activateMethod = activateMethod.get();
+//            aRpgConfig.baseSetting.activateKey = activateKey.get();
+//            aRpgConfig.baseSetting.heavyWeaponKey = heavyWeaponKey.get();
+//            aRpgConfig.baseSetting.specialWeaponKey = specialWeaponKey.get();
+//            aRpgConfig.baseSetting.triggerInterval = triggerInterval.get();
+//            aRpgConfig.baseSetting.mousePressInterval = mousePressInterval.get();
         }
     }
 }

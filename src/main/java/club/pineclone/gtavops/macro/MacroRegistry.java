@@ -1,8 +1,8 @@
 package club.pineclone.gtavops.macro;
 
-import club.pineclone.gtavops.config.MacroConfig;
+import club.pineclone.gtavops.AppLifecycleAware;
+import club.pineclone.gtavops.jni.PlatformFocusMonitor;
 import club.pineclone.gtavops.jni.WindowTitleListener;
-import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,25 +10,26 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MacroRegistry implements WindowTitleListener {
+public class MacroRegistry implements WindowTitleListener, AppLifecycleAware // TODO: 将进程挂起职责移交到外部，而不是宏内核
+{
 
-    @Getter private static final MacroRegistry instance = new MacroRegistry();
     private static volatile boolean globalSuspended = true;
     private static final String GTAV_WINDOW_TITLE = "Grand Theft Auto V";  /* 增强 & 传承标题相同 */
 
     private final Map<UUID, Macro> registry = new LinkedHashMap<>();
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    /* 注：下面两个方法不应该多次调用，应该仅在应用的主生命周期中调用两次 */
+    private final PlatformFocusMonitor platformFocusMonitor;
 
-    private MacroRegistry() {}
+    public MacroRegistry(PlatformFocusMonitor platformFocusMonitor) {
+        this.platformFocusMonitor = platformFocusMonitor;
+        this.platformFocusMonitor.addListener(this);
+    }
 
-    /* 宏注册入口，基于给定的配置和策略创建宏 */
-    public UUID register(MacroConfig config, MacroCreationStrategies.MacroCreationStrategy strategy) {
+    /* 宏注册入口，将宏注册到上下文 */
+    public UUID register(Macro macro) {
         UUID uuid = UUID.randomUUID();
-        Macro macro = strategy.apply(config);
         registry.put(uuid, macro);
-
         if (globalSuspended) macro.suspend();  /* 创建宏时，如果全局处于挂起状态，那么需要将新生的宏挂起 */
         return uuid;
     }

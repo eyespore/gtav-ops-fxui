@@ -8,8 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 
-@Deprecated
-public class VTextField extends TextField {
+public class VTextField extends TextField {  // TODO: 文本输入？
 
     public VTextField() {
         setBackground(new Background(new BackgroundFill(

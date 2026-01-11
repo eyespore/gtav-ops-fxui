@@ -43,7 +43,7 @@ public class I18nKeyChooseButton extends FusionButton {
 
         textProperty.bind(Bindings.createStringBinding(() -> {
             Key key = keyProperty.get();
-            if (key == null) return i18nContext.get().vfxComponent.keyChooser.unset;
+            if (key == null) return i18nContext.get().vfxComponent.unset;
             if (key.button != null) {  /* 鼠标键位 */
                 return switch (key.button) {
                     case NONE -> null;

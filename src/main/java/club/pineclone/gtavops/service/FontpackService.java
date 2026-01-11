@@ -1,7 +1,7 @@
 package club.pineclone.gtavops.service;
 
 import club.pineclone.gtavops.dao.FontpackDao;
-import club.pineclone.gtavops.pojo.FontpackMetadata;
+import club.pineclone.gtavops.domain.FontpackMetadata;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Deprecated
 public class FontpackService {
 
     private final FontpackDao dao;

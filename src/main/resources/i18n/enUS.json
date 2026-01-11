@@ -24,6 +24,7 @@
     "mouseWheel" : "Mouse wheel"
   },
   "vfxComponent" : {
+    "unset" : "Nil",
     "keyChooser" : {
       "description" : "press [{0}] to apply setting",
       "forwardMouseButton" : "Forward",
@@ -32,7 +33,6 @@
       "secondaryMouseButton" : "Secondary",
       "middleMouseButton" : "Middle",
       "cancel" : "Cancel",
-      "unset" : "Unset",
       "mouseScrollUp" : "Scroll Up",
       "mouseScrollDown" : "Scroll Down"
     },

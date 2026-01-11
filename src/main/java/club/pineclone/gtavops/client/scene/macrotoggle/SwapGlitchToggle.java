@@ -1,15 +1,10 @@
 package club.pineclone.gtavops.client.scene.macrotoggle;
 
+import club.pineclone.gtavops.client.forked.I18nKeyChooser;
 import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.client.i18n.I18nText;
 import club.pineclone.gtavops.client.utils.ConfigContentBuilder;
-import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.common.TriggerMode;
-import club.pineclone.gtavops.config.MacroConfig;
-import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.client.forked.I18nKeyChooser;
-import club.pineclone.gtavops.macro.MacroCreationStrategies;
-import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.entity.input.Key;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -33,27 +28,27 @@ public class SwapGlitchToggle extends MacroToggle {
 
     @Override
     protected void onFeatureEnable() {
-        macroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.SWAP_GLITCH_MACRO_CREATION_STRATEGY);
-        MacroRegistry.getInstance().launchMacro(macroId);  /* 注册宏执行器 */
+//        macroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.SWAP_GLITCH_MACRO_CREATION_STRATEGY);
+//        MacroRegistry.getInstance().launchMacro(macroId);  /* 注册宏执行器 */
     }
 
     @Override
     protected void onFeatureDisable() {
-        MacroRegistry.getInstance().terminateMacro(macroId);  /* 注销宏执行器 */
+//        MacroRegistry.getInstance().terminateMacro(macroId);  /* 注销宏执行器 */
     }
 
     // TODO: 将config抽离到FeatureTogglePaneTemplate作为字段，通过构造器传入
     @Override
     public void onUIInit() {
-        selectedProperty().set(MacroConfigLoader.get().swapGlitch.baseSetting.enable);
+//        selectedProperty().set(MacroConfigLoader.get().swapGlitch.baseSetting.enable);
     }
 
     @Override
     public void onUIDispose() {
-        MacroConfigLoader.get().swapGlitch.baseSetting.enable = selectedProperty().get();
+//        MacroConfigLoader.get().swapGlitch.baseSetting.enable = selectedProperty().get();
     }
 
-    private static class SGSettingStage extends MacroSettingStage implements ResourceHolder {
+    private static class SGSettingStage extends MacroSettingStage {
 
         private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
         private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | I18nKeyChooser.FLAG_WITH_WHEEL_SCROLL;
@@ -68,8 +63,8 @@ public class SwapGlitchToggle extends MacroToggle {
 //        private final ToggleSwitch enableSwapMeleeToggle = new ToggleSwitch();
         private final BooleanProperty enableSwapMelee = new SimpleBooleanProperty();  /* 切换近战武器 */
 
-        private final MacroConfig config = getConfig();
-        private final MacroConfig.SwapGlitch sgConfig = config.swapGlitch;
+//        private final MacroConfig config = getConfig();
+//        private final MacroConfig.SwapGlitch sgConfig = config.swapGlitch;
 
 //        private final I18nTriggerModeChooseButton activateMethodBtn = new I18nTriggerModeChooseButton(i18nContext, FLAG_WITH_HOLD | FLAG_WITH_TOGGLE);
         private final ObjectProperty<TriggerMode> activateMethod = new SimpleObjectProperty<>();
@@ -182,20 +177,20 @@ public class SwapGlitchToggle extends MacroToggle {
 
         @Override
         public void onVSettingStageInit() {
-            activateKey.set(sgConfig.baseSetting.activatekey);
-            targetWeaponWheelKey.set(sgConfig.baseSetting.targetWeaponWheelKey);
-            meleeWeaponKey.set(sgConfig.swapMeleeSetting.meleeWeaponKey);
-
-            postSwapMeleeDelay.set(sgConfig.swapMeleeSetting.postSwapMeleeDelay);
-
-            activateMethod.set(sgConfig.baseSetting.activateMethod);
-            triggerInterval.set(sgConfig.baseSetting.triggerInterval);
-
-            enableSwapMelee.set(sgConfig.swapMeleeSetting.enableSwapMelee);
-            enableSwapRanged.set(sgConfig.swapRangedSetting.enableSwapRanged);
-
-            swapDefaultRangedWeaponOnEmpty.set(sgConfig.swapRangedSetting.swapDefaultRangedWeaponOnEmpty);
-            defaultRangedWeaponKey.set(sgConfig.swapRangedSetting.defaultRangedWeaponKey);
+//            activateKey.set(sgConfig.baseSetting.activatekey);
+//            targetWeaponWheelKey.set(sgConfig.baseSetting.targetWeaponWheelKey);
+//            meleeWeaponKey.set(sgConfig.swapMeleeSetting.meleeWeaponKey);
+//
+//            postSwapMeleeDelay.set(sgConfig.swapMeleeSetting.postSwapMeleeDelay);
+//
+//            activateMethod.set(sgConfig.baseSetting.activateMethod);
+//            triggerInterval.set(sgConfig.baseSetting.triggerInterval);
+//
+//            enableSwapMelee.set(sgConfig.swapMeleeSetting.enableSwapMelee);
+//            enableSwapRanged.set(sgConfig.swapRangedSetting.enableSwapRanged);
+//
+//            swapDefaultRangedWeaponOnEmpty.set(sgConfig.swapRangedSetting.swapDefaultRangedWeaponOnEmpty);
+//            defaultRangedWeaponKey.set(sgConfig.swapRangedSetting.defaultRangedWeaponKey);
 
 //            mapping1Toggle.selectedProperty().set(sgConfig.swapRangedSetting.enableMapping1);
 //            mapping1SourceKeyBtn.keyProperty().set(sgConfig.swapRangedSetting.mapping1SourceKey);
@@ -217,25 +212,25 @@ public class SwapGlitchToggle extends MacroToggle {
 //            mapping5SourceKeyBtn.keyProperty().set(sgConfig.swapRangedSetting.mapping5SourceKey);
 //            mapping5TargetKeyBtn.keyProperty().set(sgConfig.swapRangedSetting.mapping5TargetKey);
 
-            enableClearKey.set(sgConfig.swapRangedSetting.enableClearKey);
-            clearKey.set(sgConfig.swapRangedSetting.clearKey);
+//            enableClearKey.set(sgConfig.swapRangedSetting.enableClearKey);
+//            clearKey.set(sgConfig.swapRangedSetting.clearKey);
         }
 
         @Override
         public void onVSettingStageExit() {
-            sgConfig.baseSetting.targetWeaponWheelKey = targetWeaponWheelKey.get();
-            sgConfig.swapMeleeSetting.meleeWeaponKey = meleeWeaponKey.get();
+//            sgConfig.baseSetting.targetWeaponWheelKey = targetWeaponWheelKey.get();
+//            sgConfig.swapMeleeSetting.meleeWeaponKey = meleeWeaponKey.get();
+//
+//            sgConfig.baseSetting.activatekey = activateKey.get();
+//            sgConfig.baseSetting.activateMethod = activateMethod.get();
+//            sgConfig.baseSetting.triggerInterval = triggerInterval.get();
+//            sgConfig.swapMeleeSetting.postSwapMeleeDelay = postSwapMeleeDelay.get();
+//            sgConfig.swapMeleeSetting.enableSwapMelee = enableSwapMelee.get();
 
-            sgConfig.baseSetting.activatekey = activateKey.get();
-            sgConfig.baseSetting.activateMethod = activateMethod.get();
-            sgConfig.baseSetting.triggerInterval = triggerInterval.get();
-            sgConfig.swapMeleeSetting.postSwapMeleeDelay = postSwapMeleeDelay.get();
-            sgConfig.swapMeleeSetting.enableSwapMelee = enableSwapMelee.get();
-
-            MacroConfig.SwapGlitch.SwapRangedSetting srSetting = sgConfig.swapRangedSetting;
-            srSetting.enableSwapRanged = enableSwapRanged.get();
-            srSetting.swapDefaultRangedWeaponOnEmpty = swapDefaultRangedWeaponOnEmpty.get();
-            srSetting.defaultRangedWeaponKey = defaultRangedWeaponKey.get();
+//            MacroConfig.SwapGlitch.SwapRangedSetting srSetting = sgConfig.swapRangedSetting;
+//            srSetting.enableSwapRanged = enableSwapRanged.get();
+//            srSetting.swapDefaultRangedWeaponOnEmpty = swapDefaultRangedWeaponOnEmpty.get();
+//            srSetting.defaultRangedWeaponKey = defaultRangedWeaponKey.get();
 
 //            srSetting.enableMapping1 = mapping1Toggle.selectedProperty().get();
 //            srSetting.mapping1SourceKey = mapping1SourceKeyBtn.keyProperty().get();
@@ -257,8 +252,8 @@ public class SwapGlitchToggle extends MacroToggle {
 //            srSetting.mapping5SourceKey = mapping5SourceKeyBtn.keyProperty().get();
 //            srSetting.mapping5TargetKey = mapping5TargetKeyBtn.keyProperty().get();
 
-            srSetting.enableClearKey = enableClearKey.get();
-            srSetting.clearKey = clearKey.get();
+//            srSetting.enableClearKey = enableClearKey.get();
+//            srSetting.clearKey = clearKey.get();
         }
     }
 }

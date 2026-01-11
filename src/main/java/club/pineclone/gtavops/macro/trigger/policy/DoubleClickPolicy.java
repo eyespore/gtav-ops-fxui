@@ -1,6 +1,6 @@
 package club.pineclone.gtavops.macro.trigger.policy;
 
-import club.pineclone.gtavops.macro.MacroTaskScheduler;
+import club.pineclone.gtavops.AppContext;
 import club.pineclone.gtavops.macro.trigger.TriggerStatus;
 import club.pineclone.gtavops.macro.trigger.source.InputSourceEvent;
 
@@ -39,7 +39,7 @@ public class DoubleClickPolicy implements ActivationPolicy {
                     } else {
                         // 第一次点击，延迟判定为 CLICK
                         lastPressedTime = now;
-                        future = MacroTaskScheduler.getSCHEDULER().schedule(() -> {
+                        future = AppContext.getInstance().getMacroTaskScheduler().schedule(() -> {
                             callback.accept(Optional.of(TriggerStatus.CLICK));
                             synchronized (lock) {
                                 future = null;

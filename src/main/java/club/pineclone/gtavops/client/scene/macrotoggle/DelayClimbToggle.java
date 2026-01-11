@@ -4,11 +4,6 @@ import club.pineclone.gtavops.client.forked.I18nKeyChooser;
 import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.client.i18n.I18nText;
 import club.pineclone.gtavops.client.utils.ConfigContentBuilder;
-import club.pineclone.gtavops.common.ResourceHolder;
-import club.pineclone.gtavops.config.MacroConfig;
-import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.macro.MacroCreationStrategies;
-import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.entity.input.Key;
 import javafx.beans.property.*;
 
@@ -25,32 +20,30 @@ public class DelayClimbToggle extends MacroToggle {
 
     @Override
     protected void onFeatureEnable() {
-        macroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.DELAY_CLIMB_MACRO_CREATION_STRATEGY);
-        MacroRegistry.getInstance().launchMacro(macroId);
+//        macroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.DELAY_CLIMB_MACRO_CREATION_STRATEGY);
+//        MacroRegistry.getInstance().launchMacro(macroId);
     }
 
     @Override
     protected void onFeatureDisable() {
-        MacroRegistry.getInstance().terminateMacro(macroId);
+//        MacroRegistry.getInstance().terminateMacro(macroId);
     }
 
     @Override
     public void onUIInit() {
-        selectedProperty().set(MacroConfigLoader.get().delayClimb.baseSetting.enable);
+//        selectedProperty().set(MacroConfigLoader.get().delayClimb.baseSetting.enable);
     }
 
     @Override
     public void onUIDispose() {
-        log.debug("Save config to file: {}", selectedProperty().get());
-        MacroConfigLoader.get().delayClimb.baseSetting.setEnable(selectedProperty().get());
+//        log.debug("Save config to file: {}", selectedProperty().get());
+//        MacroConfigLoader.get().delayClimb.baseSetting.setEnable(selectedProperty().get());
     }
 
-    private static class DCSettingStage
-            extends MacroSettingStage
-            implements ResourceHolder {
+    private static class DCSettingStage extends MacroSettingStage {
 
-        private final MacroConfig config = getConfig();
-        private final MacroConfig.DelayClimb dcConfig = config.delayClimb;
+//        private final MacroConfig config = getConfig();
+//        private final MacroConfig.DelayClimb dcConfig = config.delayClimb;
 
         private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
         private final ObjectProperty<Key> usePhoneKey = new SimpleObjectProperty<>();
@@ -79,26 +72,26 @@ public class DelayClimbToggle extends MacroToggle {
 
         @Override
         public void onVSettingStageInit() {
-            toggleDelayClimbKey.set(dcConfig.baseSetting.toggleDelayClimbKey);
-            usePhoneKey.set(dcConfig.baseSetting.usePhoneKey);
-            hideInCoverKey.set(dcConfig.baseSetting.hideInCoverKey);
-            triggerInterval.set(dcConfig.baseSetting.triggerInterval);
-            timeUtilCameraExited.set(dcConfig.baseSetting.timeUtilCameraExited);
-            timeUtilCameraLoaded1.set(dcConfig.baseSetting.timeUtilCameraLoaded1);
-            timeUtilCameraLoaded2.set(dcConfig.baseSetting.timeUtilCameraLoaded2);
-            hideInCoverOnExit.set(dcConfig.baseSetting.hideInCoverOnExit);
+//            toggleDelayClimbKey.set(dcConfig.baseSetting.toggleDelayClimbKey);
+//            usePhoneKey.set(dcConfig.baseSetting.usePhoneKey);
+//            hideInCoverKey.set(dcConfig.baseSetting.hideInCoverKey);
+//            triggerInterval.set(dcConfig.baseSetting.triggerInterval);
+//            timeUtilCameraExited.set(dcConfig.baseSetting.timeUtilCameraExited);
+//            timeUtilCameraLoaded1.set(dcConfig.baseSetting.timeUtilCameraLoaded1);
+//            timeUtilCameraLoaded2.set(dcConfig.baseSetting.timeUtilCameraLoaded2);
+//            hideInCoverOnExit.set(dcConfig.baseSetting.hideInCoverOnExit);
         }
 
         @Override
         public void onVSettingStageExit() {
-            dcConfig.baseSetting.toggleDelayClimbKey = toggleDelayClimbKey.get();
-            dcConfig.baseSetting.usePhoneKey = usePhoneKey.get();
-            dcConfig.baseSetting.hideInCoverKey = hideInCoverKey.get();
-            dcConfig.baseSetting.triggerInterval = triggerInterval.get();
-            dcConfig.baseSetting.timeUtilCameraExited = timeUtilCameraExited.get();
-            dcConfig.baseSetting.timeUtilCameraLoaded1 = timeUtilCameraLoaded1.get();
-            dcConfig.baseSetting.timeUtilCameraLoaded2 = timeUtilCameraLoaded2.get();
-            dcConfig.baseSetting.hideInCoverOnExit = hideInCoverOnExit.get();
+//            dcConfig.baseSetting.toggleDelayClimbKey = toggleDelayClimbKey.get();
+//            dcConfig.baseSetting.usePhoneKey = usePhoneKey.get();
+//            dcConfig.baseSetting.hideInCoverKey = hideInCoverKey.get();
+//            dcConfig.baseSetting.triggerInterval = triggerInterval.get();
+//            dcConfig.baseSetting.timeUtilCameraExited = timeUtilCameraExited.get();
+//            dcConfig.baseSetting.timeUtilCameraLoaded1 = timeUtilCameraLoaded1.get();
+//            dcConfig.baseSetting.timeUtilCameraLoaded2 = timeUtilCameraLoaded2.get();
+//            dcConfig.baseSetting.hideInCoverOnExit = hideInCoverOnExit.get();
         }
     }
 }

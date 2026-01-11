@@ -3,11 +3,6 @@ package club.pineclone.gtavops.client.scene.macrotoggle;
 import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.client.i18n.I18nText;
 import club.pineclone.gtavops.client.utils.ConfigContentBuilder;
-import club.pineclone.gtavops.common.ResourceHolder;
-import club.pineclone.gtavops.config.MacroConfig;
-import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.macro.MacroCreationStrategies;
-import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.entity.input.Key;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -27,30 +22,30 @@ public class QuickSwapToggle extends MacroToggle {
 
     @Override
     protected void onFeatureEnable() {
-        macroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.QUICK_SWAP_MACRO_CREATION_STRATEGY);
-        MacroRegistry.getInstance().launchMacro(macroId);
+//        macroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.QUICK_SWAP_MACRO_CREATION_STRATEGY);
+//        MacroRegistry.getInstance().launchMacro(macroId);
     }
 
     @Override
     protected void onFeatureDisable() {
-        MacroRegistry.getInstance().terminateMacro(macroId);
+//        MacroRegistry.getInstance().terminateMacro(macroId);
     }
 
     @Override
     public void onUIInit() {
-        selectedProperty().set(MacroConfigLoader.get().quickSwap.baseSetting.enable);
+//        selectedProperty().set(MacroConfigLoader.get().quickSwap.baseSetting.enable);
     }
 
     @Override
     public void onUIDispose() {
-        MacroConfigLoader.get().quickSwap.baseSetting.enable = selectedProperty().get();
+//        MacroConfigLoader.get().quickSwap.baseSetting.enable = selectedProperty().get();
     }
 
-    private static class QSSettingStage extends MacroSettingStage implements ResourceHolder {
+    private static class QSSettingStage extends MacroSettingStage {
 
-        private final MacroConfig config = getConfig();
-        private final MacroConfig.QuickSwap qsConfig = config.getQuickSwap();
-        private final MacroConfig.SwapGlitch sgConfig = config.getSwapGlitch();
+//        private final MacroConfig config = getConfig();
+//        private final MacroConfig.QuickSwap qsConfig = config.getQuickSwap();
+//        private final MacroConfig.SwapGlitch sgConfig = config.getSwapGlitch();
 
 //        private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
 //        private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | I18nKeyChooser.FLAG_WITH_WHEEL_SCROLL;
@@ -144,15 +139,15 @@ public class QuickSwapToggle extends MacroToggle {
 //            mapping5SourceKeyBtn.keyProperty().set(sgConfig.swapRangedSetting.mapping5SourceKey);
 //            mapping5TargetKeyBtn.keyProperty().set(sgConfig.swapRangedSetting.mapping5TargetKey);
 
-            enableBlockKey.set(qsConfig.baseSetting.enableBlockKey);
-            blockKey.set(qsConfig.baseSetting.blockKey);
-            blockDuration.set(qsConfig.baseSetting.blockDuration);
+//            enableBlockKey.set(qsConfig.baseSetting.enableBlockKey);
+//            blockKey.set(qsConfig.baseSetting.blockKey);
+//            blockDuration.set(qsConfig.baseSetting.blockDuration);
         }
 
         @Override
         public void onVSettingStageExit() {
 //            MacroConfig.SwapGlitch.SwapRangedSetting srSetting = sgConfig.swapRangedSetting;
-            MacroConfig.QuickSwap.BaseSetting bSetting = qsConfig.baseSetting;
+//            MacroConfig.QuickSwap.BaseSetting bSetting = qsConfig.baseSetting;
 
 //            bSetting.enableMapping1 = mapping1Toggle.selectedProperty().get();
 //            srSetting.mapping1SourceKey = mapping1SourceKeyBtn.keyProperty().get();
@@ -174,9 +169,9 @@ public class QuickSwapToggle extends MacroToggle {
 //            srSetting.mapping5SourceKey = mapping5SourceKeyBtn.keyProperty().get();
 //            srSetting.mapping5TargetKey = mapping5TargetKeyBtn.keyProperty().get();
 
-            bSetting.enableBlockKey = enableBlockKey.get();
-            bSetting.blockKey = blockKey.get();
-            bSetting.blockDuration = blockDuration.get();
+//            bSetting.enableBlockKey = enableBlockKey.get();
+//            bSetting.blockKey = blockKey.get();
+//            bSetting.blockDuration = blockDuration.get();
         }
     }
 }

@@ -4,12 +4,7 @@ import club.pineclone.gtavops.client.forked.I18nKeyChooser;
 import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.client.i18n.I18nText;
 import club.pineclone.gtavops.client.utils.ConfigContentBuilder;
-import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.common.TriggerMode;
-import club.pineclone.gtavops.config.MacroConfig;
-import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.macro.MacroCreationStrategies;
-import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.entity.input.Key;
 import javafx.beans.property.*;
 
@@ -28,31 +23,31 @@ public class ADSwingToggle extends MacroToggle {
 
     @Override
     protected void onFeatureEnable() {
-        macroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.AD_SWING_MACRO_CREATION_STRATEGY);
-        MacroRegistry.getInstance().launchMacro(macroId);
+//        macroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.AD_SWING_MACRO_CREATION_STRATEGY);
+//        MacroRegistry.getInstance().launchMacro(macroId);
     }
 
     @Override
     protected void onFeatureDisable() {
-        MacroRegistry.getInstance().terminateMacro(macroId);
+//        MacroRegistry.getInstance().terminateMacro(macroId);
     }
 
     @Override
     public void onUIInit() {
-        selectedProperty().set(MacroConfigLoader.get().adSwing.baseSetting.enable);
+//        selectedProperty().set(MacroConfigLoader.get().adSwing.baseSetting.enable);
     }
 
     @Override
     public void onUIDispose() {
-        MacroConfigLoader.get().adSwing.baseSetting.enable = selectedProperty().get();
+//        MacroConfigLoader.get().adSwing.baseSetting.enable = selectedProperty().get();
     }
 
-    private static class ADWSettingStage extends MacroSettingStage implements ResourceHolder {
+    private static class ADWSettingStage extends MacroSettingStage {
         private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
         private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | I18nKeyChooser.FLAG_WITH_WHEEL_SCROLL;
 
-        MacroConfig config = getConfig();
-        MacroConfig.ADSwing adwConfig = config.adSwing;
+//        MacroConfig config = getConfig();
+//        MacroConfig.ADSwing adwConfig = config.adSwing;
 
         private final ObjectProperty<TriggerMode> activateMethod = new SimpleObjectProperty<>();
         private final ObjectProperty<Key> activateKey = new SimpleObjectProperty<>();
@@ -77,24 +72,24 @@ public class ADSwingToggle extends MacroToggle {
 
         @Override
         public void onVSettingStageInit() {
-            activateMethod.set(adwConfig.baseSetting.activateMethod);
-            activateKey.set(adwConfig.baseSetting.activatekey);
-            triggerInterval.set(adwConfig.baseSetting.triggerInterval);
-            moveLeftKey.set(adwConfig.baseSetting.moveLeftKey);
-            moveRightKey.set(adwConfig.baseSetting.moveRightKey);
-            enableSafetyKey.set(adwConfig.baseSetting.enableSafetyKey);
-            safetyKey.set(adwConfig.baseSetting.safetyKey);
+//            activateMethod.set(adwConfig.baseSetting.activateMethod);
+//            activateKey.set(adwConfig.baseSetting.activatekey);
+//            triggerInterval.set(adwConfig.baseSetting.triggerInterval);
+//            moveLeftKey.set(adwConfig.baseSetting.moveLeftKey);
+//            moveRightKey.set(adwConfig.baseSetting.moveRightKey);
+//            enableSafetyKey.set(adwConfig.baseSetting.enableSafetyKey);
+//            safetyKey.set(adwConfig.baseSetting.safetyKey);
         }
 
         @Override
         public void onVSettingStageExit() {
-            adwConfig.baseSetting.activateMethod = activateMethod.get();
-            adwConfig.baseSetting.activatekey = activateKey.get();
-            adwConfig.baseSetting.triggerInterval = triggerInterval.get();
-            adwConfig.baseSetting.moveLeftKey = moveLeftKey.get();
-            adwConfig.baseSetting.moveRightKey = moveRightKey.get();
-            adwConfig.baseSetting.enableSafetyKey = enableSafetyKey.get();
-            adwConfig.baseSetting.safetyKey = safetyKey.get();
+//            adwConfig.baseSetting.activateMethod = activateMethod.get();
+//            adwConfig.baseSetting.activatekey = activateKey.get();
+//            adwConfig.baseSetting.triggerInterval = triggerInterval.get();
+//            adwConfig.baseSetting.moveLeftKey = moveLeftKey.get();
+//            adwConfig.baseSetting.moveRightKey = moveRightKey.get();
+//            adwConfig.baseSetting.enableSafetyKey = enableSafetyKey.get();
+//            adwConfig.baseSetting.safetyKey = safetyKey.get();
         }
     }
 }

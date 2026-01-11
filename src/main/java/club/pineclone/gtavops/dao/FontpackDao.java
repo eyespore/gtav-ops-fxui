@@ -1,6 +1,6 @@
 package club.pineclone.gtavops.dao;
 
-import club.pineclone.gtavops.pojo.FontpackMetadata;
+import club.pineclone.gtavops.domain.FontpackMetadata;
 import club.pineclone.gtavops.common.PathUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+@Deprecated
 public class FontpackDao {
 
     @Getter private final Path baseDir;

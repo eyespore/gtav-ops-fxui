@@ -3,12 +3,7 @@ package club.pineclone.gtavops.client.scene.macrotoggle;
 import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.client.i18n.I18nText;
 import club.pineclone.gtavops.client.utils.ConfigContentBuilder;
-import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.common.SessionType;
-import club.pineclone.gtavops.config.MacroConfig;
-import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.macro.MacroCreationStrategies;
-import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.entity.input.Key;
 import javafx.beans.property.*;
 
@@ -27,39 +22,39 @@ public class BetterPMenuToggle extends MacroToggle {
 
     @Override
     protected void onFeatureEnable() {
-        MacroConfig.BetterPMenu bpmconfig = MacroConfigLoader.get().betterPMenu;
+//        MacroConfig.BetterPMenu bpmconfig = MacroConfigLoader.get().betterPMenu;
         /* 快速加入新战局 */
-        if (bpmconfig.joinANewSession.enable) {
-            joinANewSessionMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.JOIN_A_NEW_SESSION_MACRO_CREATION_STRATEGY);
-            MacroRegistry.getInstance().launchMacro(joinANewSessionMacroId);
-        }
+//        if (bpmconfig.joinANewSession.enable) {
+//            joinANewSessionMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.JOIN_A_NEW_SESSION_MACRO_CREATION_STRATEGY);
+//            MacroRegistry.getInstance().launchMacro(joinANewSessionMacroId);
+//        }
         /* 加入已收藏差事 */
-        if (bpmconfig.joinABookmarkedJob.enable) {
-            joinABookmarkedJobMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.JOIN_A_BOOKMARKED_JOB_MACRO_CREATION_STRATEGY);;
-            MacroRegistry.getInstance().launchMacro(joinABookmarkedJobMacroId);
-        }
+//        if (bpmconfig.joinABookmarkedJob.enable) {
+//            joinABookmarkedJobMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.JOIN_A_BOOKMARKED_JOB_MACRO_CREATION_STRATEGY);;
+//            MacroRegistry.getInstance().launchMacro(joinABookmarkedJobMacroId);
+//        }
     }
 
     @Override
     protected void onFeatureDisable() {
-        MacroRegistry.getInstance().terminateMacro(joinANewSessionMacroId);
-        MacroRegistry.getInstance().terminateMacro(joinABookmarkedJobMacroId);
+//        MacroRegistry.getInstance().terminateMacro(joinANewSessionMacroId);
+//        MacroRegistry.getInstance().terminateMacro(joinABookmarkedJobMacroId);
     }
 
     @Override
     public void onUIInit() {
-        selectedProperty().set(MacroConfigLoader.get().betterPMenu.baseSetting.enable);
+//        selectedProperty().set(MacroConfigLoader.get().betterPMenu.baseSetting.enable);
     }
 
     @Override
     public void onUIDispose() {
-        MacroConfigLoader.get().betterPMenu.baseSetting.enable = selectedProperty().get();
+//        MacroConfigLoader.get().betterPMenu.baseSetting.enable = selectedProperty().get();
     }
 
-    private static class BPMSettingStage extends MacroSettingStage implements ResourceHolder {
+    private static class BPMSettingStage extends MacroSettingStage {
 
-        private final MacroConfig config = getConfig();
-        private final MacroConfig.BetterPMenu bpmConfig = config.betterPMenu;
+//        private final MacroConfig config = getConfig();
+//        private final MacroConfig.BetterPMenu bpmConfig = config.betterPMenu;
 
         private final DoubleProperty mouseScrollInterval = new SimpleDoubleProperty();
         private final DoubleProperty enterKeyInterval = new SimpleDoubleProperty();
@@ -101,32 +96,32 @@ public class BetterPMenuToggle extends MacroToggle {
 
         @Override
         public void onVSettingStageInit() {
-            mouseScrollInterval.set(bpmConfig.baseSetting.mouseScrollInterval);
-            enterKeyInterval.set(bpmConfig.baseSetting.enterKeyInterval);
-            timeUtilPMenuLoaded.set(bpmConfig.baseSetting.timeUtilPMenuLoaded);
-
-            enableJoinANewSession.set(bpmConfig.joinANewSession.enable);
-            joinANewSessionActivateKey.set(bpmConfig.joinANewSession.activateKey);
-            joinANewSessionType.set(bpmConfig.joinANewSession.sessionType);
-
-            enableJoinABookmarkedJob.set(bpmConfig.joinABookmarkedJob.enable);
-            joinABookmarkedJobActivateKey.set(bpmConfig.joinABookmarkedJob.activateKey);
-            timeUtilJobsLoaded.set(bpmConfig.joinABookmarkedJob.timeUtilJobsLoaded);
+//            mouseScrollInterval.set(bpmConfig.baseSetting.mouseScrollInterval);
+//            enterKeyInterval.set(bpmConfig.baseSetting.enterKeyInterval);
+//            timeUtilPMenuLoaded.set(bpmConfig.baseSetting.timeUtilPMenuLoaded);
+//
+//            enableJoinANewSession.set(bpmConfig.joinANewSession.enable);
+//            joinANewSessionActivateKey.set(bpmConfig.joinANewSession.activateKey);
+//            joinANewSessionType.set(bpmConfig.joinANewSession.sessionType);
+//
+//            enableJoinABookmarkedJob.set(bpmConfig.joinABookmarkedJob.enable);
+//            joinABookmarkedJobActivateKey.set(bpmConfig.joinABookmarkedJob.activateKey);
+//            timeUtilJobsLoaded.set(bpmConfig.joinABookmarkedJob.timeUtilJobsLoaded);
         }
 
         @Override
         public void onVSettingStageExit() {
-            bpmConfig.baseSetting.mouseScrollInterval = mouseScrollInterval.get();
-            bpmConfig.baseSetting.enterKeyInterval = enterKeyInterval.get();
-            bpmConfig.baseSetting.timeUtilPMenuLoaded = timeUtilPMenuLoaded.get();
-
-            bpmConfig.joinANewSession.enable = enableJoinANewSession.get();
-            bpmConfig.joinANewSession.activateKey = joinANewSessionActivateKey.get();
-            bpmConfig.joinANewSession.sessionType = joinANewSessionType.get();
-
-            bpmConfig.joinABookmarkedJob.enable = enableJoinABookmarkedJob.get();
-            bpmConfig.joinABookmarkedJob.activateKey = joinABookmarkedJobActivateKey.get();
-            bpmConfig.joinABookmarkedJob.timeUtilJobsLoaded = timeUtilJobsLoaded.get();
+//            bpmConfig.baseSetting.mouseScrollInterval = mouseScrollInterval.get();
+//            bpmConfig.baseSetting.enterKeyInterval = enterKeyInterval.get();
+//            bpmConfig.baseSetting.timeUtilPMenuLoaded = timeUtilPMenuLoaded.get();
+//
+//            bpmConfig.joinANewSession.enable = enableJoinANewSession.get();
+//            bpmConfig.joinANewSession.activateKey = joinANewSessionActivateKey.get();
+//            bpmConfig.joinANewSession.sessionType = joinANewSessionType.get();
+//
+//            bpmConfig.joinABookmarkedJob.enable = enableJoinABookmarkedJob.get();
+//            bpmConfig.joinABookmarkedJob.activateKey = joinABookmarkedJobActivateKey.get();
+//            bpmConfig.joinABookmarkedJob.timeUtilJobsLoaded = timeUtilJobsLoaded.get();
         }
     }
 }

@@ -339,6 +339,8 @@ public class ExtendedI18n implements InternalI18n {
 
     /* VFX UI 组件 */
     public static class VFXComponent {
+        public String unset = "vfxComponent.unset";  /* 未设置 */
+
         public KeyChooser keyChooser = new KeyChooser();
         public ListConfigEditor listConfigEditor = new ListConfigEditor();
 
@@ -350,7 +352,6 @@ public class ExtendedI18n implements InternalI18n {
             public String secondaryMouseButton = "vfxComponent.keyChooser.secondaryMouseButton";  /* 鼠标右键 */
             public String middleMouseButton = "vfxComponent.keyChooser.middleMouseButton";  /* 鼠标中键 */
             public String cancel = "vfxComponent.keyChooser.cancel";
-            public String unset = "vfxComponent.keyChooser.unset";  /* 未设置 */
             public String mouseScrollUp = "vfxComponent.keyChooser.mouseScrollUp";  /* 上滚轮 */
             public String mouseScrollDown = "vfxComponent.keyChooser.mouseScrollDown";  /* 下滚轮 */
         }

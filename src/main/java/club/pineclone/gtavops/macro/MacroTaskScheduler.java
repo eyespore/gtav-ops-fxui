@@ -1,28 +1,47 @@
 package club.pineclone.gtavops.macro;
 
-import lombok.Getter;
+import club.pineclone.gtavops.AppLifecycleAware;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 宏任务调度
  */
-public class MacroTaskScheduler {
+public class MacroTaskScheduler implements AppLifecycleAware {
 
-    @Getter
-    private static final ScheduledExecutorService SCHEDULER =
-            Executors.newScheduledThreadPool(
-                    Runtime.getRuntime().availableProcessors(),
-                    new NamedThreadFactory("macro-task-scheduler-%d")
-            );
+    private final ScheduledExecutorService scheduler;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private MacroTaskScheduler() {}
+    public MacroTaskScheduler() {
+        log.info("Loading macro task scheduler for handling macro multiple-threads task");
+        this.scheduler = Executors.newScheduledThreadPool(
+                Runtime.getRuntime().availableProcessors(),
+                new NamedThreadFactory("macro-task-scheduler-%d"));
+    }
 
-    public static void shutdown() {
-        SCHEDULER.shutdownNow();
+    public Future<?> submit(Runnable task) {
+        return this.scheduler.submit(task);
+    }
+
+    public ScheduledFuture<?> scheduleAtFixedRate(@NotNull Runnable command, long initialDelay, long period, @NotNull TimeUnit unit) {
+        return this.scheduler.scheduleAtFixedRate(command, initialDelay, period, unit);
+    }
+
+    public ScheduledFuture<?> schedule(@NotNull Runnable command, long delay, @NotNull TimeUnit unit) {
+        return this.scheduler.schedule(command, delay, unit);
+    }
+
+    @Override
+    public void onAppStop() {
+        this.shutdown();
+    }
+
+    private void shutdown() {
+        this.scheduler.shutdownNow();
     }
 
     private static class NamedThreadFactory implements ThreadFactory {
@@ -30,7 +49,7 @@ public class MacroTaskScheduler {
         private final String pattern;
         public NamedThreadFactory(String pattern) { this.pattern = pattern; }
         @Override
-        public Thread newThread(Runnable r) {
+        public Thread newThread(@NotNull Runnable r) {
             Thread t = new Thread(r, String.format(pattern, count.incrementAndGet()));
             t.setDaemon(true);
             return t;

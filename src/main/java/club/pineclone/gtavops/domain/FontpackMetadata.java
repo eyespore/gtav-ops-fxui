@@ -1,7 +1,5 @@
-package club.pineclone.gtavops.pojo;
+package club.pineclone.gtavops.domain;
 
-import club.pineclone.gtavops.client.i18n.ExtendedI18n;
-import club.pineclone.gtavops.client.i18n.I18nLoader;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +14,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Deprecated
 public class FontpackMetadata {
     private String id;  /* 字体包唯一id，使用uuid构建 */
     private String name;  /* 字体包名称 */

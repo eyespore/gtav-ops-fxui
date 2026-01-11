@@ -36,15 +36,16 @@ public class I18nOptionButton<T> extends FusionButton {
 
         /* 处理鼠标点击事件，鼠标点击触发索引变化 */
         setOnMouseClicked(event -> {
-            if (options.size() == 1) return;  /* 若仅有一个选项，那么忽略点击事件 */
-            MouseButton button = event.getButton();
-            int currentIndex = options.indexOf(optionProperty.get());
+            if (options.size() <= 1) return;  /* 若仅有一个选项，那么忽略点击事件 */
+
+            int currentIndex;
+            if (optionProperty.get() == null) currentIndex = 0;
+            else currentIndex = options.indexOf(optionProperty.get());
+
             int targetIndex = 0;
-
-            if (button.equals(MouseButton.PRIMARY)) {  /* 鼠标左键点击，切换到下一个CycleOption */
+            if (event.getButton().equals(MouseButton.PRIMARY)) {  /* 鼠标左键点击，切换到下一个CycleOption */
                 targetIndex = currentIndex == options.size() - 1 ? 0 : currentIndex + 1;
-
-            } else if (button.equals(MouseButton.SECONDARY)) {  /* 鼠标右键点击，切换到上一个CycleOption */
+            } else if (event.getButton().equals(MouseButton.SECONDARY)) {  /* 鼠标右键点击，切换到上一个CycleOption */
                 targetIndex = currentIndex == 0 ? options.size() - 1 : currentIndex - 1;
             }
 
@@ -56,10 +57,9 @@ public class I18nOptionButton<T> extends FusionButton {
             T opt = optionProperty.get();
 //            log.debug("Receive new option: {}", opt);
             /* 由于双向绑定的触发，会导致空值注入，此处需要进行非空判断来避免抛出NPE */
-            if (opt == null) return "";
+            if (opt == null) return I18nText.of(i -> i.vfxComponent.unset).resolve(i18nContext);
             return map.get(opt).resolve(i18nContext);
         }, optionProperty));
-        if (!options.isEmpty()) optionProperty.set(options.get(0));  /* 若初始值不为空，将选项至于0号位 */
     }
 
     public ObjectProperty<T> optionProperty() {

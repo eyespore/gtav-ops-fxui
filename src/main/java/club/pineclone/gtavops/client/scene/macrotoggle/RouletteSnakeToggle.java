@@ -3,11 +3,6 @@ package club.pineclone.gtavops.client.scene.macrotoggle;
 import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.client.i18n.I18nText;
 import club.pineclone.gtavops.client.utils.ConfigContentBuilder;
-import club.pineclone.gtavops.common.ResourceHolder;
-import club.pineclone.gtavops.config.MacroConfig;
-import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.macro.MacroCreationStrategies;
-import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.entity.input.Key;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -27,28 +22,28 @@ public class RouletteSnakeToggle extends MacroToggle {
 
     @Override
     protected void onFeatureEnable() {
-        macroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.ROULETTE_SNAKE_MACRO_CREATION_STRATEGY);
-        MacroRegistry.getInstance().launchMacro(macroId);
+//        macroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.ROULETTE_SNAKE_MACRO_CREATION_STRATEGY);
+//        MacroRegistry.getInstance().launchMacro(macroId);
     }
 
     @Override
     protected void onFeatureDisable() {
-        MacroRegistry.getInstance().terminateMacro(macroId);
+//        MacroRegistry.getInstance().terminateMacro(macroId);
     }
 
     @Override
     public void onUIInit() {
-        selectedProperty().set(MacroConfigLoader.get().rouletteSnake.baseSetting.enable);
+//        selectedProperty().set(MacroConfigLoader.get().rouletteSnake.baseSetting.enable);
     }
 
     @Override
     public void onUIDispose() {
-        MacroConfigLoader.get().rouletteSnake.baseSetting.enable = selectedProperty().get();
+//        MacroConfigLoader.get().rouletteSnake.baseSetting.enable = selectedProperty().get();
     }
 
-    private static class RSSettingStage extends MacroSettingStage implements ResourceHolder {
+    private static class RSSettingStage extends MacroSettingStage {
 
-        private final MacroConfig.RouletteSnake qsConfig = getConfig().rouletteSnake;
+//        private final MacroConfig.RouletteSnake qsConfig = getConfig().rouletteSnake;
 
         private final ObjectProperty<Key> weaponWheelKey = new SimpleObjectProperty<>();
         private final ObjectProperty<Key> activateKey = new SimpleObjectProperty<>();
@@ -68,18 +63,18 @@ public class RouletteSnakeToggle extends MacroToggle {
 
         @Override
         public void onVSettingStageInit() {
-            activateKey.set(qsConfig.baseSetting.activatekey);
-            snakeKey.set(qsConfig.baseSetting.snakeKey);
-            weaponWheelKey.set(qsConfig.baseSetting.weaponWheel);
-            triggerInterval.set(qsConfig.baseSetting.triggerInterval);
+//            activateKey.set(qsConfig.baseSetting.activatekey);
+//            snakeKey.set(qsConfig.baseSetting.snakeKey);
+//            weaponWheelKey.set(qsConfig.baseSetting.weaponWheel);
+//            triggerInterval.set(qsConfig.baseSetting.triggerInterval);
         }
 
         @Override
         public void onVSettingStageExit() {
-            qsConfig.baseSetting.activatekey = activateKey.get();
-            qsConfig.baseSetting.snakeKey = snakeKey.get();
-            qsConfig.baseSetting.weaponWheel = weaponWheelKey.get();
-            qsConfig.baseSetting.triggerInterval = triggerInterval.get();
+//            qsConfig.baseSetting.activatekey = activateKey.get();
+//            qsConfig.baseSetting.snakeKey = snakeKey.get();
+//            qsConfig.baseSetting.weaponWheel = weaponWheelKey.get();
+//            qsConfig.baseSetting.triggerInterval = triggerInterval.get();
         }
     }
 }

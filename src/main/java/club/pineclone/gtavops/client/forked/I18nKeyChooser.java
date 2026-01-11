@@ -54,6 +54,10 @@ public class I18nKeyChooser extends ForkedDialog<Key> {
 
         setButtons(buttons);  /* 调用 setButtons 之后，VDialogButton中的FusionButton button字段初始化完毕 */
 
+        /*  */
+//        buttons.forEach(b -> b.button.setPrefHeight(35)); // TODO: 修改按钮默认高度到35，并移交到Builder
+//        getStage().getInitialScene().getContentPane().setPrefHeight(35);
+
         boolean withMouse = (flags & (FLAG_WITH_WHEEL_SCROLL | FLAG_WITH_MOUSE)) != 0;
         getMessageNode().setText(withMouse ? InternalI18n.get().keyChooserDesc() : InternalI18n.get().keyChooserDescWithoutMouse());
 

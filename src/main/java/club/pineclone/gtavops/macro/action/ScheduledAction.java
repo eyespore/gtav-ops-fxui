@@ -1,7 +1,7 @@
 package club.pineclone.gtavops.macro.action;
 
+import club.pineclone.gtavops.AppContext;
 import club.pineclone.gtavops.macro.MacroEvent;
-import club.pineclone.gtavops.macro.MacroTaskScheduler;
 import lombok.Getter;
 
 import java.util.concurrent.ScheduledFuture;
@@ -29,7 +29,7 @@ public abstract class ScheduledAction extends Action implements ScheduleActionLi
     @Override
     public final void activate(MacroEvent event) {
         if (running.compareAndSet(false, true)) {
-            scheduledFuture = MacroTaskScheduler.getSCHEDULER().scheduleAtFixedRate(() -> {
+            scheduledFuture = AppContext.getInstance().getMacroTaskScheduler().scheduleAtFixedRate(() -> {
                 boolean flag = beforeSchedule(event);
                 if (flag) {
                     schedule(event);

@@ -4,12 +4,7 @@ import club.pineclone.gtavops.client.forked.I18nKeyChooser;
 import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.client.i18n.I18nText;
 import club.pineclone.gtavops.client.utils.ConfigContentBuilder;
-import club.pineclone.gtavops.common.ResourceHolder;
 import club.pineclone.gtavops.common.TriggerMode;
-import club.pineclone.gtavops.config.MacroConfig;
-import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.macro.MacroCreationStrategies;
-import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.entity.input.Key;
 import javafx.beans.property.*;
 
@@ -30,45 +25,45 @@ public class BetterLButtonToggle extends MacroToggle {
 
     @Override
     protected void onFeatureEnable() {
-        MacroConfig.BetterLButton blbConfig = MacroConfigLoader.get().betterLButton;
+//        MacroConfig.BetterLButton blbConfig = MacroConfigLoader.get().betterLButton;
         /* 辅助按住鼠标左键 */
-        if (blbConfig.holdLButtonSetting.enable) {
-            holdLButtonMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.HOLD_LEFT_BUTTON_MACRO_CREATION_STRATEGY);
-            MacroRegistry.getInstance().launchMacro(holdLButtonMacroId);
-        }
+//        if (blbConfig.holdLButtonSetting.enable) {
+//            holdLButtonMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.HOLD_LEFT_BUTTON_MACRO_CREATION_STRATEGY);
+//            MacroRegistry.getInstance().launchMacro(holdLButtonMacroId);
+//        }
         /* 辅助点按鼠标左键 */
-        if (blbConfig.rapidlyClickLButtonSetting.enable) {
-            rapidlyClickLButtonMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.RAPIDLY_CLICK_LEFT_BUTTON_MACRO_CREATION_STRATEGY);
-            MacroRegistry.getInstance().launchMacro(rapidlyClickLButtonMacroId);
-        }
+//        if (blbConfig.rapidlyClickLButtonSetting.enable) {
+//            rapidlyClickLButtonMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.RAPIDLY_CLICK_LEFT_BUTTON_MACRO_CREATION_STRATEGY);
+//            MacroRegistry.getInstance().launchMacro(rapidlyClickLButtonMacroId);
+//        }
         /* 鼠标左键重映射 */
-        if (blbConfig.remapLButtonSetting.enable) {
-            remapLButtonMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.RAPIDLY_CLICK_LEFT_BUTTON_MACRO_CREATION_STRATEGY);
-            MacroRegistry.getInstance().launchMacro(remapLButtonMacroId);
-        }
+//        if (blbConfig.remapLButtonSetting.enable) {
+//            remapLButtonMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.REMAP_LEFT_BUTTON_MACRO_CREATION_STRATEGY);
+//            MacroRegistry.getInstance().launchMacro(remapLButtonMacroId);
+//        }
     }
 
     @Override
     protected void onFeatureDisable() {
-        MacroRegistry.getInstance().terminateMacro(holdLButtonMacroId);
-        MacroRegistry.getInstance().terminateMacro(rapidlyClickLButtonMacroId);
-        MacroRegistry.getInstance().terminateMacro(remapLButtonMacroId);
+//        MacroRegistry.getInstance().terminateMacro(holdLButtonMacroId);
+//        MacroRegistry.getInstance().terminateMacro(rapidlyClickLButtonMacroId);
+//        MacroRegistry.getInstance().terminateMacro(remapLButtonMacroId);
     }
 
     @Override
     public void onUIInit() {
-        selectedProperty().set(MacroConfigLoader.get().betterLButton.baseSetting.enable);
+//        selectedProperty().set(MacroConfigLoader.get().betterLButton.baseSetting.enable);
     }
 
     @Override
     public void onUIDispose() {
-        MacroConfigLoader.get().betterLButton.baseSetting.enable = selectedProperty().get();
+//        MacroConfigLoader.get().betterLButton.baseSetting.enable = selectedProperty().get();
     }
 
-    private static class BLBSettingStage extends MacroSettingStage implements ResourceHolder {
+    private static class BLBSettingStage extends MacroSettingStage {
 
-        private final MacroConfig config = getConfig();
-        private final MacroConfig.BetterLButton blbConfig = config.betterLButton;
+//        private final MacroConfig config = getConfig();
+//        private final MacroConfig.BetterLButton blbConfig = config.betterLButton;
 
         private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
         private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | I18nKeyChooser.FLAG_WITH_WHEEL_SCROLL;
@@ -104,30 +99,30 @@ public class BetterLButtonToggle extends MacroToggle {
 
         @Override
         public void onVSettingStageInit() {
-            enableHoldLeftButton.set(blbConfig.holdLButtonSetting.enable);
-            holdLeftButtonActivateMethod.set(blbConfig.holdLButtonSetting.activateMethod);
-            holdLeftButtonActivateKey.set(blbConfig.holdLButtonSetting.activateKey);
-            enableRapidlyClickLeftButton.set(blbConfig.rapidlyClickLButtonSetting.enable);
-            rapidlyClickLeftButtonActivateMethod.set(blbConfig.rapidlyClickLButtonSetting.activateMethod);
-            rapidlyClickLeftButtonActivateKey.set(blbConfig.rapidlyClickLButtonSetting.activateKey);
-            rapidlyClickLeftButtonTriggerInterval.set(blbConfig.rapidlyClickLButtonSetting.triggerInterval);
-            enableRemapLeftButton.set(blbConfig.remapLButtonSetting.enable);
-            remapLButtonActivateKey.set(blbConfig.remapLButtonSetting.activateKey);
+//            enableHoldLeftButton.set(blbConfig.holdLButtonSetting.enable);
+//            holdLeftButtonActivateMethod.set(blbConfig.holdLButtonSetting.activateMethod);
+//            holdLeftButtonActivateKey.set(blbConfig.holdLButtonSetting.activateKey);
+//            enableRapidlyClickLeftButton.set(blbConfig.rapidlyClickLButtonSetting.enable);
+//            rapidlyClickLeftButtonActivateMethod.set(blbConfig.rapidlyClickLButtonSetting.activateMethod);
+//            rapidlyClickLeftButtonActivateKey.set(blbConfig.rapidlyClickLButtonSetting.activateKey);
+//            rapidlyClickLeftButtonTriggerInterval.set(blbConfig.rapidlyClickLButtonSetting.triggerInterval);
+//            enableRemapLeftButton.set(blbConfig.remapLButtonSetting.enable);
+//            remapLButtonActivateKey.set(blbConfig.remapLButtonSetting.activateKey);
         }
 
         @Override
         public void onVSettingStageExit() {
-            blbConfig.holdLButtonSetting.enable = enableHoldLeftButton.get();
-            blbConfig.holdLButtonSetting.activateMethod = holdLeftButtonActivateMethod.get();
-            blbConfig.holdLButtonSetting.activateKey = holdLeftButtonActivateKey.get();
-
-            blbConfig.rapidlyClickLButtonSetting.enable = enableRapidlyClickLeftButton.get();
-            blbConfig.rapidlyClickLButtonSetting.activateMethod = rapidlyClickLeftButtonActivateMethod.get();
-            blbConfig.rapidlyClickLButtonSetting.activateKey = rapidlyClickLeftButtonActivateKey.get();
-            blbConfig.rapidlyClickLButtonSetting.triggerInterval = rapidlyClickLeftButtonTriggerInterval.get();
-
-            blbConfig.remapLButtonSetting.enable = enableRemapLeftButton.get();
-            blbConfig.remapLButtonSetting.activateKey = remapLButtonActivateKey.get();
+//            blbConfig.holdLButtonSetting.enable = enableHoldLeftButton.get();
+//            blbConfig.holdLButtonSetting.activateMethod = holdLeftButtonActivateMethod.get();
+//            blbConfig.holdLButtonSetting.activateKey = holdLeftButtonActivateKey.get();
+//
+//            blbConfig.rapidlyClickLButtonSetting.enable = enableRapidlyClickLeftButton.get();
+//            blbConfig.rapidlyClickLButtonSetting.activateMethod = rapidlyClickLeftButtonActivateMethod.get();
+//            blbConfig.rapidlyClickLButtonSetting.activateKey = rapidlyClickLeftButtonActivateKey.get();
+//            blbConfig.rapidlyClickLButtonSetting.triggerInterval = rapidlyClickLeftButtonTriggerInterval.get();
+//
+//            blbConfig.remapLButtonSetting.enable = enableRemapLeftButton.get();
+//            blbConfig.remapLButtonSetting.activateKey = remapLButtonActivateKey.get();
         }
     }
 }

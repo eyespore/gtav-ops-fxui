@@ -4,11 +4,6 @@ import club.pineclone.gtavops.client.forked.I18nKeyChooser;
 import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.client.i18n.I18nText;
 import club.pineclone.gtavops.client.utils.ConfigContentBuilder;
-import club.pineclone.gtavops.common.ResourceHolder;
-import club.pineclone.gtavops.config.MacroConfig;
-import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.macro.MacroCreationStrategies;
-import club.pineclone.gtavops.macro.MacroRegistry;
 import io.vproxy.vfx.entity.input.Key;
 import javafx.beans.property.*;
 
@@ -25,39 +20,39 @@ public class BetterMMenuToggle extends MacroToggle {
 
     @Override
     protected void onFeatureEnable() {
-        MacroConfig.BetterMMenu bmmConfig = MacroConfigLoader.get().betterMMenu;
+//        MacroConfig.BetterMMenu bmmConfig = MacroConfigLoader.get().betterMMenu;
         /* 快速点火宏启用 */
-        if (bmmConfig.startEngine.enable) {
-            startEngineMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.START_ENGINE_MACRO_CREATION_STRATEGY);
-            MacroRegistry.getInstance().launchMacro(startEngineMacroId);
-        }
+//        if (bmmConfig.startEngine.enable) {
+//            startEngineMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.START_ENGINE_MACRO_CREATION_STRATEGY);
+//            MacroRegistry.getInstance().launchMacro(startEngineMacroId);
+//        }
         /* 自动零食宏启用 */
-        if (bmmConfig.autoSnake.enable) {
-            autoSnakeMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.AUTO_SNAKE_MACRO_CREATION_STRATEGY);
-            MacroRegistry.getInstance().launchMacro(autoSnakeMacroId);
-        }
+//        if (bmmConfig.autoSnake.enable) {
+//            autoSnakeMacroId = MacroRegistry.getInstance().register(MacroConfigLoader.get(), MacroCreationStrategies.AUTO_SNAKE_MACRO_CREATION_STRATEGY);
+//            MacroRegistry.getInstance().launchMacro(autoSnakeMacroId);
+//        }
     }
 
     @Override
     protected void onFeatureDisable() {
-        MacroRegistry.getInstance().terminateMacro(startEngineMacroId);
-        MacroRegistry.getInstance().terminateMacro(autoSnakeMacroId);
+//        MacroRegistry.getInstance().terminateMacro(startEngineMacroId);
+//        MacroRegistry.getInstance().terminateMacro(autoSnakeMacroId);
     }
 
     @Override
     public void onUIInit() {
-        selectedProperty().set(MacroConfigLoader.get().betterMMenu.baseSetting.enable);
+//        selectedProperty().set(MacroConfigLoader.get().betterMMenu.baseSetting.enable);
     }
 
     @Override
     public void onUIDispose() {
-        MacroConfigLoader.get().betterMMenu.baseSetting.enable = selectedProperty().get();
+//        MacroConfigLoader.get().betterMMenu.baseSetting.enable = selectedProperty().get();
     }
 
-    private static class BMMSettingStage extends MacroSettingStage implements ResourceHolder {
+    private static class BMMSettingStage extends MacroSettingStage {
 
-        private final MacroConfig config = getConfig();
-        private final MacroConfig.BetterMMenu bmmConfig = config.betterMMenu;
+//        private final MacroConfig config = getConfig();
+//        private final MacroConfig.BetterMMenu bmmConfig = config.betterMMenu;
 
         private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
         private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | I18nKeyChooser.FLAG_WITH_WHEEL_SCROLL;
@@ -100,45 +95,45 @@ public class BetterMMenuToggle extends MacroToggle {
 
         @Override
         public void onVSettingStageInit() {
-            /* base settings */
-            menuKey.set(bmmConfig.baseSetting.menuKey);
-            mouseScrollInterval.set(bmmConfig.baseSetting.mouseScrollInterval);
-            keyPressInterval.set(bmmConfig.baseSetting.keyPressInterval);
-            timeUtilMMenuLoaded.set(bmmConfig.baseSetting.timeUtilMMenuLoaded);
-
-            /* start engine */
-            enableStartEngine.set(bmmConfig.startEngine.enable);
-            startEngineActivateKey.set(bmmConfig.startEngine.activateKey);
-            enableDoubleClickToOpenDoor.set(bmmConfig.startEngine.enableDoubleClickToOpenDoor);
-            doubleClickDetectInterval.set(bmmConfig.startEngine.doubleClickInterval);
-
-            /* auto snake */
-            enableAutoSnake.set(bmmConfig.autoSnake.enable);
-            autoSnakeActivateKey.set(bmmConfig.autoSnake.activateKey);
-            autoSnakeRefillVest.set(bmmConfig.autoSnake.refillVest);
-            autoSnakeKeepMMenu.set(bmmConfig.autoSnake.keepMMenu);
+//            /* base settings */
+//            menuKey.set(bmmConfig.baseSetting.menuKey);
+//            mouseScrollInterval.set(bmmConfig.baseSetting.mouseScrollInterval);
+//            keyPressInterval.set(bmmConfig.baseSetting.keyPressInterval);
+//            timeUtilMMenuLoaded.set(bmmConfig.baseSetting.timeUtilMMenuLoaded);
+//
+//            /* start engine */
+//            enableStartEngine.set(bmmConfig.startEngine.enable);
+//            startEngineActivateKey.set(bmmConfig.startEngine.activateKey);
+//            enableDoubleClickToOpenDoor.set(bmmConfig.startEngine.enableDoubleClickToOpenDoor);
+//            doubleClickDetectInterval.set(bmmConfig.startEngine.doubleClickInterval);
+//
+//            /* auto snake */
+//            enableAutoSnake.set(bmmConfig.autoSnake.enable);
+//            autoSnakeActivateKey.set(bmmConfig.autoSnake.activateKey);
+//            autoSnakeRefillVest.set(bmmConfig.autoSnake.refillVest);
+//            autoSnakeKeepMMenu.set(bmmConfig.autoSnake.keepMMenu);
         }
 
         @Override
         public void onVSettingStageExit() {
-            /* base settings */
-            bmmConfig.baseSetting.menuKey = menuKey.get();
-            bmmConfig.baseSetting.mouseScrollInterval = mouseScrollInterval.get();
-            bmmConfig.baseSetting.keyPressInterval = keyPressInterval.get();
-            bmmConfig.baseSetting.timeUtilMMenuLoaded = timeUtilMMenuLoaded.get();
-
-            /* start engine */
-            bmmConfig.startEngine.enable = enableStartEngine.get();
-            bmmConfig.startEngine.activateKey = startEngineActivateKey.get();
-            bmmConfig.startEngine.enableDoubleClickToOpenDoor = enableDoubleClickToOpenDoor.get();
-            bmmConfig.startEngine.doubleClickInterval = doubleClickDetectInterval.get();
-
-
-            /* auto snake */
-            bmmConfig.autoSnake.enable = enableAutoSnake.get();
-            bmmConfig.autoSnake.activateKey = autoSnakeActivateKey.get();
-            bmmConfig.autoSnake.refillVest = autoSnakeRefillVest.get();
-            bmmConfig.autoSnake.keepMMenu = autoSnakeKeepMMenu.get();
+//            /* base settings */
+//            bmmConfig.baseSetting.menuKey = menuKey.get();
+//            bmmConfig.baseSetting.mouseScrollInterval = mouseScrollInterval.get();
+//            bmmConfig.baseSetting.keyPressInterval = keyPressInterval.get();
+//            bmmConfig.baseSetting.timeUtilMMenuLoaded = timeUtilMMenuLoaded.get();
+//
+//            /* start engine */
+//            bmmConfig.startEngine.enable = enableStartEngine.get();
+//            bmmConfig.startEngine.activateKey = startEngineActivateKey.get();
+//            bmmConfig.startEngine.enableDoubleClickToOpenDoor = enableDoubleClickToOpenDoor.get();
+//            bmmConfig.startEngine.doubleClickInterval = doubleClickDetectInterval.get();
+//
+//
+//            /* auto snake */
+//            bmmConfig.autoSnake.enable = enableAutoSnake.get();
+//            bmmConfig.autoSnake.activateKey = autoSnakeActivateKey.get();
+//            bmmConfig.autoSnake.refillVest = autoSnakeRefillVest.get();
+//            bmmConfig.autoSnake.keepMMenu = autoSnakeKeepMMenu.get();
         }
     }
 }

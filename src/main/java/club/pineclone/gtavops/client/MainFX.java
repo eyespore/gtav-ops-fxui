@@ -1,6 +1,6 @@
 package club.pineclone.gtavops.client;
 
-import club.pineclone.gtavops.Main;
+import club.pineclone.gtavops.AppContext;
 import club.pineclone.gtavops.client.config.ClientConfig;
 import club.pineclone.gtavops.client.config.ClientConfigLoader;
 import club.pineclone.gtavops.client.i18n.I18nContext;
@@ -56,14 +56,17 @@ public class MainFX extends Application {
     private final I18nContext i18nContext = new I18nContext();
     private final ObjectProperty<ClientConfig> config = new SimpleObjectProperty<>();  /* 客户端配置 */
 
+    private AppContext appContext;  /* 应用上下文，宏内核 */
+
 
     @Override
     public void init() throws Exception {
         MDC.put("module", "[Client]");  /* 初始化日志 */
         try {
-
             log.info("Launching macro core");
-            Main.start();  /* 后端启动 - 启动宏核心 */
+            appContext = AppContext.getInstance();
+            appContext.init();  /* 后端启动 - 初始化宏内核 */
+            appContext.start();  /* 启动宏内核 */
 
             log.info("Initializing fxui app home directory");
             PathUtils.initCoreHome();  /* 初始化客户端应用家目录 */
@@ -83,6 +86,7 @@ public class MainFX extends Application {
 
             log.info("Register jnativehook global native hook for fxui");
             JNativeHookManager.register(MainFX.class);  /* 注册全局钩子 */
+
         } catch (Exception e) {
             exception = e;
         }
@@ -178,7 +182,6 @@ public class MainFX extends Application {
                 )
         );
         vStage.getInitialScene().getContentPane().getChildren().add(box);
-
 
 //        var menuScene = new VScene(VSceneRole.DRAWER_VERTICAL);
 //        menuScene.getNode().setPrefWidth(300);
@@ -306,7 +309,7 @@ public class MainFX extends Application {
         JNativeHookManager.unregister(MainFX.class);  /* 注销全局钩子 */
         ClientConfigLoader.getInstance().save(config.get(), PathUtils.getClientConfigPath());  /* 保存客户端本地配置 */
 
-        Main.stop();  /* 停止宏核心 */
+        appContext.stop();  /* 停止宏核心 */
     }
 
     public static void main(String[] args) {

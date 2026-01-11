@@ -24,6 +24,7 @@
     "mouseWheel" : "滚轮"
   },
   "vfxComponent" : {
+    "unset" : "未设置",
     "keyChooser" : {
       "description" : "按下 [{0}] 来设置键位",
       "forwardMouseButton" : "前侧键",
@@ -32,7 +33,6 @@
       "secondaryMouseButton" : "右键",
       "middleMouseButton" : "中键",
       "cancel" : "取消",
-      "unset" : "未设置",
       "mouseScrollUp" : "上滚轮",
       "mouseScrollDown" : "下滚轮"
     },

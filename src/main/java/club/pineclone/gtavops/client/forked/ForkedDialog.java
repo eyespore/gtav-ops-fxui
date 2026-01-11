@@ -16,6 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class ForkedDialog<T> {
     private final Label messageLabel = new Label();
     private final Group content = new Group(messageLabel);
     private final FusionPane buttonPane = new FusionPane();
-    private final HBox buttonHBox = new HBox();
+    @Getter private final HBox buttonHBox = new HBox();  // TODO: 移交到 Builder
 
     protected T returnValue;
 
@@ -53,19 +54,23 @@ public class ForkedDialog<T> {
                 stage.getInitialScene().getScrollPane().getNode(),
                 stage.getInitialScene().getContentPane(),
                 -1);
+
         var root = stage.getInitialScene().getContentPane();
+
         root.widthProperty().addListener((ob, old, now) -> {
             if (now == null) return;
             var w = now.doubleValue();
             messageLabel.setPrefWidth(w - 20);
             buttonPane.getNode().setPrefWidth(w - 20);
         });
+
         root.heightProperty().addListener((ob, old, now) -> {
             if (now == null) return;
             var h = now.doubleValue();
             h = VStage.TITLE_BAR_HEIGHT + h + 10;
             stage.getStage().setHeight(h);
         });
+
         FXUtils.forceUpdate(stage.getStage());
         root.getChildren().add(new HBox(
                 new HPadding(10),
@@ -125,5 +130,4 @@ public class ForkedDialog<T> {
     public VStage getStage() {
         return stage;
     }
-
 }
