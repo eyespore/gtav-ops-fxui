@@ -3,8 +3,10 @@ package club.pineclone.gtavops.domain.dto.macro;
 import club.pineclone.gtavops.common.SessionType;
 import io.vproxy.vfx.entity.input.Key;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class JoinANewSessionDTO extends BetterPMenuDTO {
 
     private final Key activateKey;

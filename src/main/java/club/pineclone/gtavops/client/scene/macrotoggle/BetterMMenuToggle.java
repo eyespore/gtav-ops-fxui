@@ -51,8 +51,8 @@ public class BetterMMenuToggle extends MacroToggle {
 
     private static class BMMSettingStage extends MacroSettingStage {
 
-//        private final MacroConfig config = getConfig();
-//        private final MacroConfig.BetterMMenu bmmConfig = config.betterMMenu;
+//        private final MacroConfig configNode = getConfig();
+//        private final MacroConfig.BetterMMenu bmmConfig = configNode.betterMMenu;
 
         private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
         private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | I18nKeyChooser.FLAG_WITH_WHEEL_SCROLL;

@@ -1,6 +1,5 @@
 package club.pineclone.gtavops.common;
 
-// TODO: 移交到 Core 端
 public enum SessionType {
     PUBLIC_SESSION,  /* 公开战局 */
     INVITE_ONLY_SESSION,  /* 邀请战局 */

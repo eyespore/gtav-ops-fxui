@@ -2,10 +2,10 @@ package club.pineclone.gtavops;
 
 public interface AppLifecycleAware {
 
-    default void onAppInit() {}
+    default void onAppInit() throws Exception {}
 
-    default void onAppStart() {}
+    default void onAppStart() throws Exception {}
 
-    default void onAppStop() {}
+    default void onAppStop() throws Exception {}
 
 }

@@ -3,7 +3,6 @@ package club.pineclone.gtavops.client.scene;
 import club.pineclone.gtavops.client.forked.ForkedThemeLabel;
 import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.client.i18n.I18nText;
-import club.pineclone.gtavops.config.MacroConfigLoader;
 import club.pineclone.gtavops.client.utils.ImageUtils;
 import io.vproxy.vfx.manager.font.FontManager;
 import io.vproxy.vfx.ui.layout.VPadding;
@@ -11,7 +10,7 @@ import io.vproxy.vfx.ui.wrapper.ThemeLabel;
 import io.vproxy.vfx.util.FXUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.layout.*;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.FontWeight;
 
 import java.io.IOException;
@@ -28,7 +27,7 @@ public class IntroScene extends SceneTemplate {
         // TODO: 通过向后端请求获取version而不是读取配置文件
         String version = "unknown";
         String versionFile = "/version.txt";
-        try (InputStream in = MacroConfigLoader.class.getResourceAsStream(versionFile)) {
+        try (InputStream in = getClass().getResourceAsStream(versionFile)) {
             if (in != null) {
                 version = new String(in.readAllBytes(), StandardCharsets.UTF_8).trim();
             }

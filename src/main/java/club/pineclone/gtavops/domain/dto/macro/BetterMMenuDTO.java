@@ -3,12 +3,14 @@ package club.pineclone.gtavops.domain.dto.macro;
 import io.vproxy.vfx.entity.input.Key;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * 更好的 M 菜单宏创建数据模型
  */
 @Getter
 @AllArgsConstructor
+@ToString
 public class BetterMMenuDTO {
     /**
      * 鼠标滚轮触发间隔

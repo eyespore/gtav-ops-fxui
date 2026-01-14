@@ -36,14 +36,14 @@ public class DelayClimbToggle extends MacroToggle {
 
     @Override
     public void onUIDispose() {
-//        log.debug("Save config to file: {}", selectedProperty().get());
+//        log.debug("Save configNode to file: {}", selectedProperty().get());
 //        MacroConfigLoader.get().delayClimb.baseSetting.setEnable(selectedProperty().get());
     }
 
     private static class DCSettingStage extends MacroSettingStage {
 
-//        private final MacroConfig config = getConfig();
-//        private final MacroConfig.DelayClimb dcConfig = config.delayClimb;
+//        private final MacroConfig configNode = getConfig();
+//        private final MacroConfig.DelayClimb dcConfig = configNode.delayClimb;
 
         private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
         private final ObjectProperty<Key> usePhoneKey = new SimpleObjectProperty<>();

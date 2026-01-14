@@ -53,8 +53,8 @@ public class BetterPMenuToggle extends MacroToggle {
 
     private static class BPMSettingStage extends MacroSettingStage {
 
-//        private final MacroConfig config = getConfig();
-//        private final MacroConfig.BetterPMenu bpmConfig = config.betterPMenu;
+//        private final MacroConfig configNode = getConfig();
+//        private final MacroConfig.BetterPMenu bpmConfig = configNode.betterPMenu;
 
         private final DoubleProperty mouseScrollInterval = new SimpleDoubleProperty();
         private final DoubleProperty enterKeyInterval = new SimpleDoubleProperty();

@@ -1,13 +1,14 @@
 package club.pineclone.gtavops.client;
 
 import club.pineclone.gtavops.AppContext;
+import club.pineclone.gtavops.client.config.AppConfig;
 import club.pineclone.gtavops.client.config.ClientConfig;
 import club.pineclone.gtavops.client.config.ClientConfigLoader;
 import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.client.i18n.I18nText;
 import club.pineclone.gtavops.client.theme.DimTheme;
 import club.pineclone.gtavops.common.JNativeHookManager;
-import club.pineclone.gtavops.common.SingletonLock;
+import club.pineclone.gtavops.client.utils.SingletonLock;
 import club.pineclone.gtavops.client.scene.*;
 import club.pineclone.gtavops.client.i18n.I18nLoader;
 import club.pineclone.gtavops.client.utils.ImageUtils;
@@ -32,6 +33,7 @@ import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
+import java.nio.file.Files;
 import java.util.*;
 
 /**
@@ -39,6 +41,13 @@ import java.util.*;
  */
 @Slf4j
 public class MainFX extends Application {
+
+    private final AppContext appContext;  /* 应用上下文，宏内核 */
+    private final AppConfig appConfig;  /* 前端配置 */
+    private final I18nContext i18nContext;
+    private final ObjectProperty<ClientConfig> clientConfig;  /* 客户端配置 */
+    private final ClientConfigLoader clientConfigLoader;
+    private final SingletonLock singletonLock;
 
     public static final String APPLICATION_TITLE = "GTAV Ops";  /* 应用基础信息 */
     private static final Set<UILifecycleAware> uiListeners = new HashSet<>();
@@ -53,36 +62,40 @@ public class MainFX extends Application {
     private volatile boolean isSwitch = false;
     private volatile int targetIndex;
 
-    private final I18nContext i18nContext = new I18nContext();
-    private final ObjectProperty<ClientConfig> config = new SimpleObjectProperty<>();  /* 客户端配置 */
+    public MainFX() {
+        appContext = AppContext.getInstance();  /* 宏内核 */
 
-    private AppContext appContext;  /* 应用上下文，宏内核 */
+        appConfig = new AppConfig(PathUtils.getAppHomePath());  /* 前端配置 */
+        i18nContext = new I18nContext();  /* I18n上下文 */
+        clientConfig = new SimpleObjectProperty<>();  /* 配置实例 */
 
+        singletonLock = new SingletonLock(appConfig.getSingletonLockPath());  /* 单例锁 */
+        clientConfigLoader = new ClientConfigLoader(appConfig.getClientConfigPath());  /* 客户端配置加载器 */
+    }
 
     @Override
     public void init() throws Exception {
         MDC.put("module", "[Client]");  /* 初始化日志 */
         try {
             log.info("Launching macro core");
-            appContext = AppContext.getInstance();
             appContext.init();  /* 后端启动 - 初始化宏内核 */
             appContext.start();  /* 启动宏内核 */
 
             log.info("Initializing fxui app home directory");
-            PathUtils.initCoreHome();  /* 初始化客户端应用家目录 */
+            Files.createDirectories(appConfig.getClientHomePath());  /* 初始化客户端应用家目录 */
 
             log.info("Obtaining app singleton lock");
-            if (!SingletonLock.lockInstance()) {  /* 程序已经在运行，抛出异常并返回 */
+            if (!singletonLock.lockInstance()) {  /* 程序已经在运行，抛出异常并返回 */
                 exception = new RuntimeException("Duplicated GTAV Ops Instance");
                 return;
             }
 
             log.info("Loading client configuration");
-            config.set(ClientConfigLoader.getInstance().load(PathUtils.getClientConfigPath()));  /* 加载客户端配置 */
+            clientConfig.set(clientConfigLoader.load());  /* 加载客户端配置 */
 
             log.info("Scanning and loading i18n configuration");
             I18nLoader.getInstance().init();  /* 扫描本地化，并基于客户端配置初始化本地化 */
-            i18nContext.set(I18nLoader.getInstance().load(config.get().lang));  /* 加载默认本地化到上下文 */
+            i18nContext.set(I18nLoader.getInstance().load(clientConfig.get().lang));  /* 加载默认本地化到上下文 */
 
             log.info("Register jnativehook global native hook for fxui");
             JNativeHookManager.register(MainFX.class);  /* 注册全局钩子 */
@@ -145,7 +158,7 @@ public class MainFX extends Application {
         /* 注册所有场景 */
         mainScenes.add(new IntroScene(i18nContext));
         mainScenes.add(new MacroToggleScene(i18nContext));
-        mainScenes.add(new ConfigScene(i18nContext, config));
+        mainScenes.add(new ConfigScene(i18nContext, clientConfig));
 //        mainScenes.add(new FontPackScene(i18n));
 //        mainScenes.add(new FontPackScene(oldI18n));
 
@@ -307,7 +320,7 @@ public class MainFX extends Application {
     public void stop() throws Exception {
         uiListeners.forEach(UILifecycleAware::onUIDispose);  /* 调用销毁逻辑，需要先调用UI销毁逻辑，再调用生命周期销毁逻辑 */
         JNativeHookManager.unregister(MainFX.class);  /* 注销全局钩子 */
-        ClientConfigLoader.getInstance().save(config.get(), PathUtils.getClientConfigPath());  /* 保存客户端本地配置 */
+        clientConfigLoader.save(clientConfig.get());  /* 保存客户端本地配置 */
 
         appContext.stop();  /* 停止宏核心 */
     }

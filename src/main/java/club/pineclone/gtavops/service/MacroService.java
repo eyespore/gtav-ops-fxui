@@ -12,5 +12,5 @@ public interface MacroService {
      * @return 宏UUID，宏本身会被注册到MacroRegistry当中，外部通过该UUID继续调用MacroService来操作宏
      * @param <T> 宏实例类型
      */
-    public <T> UUID createMacro(MacroCreationDTO<T> creationDTO);
+    public <T> UUID createMacro(MacroCreationDTO creationDTO);
 }

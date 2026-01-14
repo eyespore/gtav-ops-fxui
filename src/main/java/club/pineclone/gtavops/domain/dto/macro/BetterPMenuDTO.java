@@ -2,9 +2,11 @@ package club.pineclone.gtavops.domain.dto.macro;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @Getter
+@ToString
 public class BetterPMenuDTO {
 
     protected final PercentageDTO mouseScrollInterval;

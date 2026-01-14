@@ -32,7 +32,7 @@ public class MacroToggleScene extends SceneTemplate {
         FXUtils.observeWidthCenter(getContentPane(), gameVersionPane);
 
         GridPane gridPane = new GridPane();
-        gridPane.setLayoutY(120);
+        gridPane.setLayoutY(80);
         gridPane.setHgap(10);
         gridPane.setVgap(10);
 

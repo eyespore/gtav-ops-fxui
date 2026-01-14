@@ -1,6 +1,6 @@
 package club.pineclone.gtavops.domain.dto.macro;
 
-public record PercentageDTO(Double percentage, Double min, Double max) {
+public record PercentageDTO(Double percentage, Integer min, Integer max) {
 
     public double parseDouble() {
         return min + percentage * (max - min);
@@ -10,12 +10,12 @@ public record PercentageDTO(Double percentage, Double min, Double max) {
         return (long) Math.floor(parseDouble());
     }
 
-    public static PercentageDTO ofValue(double value, double min, double max) {
+    public static PercentageDTO ofValue(double value, int min, int max) {
         double pct = (value - min) / (max - min);
         return new PercentageDTO(pct, min, max);
     }
 
-    public static PercentageDTO fromRealValue(long value, double min, double max) {
+    public static PercentageDTO fromRealValue(long value, int min, int max) {
         return ofValue(value, min, max);
     }
 

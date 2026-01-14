@@ -63,8 +63,8 @@ public class SwapGlitchToggle extends MacroToggle {
 //        private final ToggleSwitch enableSwapMeleeToggle = new ToggleSwitch();
         private final BooleanProperty enableSwapMelee = new SimpleBooleanProperty();  /* 切换近战武器 */
 
-//        private final MacroConfig config = getConfig();
-//        private final MacroConfig.SwapGlitch sgConfig = config.swapGlitch;
+//        private final MacroConfig configNode = getConfig();
+//        private final MacroConfig.SwapGlitch sgConfig = configNode.swapGlitch;
 
 //        private final I18nTriggerModeChooseButton activateMethodBtn = new I18nTriggerModeChooseButton(i18nContext, FLAG_WITH_HOLD | FLAG_WITH_TOGGLE);
         private final ObjectProperty<TriggerMode> activateMethod = new SimpleObjectProperty<>();

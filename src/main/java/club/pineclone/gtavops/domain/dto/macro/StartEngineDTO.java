@@ -2,11 +2,13 @@ package club.pineclone.gtavops.domain.dto.macro;
 
 import io.vproxy.vfx.entity.input.Key;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * 快速点火宏创建数据模型
  */
 @Getter
+@ToString
 public class StartEngineDTO extends BetterMMenuDTO {
     /**
      * 触发键位

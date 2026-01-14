@@ -1,6 +1,6 @@
 package club.pineclone.gtavops.client.i18n;
 
-import club.pineclone.gtavops.common.JsonConfigLoader;
+import club.pineclone.gtavops.client.utils.JsonConfigLoader;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

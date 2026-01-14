@@ -47,8 +47,8 @@ public class AutoFireFeatureToggle extends MacroToggle {
 
     private static class AutoFireSettingStage extends MacroSettingStage {
 
-//        private final MacroConfig config = getConfig();
-//        private final MacroConfig.AutoFire aRpgConfig = config.autoFire;
+//        private final MacroConfig configNode = getConfig();
+//        private final MacroConfig.AutoFire aRpgConfig = configNode.autoFire;
 
         /* Join A New Session */
         private final ObjectProperty<TriggerMode> activateMethod = new SimpleObjectProperty<>();

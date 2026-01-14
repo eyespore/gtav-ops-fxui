@@ -1,15 +1,13 @@
 package club.pineclone.gtavops.client.scene;
 
-import club.pineclone.gtavops.client.i18n.I18nContext;
-import club.pineclone.gtavops.config.MacroConfigLoader;
-import club.pineclone.gtavops.config.MacroConfig;
 import club.pineclone.gtavops.client.component.VTextField;
 import club.pineclone.gtavops.client.forked.*;
+import club.pineclone.gtavops.client.i18n.I18nContext;
 import club.pineclone.gtavops.client.theme.DimTheme;
-import club.pineclone.gtavops.domain.FontpackMetadata;
-import club.pineclone.gtavops.service.FontpackService;
 import club.pineclone.gtavops.client.utils.ColorUtils;
 import club.pineclone.gtavops.common.PathUtils;
+import club.pineclone.gtavops.domain.FontpackMetadata;
+import club.pineclone.gtavops.service.FontpackService;
 import io.vproxy.base.util.LogType;
 import io.vproxy.base.util.Logger;
 import io.vproxy.base.util.callback.Callback;
@@ -28,7 +26,8 @@ import io.vproxy.vfx.util.MiscUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -47,7 +46,7 @@ import java.util.function.Function;
 @Deprecated
 public class FontPackScene extends SceneTemplate {
 
-//    private final MacroConfig config;
+//    private final MacroConfig configNode;
 
     private final FontpackService fontpackService;
     private final VTableView<FontpackMetadata> table;  /* 字体包元数据表格 */
@@ -60,7 +59,7 @@ public class FontPackScene extends SceneTemplate {
 
     public FontPackScene(I18nContext i18n) {
         super(i18n);
-//        this.config = MacroConfigLoader.get();
+//        this.configNode = MacroConfigLoader.get();
 
         fontpackService = FontpackService.getInstance();
         enableAutoContentWidthHeight();
@@ -75,7 +74,7 @@ public class FontPackScene extends SceneTemplate {
             setOnAction(e -> selectGameHome());
             setDisableAnimation(true);
 
-//            String gameHome = config.gameHome;
+//            String gameHome = configNode.gameHome;
 //            if (gameHome == null || gameHome.isEmpty()) {
 //                setText("fpI18n.emptyGameHome");
 //            } else {
@@ -169,7 +168,7 @@ public class FontPackScene extends SceneTemplate {
                     return;
                 }
 
-//                if (config.gameHome == null || config.gameHome.isEmpty()) {
+//                if (configNode.gameHome == null || configNode.gameHome.isEmpty()) {
 //                    /* 未选择家目录，提醒用户选择目录 */
 //                    FontPackDialog.simpleDialog(
 //                            "fpI18n.emptyGameHomeAlert", Modality.APPLICATION_MODAL, FontPackDialog.CONFIRM
@@ -420,7 +419,7 @@ public class FontPackScene extends SceneTemplate {
             ForkedAlert.showAndWait(Alert.AlertType.ERROR, "fpI18n.illegalOriginalFontpackContribute");
             return false;
         }
-//        config.gameHome = absPath;
+//        configNode.gameHome = absPath;
         gameHomeChooseBtn.setText(absPath);
         return true;
     }
@@ -463,17 +462,17 @@ public class FontPackScene extends SceneTemplate {
         String updateFilename = identity == 0 ? "update.rpf" : "update2.rpf";
         String patchFilename = identity == 0 ? "update2.rpf": "update1.rpf";
 
-        Path updateFile = PathUtils.getFontpacksBaseDirPath().resolve(fontpack.getId()).resolve(updateFilename);
+//        Path updateFile = PathUtils.getFontpacksBaseDirPath().resolve(fontpack.getId()).resolve(updateFilename);
 
         List<FontpackMetadata> patchList = fontpackService.listFontPacksByCondition(FontpackMetadata.builder().isBased(true).build());
 
         Optional<FontpackMetadata> patchFileOption = patchList.stream().findFirst();
 
         if (patchFileOption.isEmpty()) return false;
-        Path patchFile = PathUtils.getFontpacksBaseDirPath().resolve(patchFileOption.get().getId()).resolve(patchFilename);
+//        Path patchFile = PathUtils.getFontpacksBaseDirPath().resolve(patchFileOption.get().getId()).resolve(patchFilename);
 
-//        Path updateFileTarget = Path.of(config.gameHome).resolve("update").resolve(updateFilename);
-//        Path patchFileTarget = Path.of(config.gameHome).resolve("update").resolve(patchFilename);
+//        Path updateFileTarget = Path.of(configNode.gameHome).resolve("update").resolve(updateFilename);
+//        Path patchFileTarget = Path.of(configNode.gameHome).resolve("update").resolve(patchFilename);
 
 //        try {
 //          Files.copy(source, updateFileTarget, StandardCopyOption.REPLACE_EXISTING);
@@ -524,13 +523,13 @@ public class FontPackScene extends SceneTemplate {
 
     /* 载入多文件字体包 */
     private boolean overloadFontpack(FontpackMetadata fontpack) {
-        Path update1File = PathUtils.getFontpacksBaseDirPath().resolve(fontpack.getId()).resolve("update.rpf");
-        Path update2File = PathUtils.getFontpacksBaseDirPath().resolve(fontpack.getId()).resolve("update2.rpf");
+//        Path update1File = PathUtils.getFontpacksBaseDirPath().resolve(fontpack.getId()).resolve("update.rpf");
+//        Path update2File = PathUtils.getFontpacksBaseDirPath().resolve(fontpack.getId()).resolve("update2.rpf");
 
-        if (Files.notExists(update1File) || Files.notExists(update2File)) return false;  /* 若文件其一不存在直接返回 */
+//        if (Files.notExists(update1File) || Files.notExists(update2File)) return false;  /* 若文件其一不存在直接返回 */
 
-//        Path update1FileTarget = Path.of(config.gameHome).resolve("update").resolve("update.rpf");
-//        Path update2FileTarget = Path.of(config.gameHome).resolve("update").resolve("update2.rpf");
+//        Path update1FileTarget = Path.of(configNode.gameHome).resolve("update").resolve("update.rpf");
+//        Path update2FileTarget = Path.of(configNode.gameHome).resolve("update").resolve("update2.rpf");
 
 //        try {
 //            /* 拷贝update.rpf */
@@ -591,22 +590,22 @@ public class FontPackScene extends SceneTemplate {
             FontpackMetadata newFontpack = fontpackService.createFontPack(name, false,"", 0, identity ,size, false);
 
             /* update.rpf非空，执行拷贝 */
-            Path updateFileTarget = PathUtils.getFontpacksBaseDirPath().resolve(newFontpack.getId()).resolve(
-                    identity == 0 ? "update.rpf" : "update2.rpf"
-            );
-            asyncCopyWithProgress(updateFile, updateFileTarget, new Callback<>() {
-                @Override
-                protected void onSucceeded(Void unused) {
-                    /* 拷贝成功 */
-                    FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, "fpI18n.importSuccess"));
-                    refreshTable();  /* 刷新表格 */
-                }
-
-                @Override
-                protected void onFailed(LoadingFailure loadingFailure) {
-                    FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
-                }
-            }, () -> {}, identity == 0 ? "fpI18n.copyingUpdate1File" : "fpI18n.copyingUpdate2File");
+//            Path updateFileTarget = PathUtils.getFontpacksBaseDirPath().resolve(newFontpack.getId()).resolve(
+//                    identity == 0 ? "update.rpf" : "update2.rpf"
+//            );
+//            asyncCopyWithProgress(updateFile, updateFileTarget, new Callback<>() {
+//                @Override
+//                protected void onSucceeded(Void unused) {
+//                    /* 拷贝成功 */
+//                    FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, "fpI18n.importSuccess"));
+//                    refreshTable();  /* 刷新表格 */
+//                }
+//
+//                @Override
+//                protected void onFailed(LoadingFailure loadingFailure) {
+//                    FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
+//                }
+//            }, () -> {}, identity == 0 ? "fpI18n.copyingUpdate1File" : "fpI18n.copyingUpdate2File");
 
         } catch (IOException e) {
             FontPackDialog.stackTraceDialog(e, FontPackDialog.CONFIRM).showAndWait();
@@ -623,49 +622,49 @@ public class FontPackScene extends SceneTemplate {
     private void importNormalFontpack(String name, Path update1File, Path update2File) {
         if (update1File == null || update2File == null) return;
 
-        try {
-            long size = update1File.toFile().length() + update2File.toFile().length();
-            FontpackMetadata newFontpack = fontpackService.createFontPack(name, false,"", 0, 2 ,size, false);
-            Path update1FileTarget = PathUtils.getFontpacksBaseDirPath().resolve(newFontpack.getId()).resolve("update.rpf");  /* update.rpf目标资源路径 */
-            Path update2FileTarget = PathUtils.getFontpacksBaseDirPath().resolve(newFontpack.getId()).resolve("update2.rpf");  /* update2.rpf目标资源路径 */
+//        try {
+//            long size = update1File.toFile().length() + update2File.toFile().length();
+//            FontpackMetadata newFontpack = fontpackService.createFontPack(name, false,"", 0, 2 ,size, false);
+//            Path update1FileTarget = PathUtils.getFontpacksBaseDirPath().resolve(newFontpack.getId()).resolve("update.rpf");  /* update.rpf目标资源路径 */
+//            Path update2FileTarget = PathUtils.getFontpacksBaseDirPath().resolve(newFontpack.getId()).resolve("update2.rpf");  /* update2.rpf目标资源路径 */
 
             /* update.rpf非空，执行拷贝 */
-            asyncCopyWithProgress(update1File, update1FileTarget, new Callback<>() {
-                @Override
-                protected void onSucceeded(Void unused) {
-                    /* 拷贝成功，继续拷贝update2.rpf */
-                    try {
-                        /* update2.rpf非空，执行拷贝 */
-                        asyncCopyWithProgress(update2File, update2FileTarget, new Callback<>() {
-                            @Override
-                            protected void onSucceeded(Void unused) {
-                                /* 拷贝成功 */
-                                FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, "fpI18n.importSuccess"));
-                                refreshTable();
-                            }
-
-                            @Override
-                            protected void onFailed(LoadingFailure loadingFailure) {
-                                FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
-                            }
-                        }, () -> {}, "fpI18n.copyingUpdate2File");
-
-                    } catch (IOException e) {
-                        FontPackDialog.stackTraceDialog(e, FontPackDialog.CONFIRM).showAndWait();
-                        Logger.error(LogType.FILE_ERROR, e.getMessage());
-                    }
-                }
-
-                @Override
-                protected void onFailed(LoadingFailure loadingFailure) {
-                    FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
-                }
-            }, () -> {}, "fpI18n.copyingUpdate1File");
-
-        } catch (IOException e) {
-            FontPackDialog.stackTraceDialog(e, FontPackDialog.CONFIRM).showAndWait();
-            Logger.error(LogType.FILE_ERROR, e.getMessage());
-        }
+//            asyncCopyWithProgress(update1File, update1FileTarget, new Callback<>() {
+//                @Override
+//                protected void onSucceeded(Void unused) {
+//                    /* 拷贝成功，继续拷贝update2.rpf */
+//                    try {
+//                        /* update2.rpf非空，执行拷贝 */
+//                        asyncCopyWithProgress(update2File, update2FileTarget, new Callback<>() {
+//                            @Override
+//                            protected void onSucceeded(Void unused) {
+//                                /* 拷贝成功 */
+//                                FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, "fpI18n.importSuccess"));
+//                                refreshTable();
+//                            }
+//
+//                            @Override
+//                            protected void onFailed(LoadingFailure loadingFailure) {
+//                                FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
+//                            }
+//                        }, () -> {}, "fpI18n.copyingUpdate2File");
+//
+//                    } catch (IOException e) {
+//                        FontPackDialog.stackTraceDialog(e, FontPackDialog.CONFIRM).showAndWait();
+//                        Logger.error(LogType.FILE_ERROR, e.getMessage());
+//                    }
+//                }
+//
+//                @Override
+//                protected void onFailed(LoadingFailure loadingFailure) {
+//                    FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
+//                }
+//            }, () -> {}, "fpI18n.copyingUpdate1File");
+//
+//        } catch (IOException e) {
+//            FontPackDialog.stackTraceDialog(e, FontPackDialog.CONFIRM).showAndWait();
+//            Logger.error(LogType.FILE_ERROR, e.getMessage());
+//        }
     }
 
     /**
@@ -676,55 +675,55 @@ public class FontPackScene extends SceneTemplate {
      * @param originalUpdate2File update2.rpf字体包源文件路径
      */
     private void importBaseFontpack(String name, Path originalUpdate1File, Path originalUpdate2File) {
-        try {
-            long size1 = originalUpdate1File.toFile().length();
-            long size2 = originalUpdate2File.toFile().length();
-            long size = size1 + size2;
-
-            FontpackMetadata newFontpack = fontpackService.createFontPack(name, true,"", 0, 2 ,size, true);  /* 将信息写入数据库 */
-            Path update1FileTarget = PathUtils.getFontpacksBaseDirPath().resolve(newFontpack.getId()).resolve("update.rpf");  /* update.rpf目标资源路径 */
-            Path update2FileTarget = PathUtils.getFontpacksBaseDirPath().resolve(newFontpack.getId()).resolve("update2.rpf");  /* update2.rpf目标资源路径 */
+//        try {
+//            long size1 = originalUpdate1File.toFile().length();
+//            long size2 = originalUpdate2File.toFile().length();
+//            long size = size1 + size2;
+//
+//            FontpackMetadata newFontpack = fontpackService.createFontPack(name, true,"", 0, 2 ,size, true);  /* 将信息写入数据库 */
+//            Path update1FileTarget = PathUtils.getFontpacksBaseDirPath().resolve(newFontpack.getId()).resolve("update.rpf");  /* update.rpf目标资源路径 */
+//            Path update2FileTarget = PathUtils.getFontpacksBaseDirPath().resolve(newFontpack.getId()).resolve("update2.rpf");  /* update2.rpf目标资源路径 */
 //            Files.copy(originalUpdate1File, update1FileTarget, StandardCopyOption.REPLACE_EXISTING);  /* 将文件拷贝到目标目录 */
 
             /* 拷贝update.rpf */
-            asyncCopyWithProgress(originalUpdate1File, update1FileTarget, new Callback<>() {
-                @Override
-                protected void onSucceeded(Void unused) {
-                    try {
-
-                        /* 拷贝update2.rpf */
-                        asyncCopyWithProgress(originalUpdate2File, update2FileTarget, new Callback<>() {
-                            @Override
-                            protected void onSucceeded(Void unused) {
-                                /* 拷贝成功 */
-                                FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, "fpI18n.importSuccess"));
-                                updateAsEnableFontpack(newFontpack);  /* 将基础字体包设置为激活状态 */
-                                refreshTable();  /* 刷新表格 */
-                            }
-
-                            @Override
-                            protected void onFailed(LoadingFailure loadingFailure) {
-                                FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
-                            }
-                        }, () -> {}, "fpI18n.copyingUpdate2File");
-
-                    } catch (IOException e) {
-                        FontPackDialog.stackTraceDialog(e, FontPackDialog.CONFIRM).showAndWait();
-                        Logger.error(LogType.FILE_ERROR, e.getMessage());
-                    }
-                }
-
-                @Override
-                protected void onFailed(LoadingFailure loadingFailure) {
-                    FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
-                }
-            }, () -> {}, "fpI18n.copyingUpdate1File");
-
-        } catch (IOException ex) {
-            /* 创建字体包出错，回滚 */
-            FontPackDialog.stackTraceDialog(ex, FontPackDialog.CONFIRM).showAndWait();
-            Logger.error(LogType.FILE_ERROR, ex.getMessage());
-        }
+//            asyncCopyWithProgress(originalUpdate1File, update1FileTarget, new Callback<>() {
+//                @Override
+//                protected void onSucceeded(Void unused) {
+//                    try {
+//
+//                        /* 拷贝update2.rpf */
+//                        asyncCopyWithProgress(originalUpdate2File, update2FileTarget, new Callback<>() {
+//                            @Override
+//                            protected void onSucceeded(Void unused) {
+//                                /* 拷贝成功 */
+//                                FXUtils.runDelay(20, () -> ForkedAlert.showAndWait(Alert.AlertType.INFORMATION, "fpI18n.importSuccess"));
+//                                updateAsEnableFontpack(newFontpack);  /* 将基础字体包设置为激活状态 */
+//                                refreshTable();  /* 刷新表格 */
+//                            }
+//
+//                            @Override
+//                            protected void onFailed(LoadingFailure loadingFailure) {
+//                                FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
+//                            }
+//                        }, () -> {}, "fpI18n.copyingUpdate2File");
+//
+//                    } catch (IOException e) {
+//                        FontPackDialog.stackTraceDialog(e, FontPackDialog.CONFIRM).showAndWait();
+//                        Logger.error(LogType.FILE_ERROR, e.getMessage());
+//                    }
+//                }
+//
+//                @Override
+//                protected void onFailed(LoadingFailure loadingFailure) {
+//                    FontPackScene.this.onFailed(loadingFailure, newFontpack.getId());
+//                }
+//            }, () -> {}, "fpI18n.copyingUpdate1File");
+//
+//        } catch (IOException ex) {
+//            /* 创建字体包出错，回滚 */
+//            FontPackDialog.stackTraceDialog(ex, FontPackDialog.CONFIRM).showAndWait();
+//            Logger.error(LogType.FILE_ERROR, ex.getMessage());
+//        }
     }
 
     private void onFailed(LoadingFailure loadingFailure, String fontpackId) {

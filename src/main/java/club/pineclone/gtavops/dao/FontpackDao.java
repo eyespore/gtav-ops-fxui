@@ -18,9 +18,9 @@ import java.util.stream.Stream;
 @Deprecated
 public class FontpackDao {
 
-    @Getter private final Path baseDir;
-    private final Path metadataFile;
-    private final ObjectMapper mapper;
+    @Getter private Path baseDir;
+    private Path metadataFile;
+    private ObjectMapper mapper;
 
     private List<FontpackMetadata> cache = new ArrayList<>();
 
@@ -28,9 +28,9 @@ public class FontpackDao {
     private static final FontpackDao instance = new FontpackDao();
 
     private FontpackDao() {
-        this.baseDir = PathUtils.getFontpacksBaseDirPath();  /* 字体包基础路径 */
-        this.metadataFile = baseDir.resolve("metadata.json");
-        this.mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+//        this.baseDir = PathUtils.getFontpacksBaseDirPath();  /* 字体包基础路径 */
+//        this.metadataFile = baseDir.resolve("metadata.json");
+//        this.mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
         try {
             initialize();

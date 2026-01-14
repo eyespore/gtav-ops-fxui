@@ -46,8 +46,8 @@ public class ADSwingToggle extends MacroToggle {
         private static final int FLAG_WITH_KEY_AND_MOUSE = I18nKeyChooser.FLAG_WITH_KEY  | I18nKeyChooser.FLAG_WITH_MOUSE;
         private static final int FLAG_WITH_ALL = FLAG_WITH_KEY_AND_MOUSE | I18nKeyChooser.FLAG_WITH_WHEEL_SCROLL;
 
-//        MacroConfig config = getConfig();
-//        MacroConfig.ADSwing adwConfig = config.adSwing;
+//        MacroConfig configNode = getConfig();
+//        MacroConfig.ADSwing adwConfig = configNode.adSwing;
 
         private final ObjectProperty<TriggerMode> activateMethod = new SimpleObjectProperty<>();
         private final ObjectProperty<Key> activateKey = new SimpleObjectProperty<>();

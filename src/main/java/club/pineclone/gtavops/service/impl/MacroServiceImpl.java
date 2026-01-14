@@ -8,7 +8,7 @@ import java.util.UUID;
 public class MacroServiceImpl implements MacroService {
 
     @Override
-    public <T> UUID createMacro(MacroCreationDTO<T> creationDTO) {
+    public <T> UUID createMacro(MacroCreationDTO creationDTO) {
         return null;
     }
 }

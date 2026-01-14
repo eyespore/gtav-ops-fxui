@@ -8,8 +8,10 @@ module club.pineclone.test {
     requires static lombok;
     requires io.vproxy.base;
     requires javafx.graphics;
+    requires org.mapstruct;
+    requires org.junit.jupiter.api;
+    requires org.slf4j;
 
-    opens club.pineclone.test.utils;
-    opens club.pineclone.test.context;
-    opens club.pineclone.test.action;
+    opens club.pineclone.test.domain;
+    opens club.pineclone.test.dao;
 }
