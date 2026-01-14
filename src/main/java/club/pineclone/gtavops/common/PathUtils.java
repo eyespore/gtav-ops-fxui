@@ -8,11 +8,6 @@ public class PathUtils {
 
     private static final String APP_HOME_DIRECTORY_NAME = ".gtav-ops";
 
-    /* 应用程序锁文件 */
-    public static Path getLockFilePath() {
-        return getAppHomePath().resolve("singleton.lock");
-    }
-
     public static String getArch() {
         return NativeSystem.getArchitecture().toString().toLowerCase();
     }

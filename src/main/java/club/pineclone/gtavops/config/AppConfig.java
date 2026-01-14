@@ -5,43 +5,36 @@ import lombok.Getter;
 import java.nio.file.Path;
 
 /**
- * 后端应用级别配置
+ * 客户端内嵌配置
  */
 @Getter
 public class AppConfig {
 
-    private final Path coreHomePath;
-    private final MacroSettings macroSettings;
-    private final JsonMacroDataStoreSettings jsonMacroDataStoreSettings;
+    /* FX 客户端家路径 */
+    private final Path clientHomePath;
+
+    /* FX 客户端配置文件路径 */
+    private final Path clientConfigPath;
+
+    private final FontPackSettings fontPackSettings;
+
+    private final Path singletonLockPath;
 
     public AppConfig(Path appHomePath) {
-        this.coreHomePath = appHomePath.resolve("core");
+        this.clientHomePath = appHomePath.resolve("fxui");
+        this.clientConfigPath = clientHomePath.resolve("config.json");
+        this.singletonLockPath = clientHomePath.resolve("singleton.lock");
 
-        this.macroSettings = new MacroSettings(coreHomePath);
-        this.jsonMacroDataStoreSettings = new JsonMacroDataStoreSettings(macroSettings.getHomePath());
+        this.fontPackSettings = new FontPackSettings(clientHomePath);
     }
 
     @Getter
-    public static class MacroSettings {
-        /**
-         * 宏功能家目录，JsonMacroConfigDao 依赖该家目录建立 configs.json 文件作为数据库，JsonMacroEntryDao 依赖该目录
-         * 建立 entries.json 文件作为数据库
-         */
+    public static class FontPackSettings {
         private final Path homePath;
 
-        public MacroSettings(Path coreHomePath) {
-            this.homePath = coreHomePath.resolve("macro");
+        public FontPackSettings(Path clientHomePath) {
+            this.homePath = clientHomePath.resolve("fontpack");  /* 字体包家目录 */
         }
     }
 
-    @Getter
-    public static class JsonMacroDataStoreSettings {  /* 基于 Json 的宏功能存储 */
-        private final Path macroConfigPath;
-        private final Path macroEntryPath;
-
-        public JsonMacroDataStoreSettings(Path macroHomePath) {
-            this.macroConfigPath = macroHomePath.resolve("configs.json");  /* 基于 JSON 的 MacroConfig 数据表 */
-            this.macroEntryPath = macroHomePath.resolve("entries.json");  /* 基于 JSON 的 MacroEntry 数据表 */
-        }
-    }
 }
